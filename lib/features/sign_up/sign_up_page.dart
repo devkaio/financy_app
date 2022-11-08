@@ -1,6 +1,7 @@
 // ignore_for_file: public_member_api_docs, sort_constructors_first
 import 'dart:developer';
 
+import 'package:financy_app/common/widgets/password_form_field.dart';
 import 'package:flutter/material.dart';
 
 import '../../common/constants/app_colors.dart';
@@ -40,6 +41,14 @@ class SignUpPage extends StatelessWidget {
                 CustomTextFormField(
                   labelText: "your name",
                   hintText: "John Doe",
+                ),
+                PasswordFormField(
+                  labelText: "choose your password",
+                  hintText: "*********",
+                ),
+                PasswordFormField(
+                  labelText: "confirm your password",
+                  hintText: "*********",
                 ),
               ],
             ),
