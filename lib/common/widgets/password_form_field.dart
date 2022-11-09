@@ -43,7 +43,7 @@ class _PasswordFormFieldState extends State<PasswordFormField> {
         },
         child: Icon(
           isHidden ? Icons.visibility : Icons.visibility_off,
-          color: AppColors.greelightOne,
+          color: AppColors.greenTwo,
         ),
       ),
     );

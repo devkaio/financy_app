@@ -23,14 +23,14 @@ class SignUpPage extends StatelessWidget {
             'Spend Smarter',
             textAlign: TextAlign.center,
             style: AppTextStyles.mediumText.copyWith(
-              color: AppColors.greelightTwo,
+              color: AppColors.greenOne,
             ),
           ),
           Text(
             'Save More',
             textAlign: TextAlign.center,
             style: AppTextStyles.mediumText.copyWith(
-              color: AppColors.greelightTwo,
+              color: AppColors.greenOne,
             ),
           ),
           Image.asset(
@@ -41,7 +41,7 @@ class SignUpPage extends StatelessWidget {
               children: [
                 CustomTextFormField(
                   labelText: "your name",
-                  hintText: "John Doe",
+                  hintText: "JOHN DOE",
                   inputFormatters: [
                     UpperCaseTextInputFormatter(),
                   ],
@@ -85,7 +85,7 @@ class SignUpPage extends StatelessWidget {
               Text(
                 'Log In ',
                 style: AppTextStyles.smallText.copyWith(
-                  color: AppColors.greelightTwo,
+                  color: AppColors.greenOne,
                 ),
               ),
             ],
