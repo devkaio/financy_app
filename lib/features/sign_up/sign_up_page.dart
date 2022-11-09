@@ -1,6 +1,7 @@
 // ignore_for_file: public_member_api_docs, sort_constructors_first
 import 'dart:developer';
 
+import 'package:financy_app/common/utils/uppercase_text_formatter.dart';
 import 'package:financy_app/common/widgets/password_form_field.dart';
 import 'package:flutter/material.dart';
 
@@ -37,20 +38,23 @@ class SignUpPage extends StatelessWidget {
           ),
           Form(
             child: Column(
-              children: const [
+              children: [
                 CustomTextFormField(
                   labelText: "your name",
                   hintText: "John Doe",
+                  inputFormatters: [
+                    UpperCaseTextInputFormatter(),
+                  ],
                 ),
-                CustomTextFormField(
+                const CustomTextFormField(
                   labelText: "your email",
                   hintText: "john@email.com",
                 ),
-                PasswordFormField(
+                const PasswordFormField(
                   labelText: "choose your password",
                   hintText: "*********",
                 ),
-                PasswordFormField(
+                const PasswordFormField(
                   labelText: "confirm your password",
                   hintText: "*********",
                 ),
