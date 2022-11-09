@@ -11,8 +11,15 @@ import '../../common/widgets/custom_text_form_field.dart';
 import '../../common/widgets/multi_text_button.dart';
 import '../../common/widgets/primary_button.dart';
 
-class SignUpPage extends StatelessWidget {
+class SignUpPage extends StatefulWidget {
   const SignUpPage({super.key});
+
+  @override
+  State<SignUpPage> createState() => _SignUpPageState();
+}
+
+class _SignUpPageState extends State<SignUpPage> {
+  final _formKey = GlobalKey<FormState>();
 
   @override
   Widget build(BuildContext context) {
@@ -37,6 +44,7 @@ class SignUpPage extends StatelessWidget {
             'assets/images/sign_up_image.png',
           ),
           Form(
+            key: _formKey,
             child: Column(
               children: [
                 CustomTextFormField(
@@ -45,18 +53,42 @@ class SignUpPage extends StatelessWidget {
                   inputFormatters: [
                     UpperCaseTextInputFormatter(),
                   ],
+                  validator: (value) {
+                    if (value != null && value.isEmpty) {
+                      return "esse campo não pode ser vazio";
+                    }
+                    return null;
+                  },
                 ),
-                const CustomTextFormField(
+                CustomTextFormField(
                   labelText: "your email",
                   hintText: "john@email.com",
+                  validator: (value) {
+                    if (value != null && value.isEmpty) {
+                      return "esse campo não pode ser vazio";
+                    }
+                    return null;
+                  },
                 ),
-                const PasswordFormField(
+                PasswordFormField(
                   labelText: "choose your password",
                   hintText: "*********",
+                  validator: (value) {
+                    if (value != null && value.isEmpty) {
+                      return "esse campo não pode ser vazio";
+                    }
+                    return null;
+                  },
                 ),
-                const PasswordFormField(
+                PasswordFormField(
                   labelText: "confirm your password",
                   hintText: "*********",
+                  validator: (value) {
+                    if (value != null && value.isEmpty) {
+                      return "esse campo não pode ser vazio";
+                    }
+                    return null;
+                  },
                 ),
               ],
             ),
@@ -70,7 +102,15 @@ class SignUpPage extends StatelessWidget {
             ),
             child: PrimaryButton(
               text: 'Sign Up',
-              onPressed: () => log('tap'),
+              onPressed: () {
+                final valid = _formKey.currentState != null &&
+                    _formKey.currentState!.validate();
+                if (valid) {
+                  log("continuar lógica de login");
+                } else {
+                  log("erro ao logar");
+                }
+              },
             ),
           ),
           MultiTextButton(
