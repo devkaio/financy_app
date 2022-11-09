@@ -1,3 +1,4 @@
+// ignore_for_file: public_member_api_docs, sort_constructors_first
 import 'dart:developer';
 
 import 'package:financy_app/common/constants/app_colors.dart';
@@ -9,6 +10,7 @@ class PasswordFormField extends StatefulWidget {
   final EdgeInsetsGeometry? padding;
   final String? hintText;
   final String? labelText;
+  final FormFieldValidator<String>? validator;
 
   const PasswordFormField({
     Key? key,
@@ -16,6 +18,7 @@ class PasswordFormField extends StatefulWidget {
     this.padding,
     this.hintText,
     this.labelText,
+    this.validator,
   }) : super(key: key);
 
   @override
@@ -28,6 +31,7 @@ class _PasswordFormFieldState extends State<PasswordFormField> {
   @override
   Widget build(BuildContext context) {
     return CustomTextFormField(
+      validator: widget.validator,
       obscureText: isHidden,
       controller: widget.controller,
       padding: widget.padding,
