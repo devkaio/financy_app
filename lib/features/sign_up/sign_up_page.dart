@@ -24,6 +24,12 @@ class _SignUpPageState extends State<SignUpPage> {
   final _passwordController = TextEditingController();
 
   @override
+  void dispose() {
+    _passwordController.dispose();
+    super.dispose();
+  }
+
+  @override
   Widget build(BuildContext context) {
     return Scaffold(
       body: ListView(
