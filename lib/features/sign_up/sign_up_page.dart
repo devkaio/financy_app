@@ -80,8 +80,8 @@ class _SignUpPageState extends State<SignUpPage> {
                   labelText: "confirm your password",
                   hintText: "*********",
                   validator: (value) => Validator.validateConfirmPassword(
-                    value,
                     _passwordController.text,
+                    value,
                   ),
                 ),
               ],

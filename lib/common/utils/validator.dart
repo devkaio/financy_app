@@ -36,8 +36,11 @@ class Validator {
     return null;
   }
 
-  static String? validateConfirmPassword(String? first, String? second) {
-    if (first != second) {
+  static String? validateConfirmPassword(
+    String? passwordValue,
+    String? confirmPasswordValue,
+  ) {
+    if (passwordValue != confirmPasswordValue) {
       return "As senhas são diferentes. Por favor, corrija para continuar.";
     }
     return null;
