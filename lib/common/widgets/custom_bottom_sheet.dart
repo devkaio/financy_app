@@ -4,7 +4,12 @@ import 'package:flutter/material.dart';
 
 import '../constants/app_colors.dart';
 
-Future<void> customModalBottomSheet(BuildContext context) {
+Future<void> customModalBottomSheet(
+  BuildContext context, {
+  required String content,
+  required String buttonText,
+  VoidCallback? onPressed,
+}) {
   return showModalBottomSheet<void>(
     context: context,
     shape: const RoundedRectangleBorder(
@@ -29,7 +34,7 @@ Future<void> customModalBottomSheet(BuildContext context) {
             mainAxisSize: MainAxisSize.min,
             children: <Widget>[
               Text(
-                'Ops. Algo deu errado.',
+                content,
                 style: AppTextStyles.mediumText20.copyWith(
                   color: AppColors.greenOne,
                 ),
@@ -40,8 +45,8 @@ Future<void> customModalBottomSheet(BuildContext context) {
                   horizontal: 32.0,
                 ),
                 child: PrimaryButton(
-                  text: 'Tentar Novamente',
-                  onPressed: () => Navigator.pop(context),
+                  text: buttonText,
+                  onPressed: onPressed ?? () => Navigator.pop(context),
                 ),
               ),
             ],
