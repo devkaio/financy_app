@@ -28,29 +28,33 @@ Future<void> customModalBottomSheet(
           ),
         ),
         height: 200,
-        child: Center(
-          child: Column(
-            mainAxisAlignment: MainAxisAlignment.center,
-            mainAxisSize: MainAxisSize.min,
-            children: <Widget>[
-              Text(
+        child: Column(
+          mainAxisAlignment: MainAxisAlignment.center,
+          mainAxisSize: MainAxisSize.min,
+          children: <Widget>[
+            Padding(
+              padding: const EdgeInsets.symmetric(
+                vertical: 16.0,
+                horizontal: 32.0,
+              ),
+              child: Text(
                 content,
                 style: AppTextStyles.mediumText20.copyWith(
                   color: AppColors.greenOne,
                 ),
               ),
-              Padding(
-                padding: const EdgeInsets.symmetric(
-                  vertical: 16.0,
-                  horizontal: 32.0,
-                ),
-                child: PrimaryButton(
-                  text: buttonText,
-                  onPressed: onPressed ?? () => Navigator.pop(context),
-                ),
+            ),
+            Padding(
+              padding: const EdgeInsets.symmetric(
+                vertical: 8.0,
+                horizontal: 32.0,
               ),
-            ],
-          ),
+              child: PrimaryButton(
+                text: buttonText,
+                onPressed: onPressed ?? () => Navigator.pop(context),
+              ),
+            ),
+          ],
         ),
       );
     },
