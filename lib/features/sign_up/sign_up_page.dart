@@ -7,6 +7,7 @@ import 'package:financy_app/common/widgets/custom_circular_progress_indicator.da
 import 'package:financy_app/common/widgets/password_form_field.dart';
 import 'package:financy_app/features/sign_up/sign_up_controller.dart';
 import 'package:financy_app/features/sign_up/sign_up_state.dart';
+import 'package:financy_app/services/mock_auth_service.dart';
 import 'package:flutter/material.dart';
 
 import '../../common/constants/app_colors.dart';
@@ -25,11 +26,15 @@ class SignUpPage extends StatefulWidget {
 
 class _SignUpPageState extends State<SignUpPage> {
   final _formKey = GlobalKey<FormState>();
+  final _nameController = TextEditingController();
+  final _emailController = TextEditingController();
   final _passwordController = TextEditingController();
-  final _controller = SignUpController();
+  final _controller = SignUpController(MockAuthService());
 
   @override
   void dispose() {
+    _nameController.dispose();
+    _emailController.dispose();
     _passwordController.dispose();
     _controller.dispose();
     super.dispose();
@@ -61,10 +66,11 @@ class _SignUpPageState extends State<SignUpPage> {
         }
 
         if (_controller.state is SignUpErrorState) {
+          final error = _controller.state as SignUpErrorState;
           Navigator.pop(context);
           customModalBottomSheet(
             context,
-            content: "Ops. Algo deu errado!",
+            content: error.message,
             buttonText: "Tentar novamente",
           );
         }
@@ -99,6 +105,7 @@ class _SignUpPageState extends State<SignUpPage> {
             child: Column(
               children: [
                 CustomTextFormField(
+                  controller: _nameController,
                   labelText: "your name",
                   hintText: "JOHN DOE",
                   inputFormatters: [
@@ -106,7 +113,8 @@ class _SignUpPageState extends State<SignUpPage> {
                   ],
                   validator: Validator.validateName,
                 ),
-                const CustomTextFormField(
+                CustomTextFormField(
+                  controller: _emailController,
                   labelText: "your email",
                   hintText: "john@email.com",
                   validator: Validator.validateEmail,
@@ -143,7 +151,11 @@ class _SignUpPageState extends State<SignUpPage> {
                 final valid = _formKey.currentState != null &&
                     _formKey.currentState!.validate();
                 if (valid) {
-                  _controller.doSignUp();
+                  _controller.signUp(
+                    name: _nameController.text,
+                    email: _emailController.text,
+                    password: _passwordController.text,
+                  );
                 } else {
                   log("erro ao logar");
                 }
