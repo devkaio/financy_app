@@ -4,6 +4,7 @@ import 'dart:developer';
 
 import 'package:financy_app/common/constants/app_colors.dart';
 import 'package:financy_app/common/constants/app_text_styles.dart';
+import 'package:financy_app/common/constants/routes.dart';
 import 'package:flutter/material.dart';
 
 import '../../common/widgets/multi_text_button.dart';
@@ -47,7 +48,12 @@ class OnboardingPage extends StatelessWidget {
             ),
             child: PrimaryButton(
               text: 'Get Started',
-              onPressed: () {},
+              onPressed: () {
+                Navigator.pushNamed(
+                  context,
+                  NamedRoute.signUp,
+                );
+              },
             ),
           ),
           MultiTextButton(
