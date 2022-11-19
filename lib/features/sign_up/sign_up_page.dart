@@ -45,13 +45,13 @@ class _SignUpPageState extends State<SignUpPage> {
     super.initState();
     _controller.addListener(
       () {
-        if (_controller.state is SignUpLoadingState) {
+        if (_controller.state is SignUpStateLoading) {
           showDialog(
             context: context,
             builder: (context) => const CustomCircularProgressIndicator(),
           );
         }
-        if (_controller.state is SignUpSuccessState) {
+        if (_controller.state is SignUpStateSuccess) {
           Navigator.pop(context);
           Navigator.push(
             context,
@@ -65,8 +65,8 @@ class _SignUpPageState extends State<SignUpPage> {
           );
         }
 
-        if (_controller.state is SignUpErrorState) {
-          final error = _controller.state as SignUpErrorState;
+        if (_controller.state is SignUpStateError) {
+          final error = _controller.state as SignUpStateError;
           Navigator.pop(context);
           customModalBottomSheet(
             context,
