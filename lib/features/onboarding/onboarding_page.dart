@@ -1,7 +1,5 @@
 // ignore_for_file: public_member_api_docs, sort_constructors_first
 
-import 'dart:developer';
-
 import 'package:financy_app/common/constants/app_colors.dart';
 import 'package:financy_app/common/constants/app_text_styles.dart';
 import 'package:financy_app/common/constants/routes.dart';
@@ -57,7 +55,7 @@ class OnboardingPage extends StatelessWidget {
             ),
           ),
           MultiTextButton(
-            onPressed: () => log('tap'),
+            onPressed: () => Navigator.pushNamed(context, NamedRoute.signIn),
             children: [
               Text(
                 'Already have account? ',
@@ -66,7 +64,7 @@ class OnboardingPage extends StatelessWidget {
                 ),
               ),
               Text(
-                'Log In ',
+                'Sign In ',
                 style: AppTextStyles.smallText.copyWith(
                   color: AppColors.greenOne,
                 ),

@@ -1,6 +1,7 @@
 // ignore_for_file: public_member_api_docs, sort_constructors_first
 import 'dart:developer';
 
+import 'package:financy_app/common/constants/routes.dart';
 import 'package:financy_app/common/utils/uppercase_text_formatter.dart';
 import 'package:financy_app/common/utils/validator.dart';
 import 'package:financy_app/common/widgets/custom_circular_progress_indicator.dart';
@@ -163,7 +164,10 @@ class _SignUpPageState extends State<SignUpPage> {
             ),
           ),
           MultiTextButton(
-            onPressed: () => log('tap'),
+            onPressed: () => Navigator.popAndPushNamed(
+              context,
+              NamedRoute.signIn,
+            ),
             children: [
               Text(
                 'Already have account? ',
@@ -172,7 +176,7 @@ class _SignUpPageState extends State<SignUpPage> {
                 ),
               ),
               Text(
-                'Log In ',
+                'Sign In ',
                 style: AppTextStyles.smallText.copyWith(
                   color: AppColors.greenOne,
                 ),
