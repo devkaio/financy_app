@@ -18,9 +18,10 @@ class MockAuthService implements AuthService {
       );
     } catch (e) {
       if (password.startsWith('123')) {
-        throw 'Erro ao logar. Tente novamente.';
+        throw Exception('Erro ao logar. Tente novamente.');
       }
-      throw 'Não foi possível realizar login nesse momento. Tente mais tarde.';
+      throw Exception(
+          'Não foi possível realizar login nesse momento. Tente mais tarde.');
     }
   }
 
@@ -42,9 +43,10 @@ class MockAuthService implements AuthService {
       );
     } catch (e) {
       if (password.startsWith('123')) {
-        throw 'Senha insegura. Digite uma senha forte.';
+        throw Exception('Senha insegura. Digite uma senha forte.');
       }
-      throw 'Não foi possível criar sua conta nesse momento. Tente mais tarde.';
+      throw Exception(
+          'Não foi possível criar sua conta nesse momento. Tente mais tarde.');
     }
   }
 }
