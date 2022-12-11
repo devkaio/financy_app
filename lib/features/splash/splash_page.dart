@@ -1,9 +1,11 @@
-import 'dart:async';
+import 'dart:developer';
 
 import 'package:financy_app/common/constants/app_colors.dart';
 import 'package:financy_app/common/constants/app_text_styles.dart';
-import 'package:financy_app/common/constants/routes.dart';
 import 'package:financy_app/common/widgets/custom_circular_progress_indicator.dart';
+import 'package:financy_app/features/splash/splash_controller.dart';
+import 'package:financy_app/features/splash/splash_state.dart';
+import 'package:financy_app/locator.dart';
 import 'package:flutter/material.dart';
 
 class SplashPage extends StatefulWidget {
@@ -14,24 +16,27 @@ class SplashPage extends StatefulWidget {
 }
 
 class _SplashPageState extends State<SplashPage> {
+  final _splashController = locator.get<SplashController>();
+
   @override
   void initState() {
     super.initState();
-    init();
+    _splashController.isUserLogged();
+    _splashController.addListener(() {
+      if (_splashController.state is SplashStateSuccess) {
+        //TODO: navigate to home
+        log('navegar para home');
+      } else {
+        //TODO: navigate to onboarding
+        log('navegar para onboarding');
+      }
+    });
   }
 
-  Timer init() {
-    return Timer(
-      const Duration(seconds: 2),
-      navigateToOnboarding,
-    );
-  }
-
-  void navigateToOnboarding() {
-    Navigator.pushReplacementNamed(
-      context,
-      NamedRoute.initial,
-    );
+  @override
+  void dispose() {
+    _splashController.dispose();
+    super.dispose();
   }
 
   @override
