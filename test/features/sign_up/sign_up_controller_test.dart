@@ -27,57 +27,59 @@ void main() {
     );
   });
 
-  test('Tests Sign Up Controller Sucess State', () async {
-    expect(signUpController.state, isInstanceOf<SignUpStateInitial>());
+  group('Tests Sign Up Controller State', () {
+    test('Should update state to SignUpStateSuccess', () async {
+      expect(signUpController.state, isInstanceOf<SignUpStateInitial>());
 
-    when(() => mockSecureStorage.write(
+      when(() => mockSecureStorage.write(
+            key: "CURRENT_USER",
+            value: user.toJson(),
+          )).thenAnswer((_) async {});
+
+      when(
+        () => mockFirebaseAuthService.signUp(
+          name: 'User',
+          email: 'user@email.com',
+          password: 'user@123',
+        ),
+      ).thenAnswer(
+        (_) async => user,
+      );
+
+      await signUpController.signUp(
+        name: 'User',
+        email: 'user@email.com',
+        password: 'user@123',
+      );
+      expect(signUpController.state, isInstanceOf<SignUpStateSuccess>());
+    });
+
+    test('Should update state to SignUpStateError', () async {
+      expect(signUpController.state, isInstanceOf<SignUpStateInitial>());
+
+      when(
+        () => mockSecureStorage.write(
           key: "CURRENT_USER",
           value: user.toJson(),
-        )).thenAnswer((_) async {});
+        ),
+      ).thenAnswer((_) async {});
 
-    when(
-      () => mockFirebaseAuthService.signUp(
+      when(
+        () => mockFirebaseAuthService.signUp(
+          name: 'User',
+          email: 'user@email.com',
+          password: 'user@123',
+        ),
+      ).thenThrow(
+        Exception(),
+      );
+
+      await signUpController.signUp(
         name: 'User',
         email: 'user@email.com',
         password: 'user@123',
-      ),
-    ).thenAnswer(
-      (_) async => user,
-    );
-
-    await signUpController.signUp(
-      name: 'User',
-      email: 'user@email.com',
-      password: 'user@123',
-    );
-    expect(signUpController.state, isInstanceOf<SignUpStateSuccess>());
-  });
-
-  test('Tests Sign Up Controller Error State', () async {
-    expect(signUpController.state, isInstanceOf<SignUpStateInitial>());
-
-    when(
-      () => mockSecureStorage.write(
-        key: "CURRENT_USER",
-        value: user.toJson(),
-      ),
-    ).thenAnswer((_) async {});
-
-    when(
-      () => mockFirebaseAuthService.signUp(
-        name: 'User',
-        email: 'user@email.com',
-        password: 'user@123',
-      ),
-    ).thenThrow(
-      Exception(),
-    );
-
-    await signUpController.signUp(
-      name: 'User',
-      email: 'user@email.com',
-      password: 'user@123',
-    );
-    expect(signUpController.state, isInstanceOf<SignUpStateError>());
+      );
+      expect(signUpController.state, isInstanceOf<SignUpStateError>());
+    });
   });
 }
