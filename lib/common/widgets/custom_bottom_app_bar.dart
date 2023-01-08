@@ -68,8 +68,8 @@ class CustomBottomAppBarItem {
 
   CustomBottomAppBarItem.empty({
     this.label,
-    this.secondaryIcon,
     this.primaryIcon,
+    this.secondaryIcon,
     this.onPressed,
   });
 }
