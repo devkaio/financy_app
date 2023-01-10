@@ -1,4 +1,3 @@
-import 'package:financy_app/common/models/user_model.dart';
 import 'package:financy_app/features/sign_in/sign_in_controller.dart';
 import 'package:financy_app/features/sign_in/sign_in_state.dart';
 import 'package:flutter_test/flutter_test.dart';
@@ -10,7 +9,7 @@ void main() {
   late MockSecureStorage mockSecureStorage;
   late MockFirebaseAuthService mockFirebaseAuthService;
   late SignInController signInController;
-  late UserModel user;
+  late MockUser user;
 
   setUp(() {
     mockSecureStorage = MockSecureStorage();
@@ -19,11 +18,7 @@ void main() {
       mockFirebaseAuthService,
       mockSecureStorage,
     );
-    user = UserModel(
-      name: 'User',
-      email: 'user@email.com',
-      id: '1a2b3c4d5e',
-    );
+    user = MockUser();
   });
 
   group('Tests Sign In Controller State', () {
