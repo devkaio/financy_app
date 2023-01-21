@@ -60,7 +60,7 @@ class _SplashPageState extends State<SplashPage> {
           children: [
             Text(
               'financy',
-              style: AppTextStyles.bigText.copyWith(color: AppColors.white),
+              style: AppTextStyles.bigText50.copyWith(color: AppColors.white),
             ),
             const CustomCircularProgressIndicator(),
           ],
