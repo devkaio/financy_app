@@ -41,6 +41,7 @@ dependencies:
   flutter_secure_storage: ^7.0.0
   mocktail: ^0.3.0
   cloud_functions: ^4.0.8
+  graphql_flutter: ^5.1.1
 
 dev_dependencies:
   flutter_test:

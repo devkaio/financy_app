@@ -1,7 +1,8 @@
 import 'package:cloud_functions/cloud_functions.dart';
-import 'package:financy_app/common/models/user_model.dart';
-import 'package:financy_app/services/auth_service.dart';
 import 'package:firebase_auth/firebase_auth.dart';
+
+import '../common/models/user_model.dart';
+import 'auth_service.dart';
 
 class FirebaseAuthService implements AuthService {
   final _auth = FirebaseAuth.instance;
@@ -73,6 +74,20 @@ class FirebaseAuthService implements AuthService {
   Future<void> signOut() async {
     try {
       await _auth.signOut();
+    } catch (e) {
+      rethrow;
+    }
+  }
+
+  @override
+  Future<String> get userToken async {
+    try {
+      final token = await _auth.currentUser?.getIdToken();
+      if (token != null) {
+        return token;
+      } else {
+        throw Exception('user not found');
+      }
     } catch (e) {
       rethrow;
     }

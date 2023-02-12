@@ -1,4 +1,4 @@
-import 'package:financy_app/common/models/user_model.dart';
+import '../common/models/user_model.dart';
 
 abstract class AuthService {
   Future<UserModel> signUp({
@@ -13,4 +13,6 @@ abstract class AuthService {
   });
 
   Future<void> signOut();
+
+  Future<String> get userToken;
 }
