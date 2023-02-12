@@ -1,3 +1,4 @@
+import 'package:financy_app/common/models/user_model.dart';
 import 'package:financy_app/features/sign_up/sign_up_controller.dart';
 import 'package:financy_app/features/sign_up/sign_up_state.dart';
 import 'package:flutter_test/flutter_test.dart';
@@ -9,22 +10,31 @@ void main() {
   late SignUpController signUpController;
   late MockSecureStorage mockSecureStorage;
   late MockFirebaseAuthService mockFirebaseAuthService;
-  late MockUser user;
+  late MockGraphQLService mockGraphQLService;
+  late UserModel user;
   setUp(() {
     mockFirebaseAuthService = MockFirebaseAuthService();
     mockSecureStorage = MockSecureStorage();
+    mockGraphQLService = MockGraphQLService();
 
     signUpController = SignUpController(
-      mockFirebaseAuthService,
-      mockSecureStorage,
+      authService: mockFirebaseAuthService,
+      secureStorage: mockSecureStorage,
+      graphQLService: mockGraphQLService,
     );
 
-    user = MockUser();
+    user = UserModel(
+      name: 'User',
+      email: 'user@email.com',
+      id: '1a2b3c4d5e',
+    );
   });
 
   group('Tests Sign Up Controller State', () {
     test('Should update state to SignUpStateSuccess', () async {
       expect(signUpController.state, isInstanceOf<SignUpStateInitial>());
+
+      when(() => mockGraphQLService.init()).thenAnswer((_) async => {});
 
       when(() => mockSecureStorage.write(
             key: "CURRENT_USER",

@@ -9,11 +9,16 @@ import '../../mock/mock_classes.dart';
 void main() {
   late MockSecureStorage secureStorage;
   late SplashController splashController;
+  late MockGraphQLService mockGraphQLService;
   late UserModel user;
 
   setUp(() {
     secureStorage = MockSecureStorage();
-    splashController = SplashController(secureStorage);
+    mockGraphQLService = MockGraphQLService();
+    splashController = SplashController(
+      secureStorage: secureStorage,
+      graphQLService: mockGraphQLService,
+    );
     user = UserModel(
       name: 'User',
       email: 'user@email.com',
@@ -35,6 +40,8 @@ void main() {
     test('Should update state to AuthenticatedUser', () async {
       when(() => secureStorage.readOne(key: 'CURRENT_USER'))
           .thenAnswer((_) async => user.toJson());
+
+      when(() => mockGraphQLService.init()).thenAnswer((_) async => {});
 
       expect(splashController.state, isInstanceOf<SplashStateInitial>());
 
