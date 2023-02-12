@@ -1,0 +1,8 @@
+{
+    "dartImport.fixOnSave": true,
+    "dart.showIgnoreQuickFixes": false,
+    "editor.codeActionsOnSave": {
+        "source.fixAll": true,
+        "source.organizeImports": true,
+    }
+}
