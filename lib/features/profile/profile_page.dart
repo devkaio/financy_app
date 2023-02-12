@@ -1,7 +1,8 @@
-import 'package:financy_app/locator.dart';
-import 'package:financy_app/services/auth_service.dart';
-import 'package:financy_app/services/secure_storage.dart';
 import 'package:flutter/material.dart';
+
+import '../../locator.dart';
+import '../../services/auth_service.dart';
+import '../../services/secure_storage.dart';
 
 class ProfilePage extends StatefulWidget {
   const ProfilePage({super.key});

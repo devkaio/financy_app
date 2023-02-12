@@ -291,7 +291,7 @@ class _HomePageState extends State<HomePage> {
                       return ListView.builder(
                         physics: const BouncingScrollPhysics(),
                         padding: EdgeInsets.zero,
-                        itemCount: controller.transactions.length,
+                        itemCount: 5,
                         itemBuilder: (context, index) {
                           final item = controller.transactions[index];
 
@@ -314,7 +314,7 @@ class _HomePageState extends State<HomePage> {
                               ),
                             ),
                             title: Text(
-                              item.title,
+                              item.description,
                               style: AppTextStyles.mediumText16w500,
                             ),
                             subtitle: Text(
