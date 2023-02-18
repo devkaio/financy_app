@@ -5,6 +5,7 @@ import 'package:flutter/material.dart';
 import '../../common/constants/app_colors.dart';
 import '../../common/constants/app_text_styles.dart';
 import '../../common/extensions/sizes.dart';
+import '../../common/widgets/app_header.dart';
 import '../../common/widgets/custom_circular_progress_indicator.dart';
 import '../../locator.dart';
 import 'home_controller.dart';
@@ -18,8 +19,7 @@ class HomePage extends StatefulWidget {
 }
 
 class _HomePageState extends State<HomePage> {
-  double get textScaleFactor =>
-      MediaQuery.of(context).size.width < 360 ? 0.7 : 1.0;
+  double get textScaleFactor => MediaQuery.of(context).size.width < 360 ? 0.7 : 1.0;
   double get iconSize => MediaQuery.of(context).size.width < 360 ? 16.0 : 24.0;
 
   final controller = locator.get<HomeController>();
@@ -35,80 +35,7 @@ class _HomePageState extends State<HomePage> {
     return Scaffold(
       body: Stack(
         children: [
-          Positioned(
-            left: 0,
-            right: 0,
-            child: Container(
-              decoration: const BoxDecoration(
-                gradient: LinearGradient(
-                  begin: Alignment.topCenter,
-                  end: Alignment.bottomCenter,
-                  colors: AppColors.greenGradient,
-                ),
-                borderRadius: BorderRadius.only(
-                  bottomLeft: Radius.elliptical(500, 30),
-                  bottomRight: Radius.elliptical(500, 30),
-                ),
-              ),
-              height: 287.h,
-            ),
-          ),
-          Positioned(
-              left: 24.0,
-              right: 24.0,
-              top: 74.h,
-              child: Row(
-                mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                children: [
-                  Column(
-                    crossAxisAlignment: CrossAxisAlignment.start,
-                    children: [
-                      Text(
-                        'Good afternoon,',
-                        textScaleFactor: textScaleFactor,
-                        style: AppTextStyles.smallText
-                            .apply(color: AppColors.white),
-                      ),
-                      Text(
-                        'Enjelin Morgeana',
-                        textScaleFactor: textScaleFactor,
-                        style: AppTextStyles.mediumText20
-                            .apply(color: AppColors.white),
-                      ),
-                    ],
-                  ),
-                  Container(
-                    padding: EdgeInsets.symmetric(
-                      vertical: 8.h,
-                      horizontal: 8.w,
-                    ),
-                    decoration: BoxDecoration(
-                      borderRadius:
-                          const BorderRadius.all(Radius.circular(4.0)),
-                      color: AppColors.white.withOpacity(0.06),
-                    ),
-                    child: Stack(
-                      alignment: const AlignmentDirectional(0.5, -0.5),
-                      children: [
-                        const Icon(
-                          Icons.notifications_none_outlined,
-                          color: AppColors.white,
-                        ),
-                        Container(
-                          width: 8.w,
-                          height: 8.w,
-                          decoration: BoxDecoration(
-                            color: AppColors.notification,
-                            borderRadius: BorderRadius.circular(
-                              4.0,
-                            ),
-                          ),
-                        ),
-                      ],
-                    ),
-                  ),
-                ],
-              )),
+          const AppHeader(),
           Positioned(
             left: 24.w,
             right: 24.w,
@@ -136,31 +63,30 @@ class _HomePageState extends State<HomePage> {
                           Text(
                             'Total Balance',
                             textScaleFactor: textScaleFactor,
-                            style: AppTextStyles.mediumText16w600
-                                .apply(color: AppColors.white),
+                            style: AppTextStyles.mediumText16w600.apply(color: AppColors.white),
                           ),
                           Text(
                             '\$ 1,556.00',
                             textScaleFactor: textScaleFactor,
-                            style: AppTextStyles.mediumText30
-                                .apply(color: AppColors.white),
+                            style: AppTextStyles.mediumText30.apply(color: AppColors.white),
                           )
                         ],
                       ),
                       GestureDetector(
                         onTap: () => log('options'),
                         child: PopupMenuButton(
-                            padding: EdgeInsets.zero,
-                            child: const Icon(
-                              Icons.more_horiz,
-                              color: AppColors.white,
+                          padding: EdgeInsets.zero,
+                          child: const Icon(
+                            Icons.more_horiz,
+                            color: AppColors.white,
+                          ),
+                          itemBuilder: (context) => [
+                            const PopupMenuItem(
+                              height: 24.0,
+                              child: Text("Item 1"),
                             ),
-                            itemBuilder: (context) => [
-                                  const PopupMenuItem(
-                                    height: 24.0,
-                                    child: Text("Item 1"),
-                                  ),
-                                ]),
+                          ],
+                        ),
                       ),
                     ],
                   ),
@@ -191,14 +117,12 @@ class _HomePageState extends State<HomePage> {
                               Text(
                                 'Income',
                                 textScaleFactor: textScaleFactor,
-                                style: AppTextStyles.mediumText16w500
-                                    .apply(color: AppColors.white),
+                                style: AppTextStyles.mediumText16w500.apply(color: AppColors.white),
                               ),
                               Text(
                                 '\$ 1,840.00',
                                 textScaleFactor: textScaleFactor,
-                                style: AppTextStyles.mediumText20
-                                    .apply(color: AppColors.white),
+                                style: AppTextStyles.mediumText20.apply(color: AppColors.white),
                               ),
                             ],
                           )
@@ -227,14 +151,12 @@ class _HomePageState extends State<HomePage> {
                               Text(
                                 'Expenses',
                                 textScaleFactor: textScaleFactor,
-                                style: AppTextStyles.mediumText16w500
-                                    .apply(color: AppColors.white),
+                                style: AppTextStyles.mediumText16w500.apply(color: AppColors.white),
                               ),
                               Text(
                                 '\$ 2,824.00',
                                 textScaleFactor: textScaleFactor,
-                                style: AppTextStyles.mediumText20
-                                    .apply(color: AppColors.white),
+                                style: AppTextStyles.mediumText20.apply(color: AppColors.white),
                               ),
                             ],
                           )
@@ -295,18 +217,14 @@ class _HomePageState extends State<HomePage> {
                         itemBuilder: (context, index) {
                           final item = controller.transactions[index];
 
-                          final color = item.value.isNegative
-                              ? AppColors.outcome
-                              : AppColors.income;
+                          final color = item.value.isNegative ? AppColors.outcome : AppColors.income;
                           final value = "\$ ${item.value.toStringAsFixed(2)}";
                           return ListTile(
-                            contentPadding:
-                                const EdgeInsets.symmetric(horizontal: 8.0),
+                            contentPadding: const EdgeInsets.symmetric(horizontal: 8.0),
                             leading: Container(
                               decoration: const BoxDecoration(
                                 color: AppColors.antiFlashWhite,
-                                borderRadius:
-                                    BorderRadius.all(Radius.circular(8.0)),
+                                borderRadius: BorderRadius.all(Radius.circular(8.0)),
                               ),
                               padding: const EdgeInsets.all(8.0),
                               child: const Icon(
@@ -318,14 +236,12 @@ class _HomePageState extends State<HomePage> {
                               style: AppTextStyles.mediumText16w500,
                             ),
                             subtitle: Text(
-                              DateTime.fromMillisecondsSinceEpoch(item.date)
-                                  .toString(),
+                              DateTime.fromMillisecondsSinceEpoch(item.date).toString(),
                               style: AppTextStyles.smallText13,
                             ),
                             trailing: Text(
                               value,
-                              style: AppTextStyles.mediumText18
-                                  .apply(color: color),
+                              style: AppTextStyles.mediumText18.apply(color: color),
                             ),
                           );
                         },
