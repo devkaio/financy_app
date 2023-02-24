@@ -143,7 +143,7 @@ class TransactionValueWidget extends StatelessWidget {
                   AppTextStyles.mediumText16w500.apply(color: AppColors.white),
             ),
             ConstrainedBox(
-              constraints: BoxConstraints.tightFor(width: 100.0.w),
+              constraints: BoxConstraints.tightFor(width: 120.0.w),
               child: Text(
                 '\$${amount.toStringAsFixed(2)}',
                 textScaleFactor: textScaleFactor,

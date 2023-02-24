@@ -5,11 +5,11 @@ import '../../common/constants/app_text_styles.dart';
 import '../../common/extensions/sizes.dart';
 import '../../common/widgets/app_header.dart';
 import '../../common/widgets/custom_circular_progress_indicator.dart';
+import '../../common/widgets/transaction_listview.dart';
 import '../../locator.dart';
 import 'home_controller.dart';
 import 'home_state.dart';
 import 'widgets/balance_card_widget.dart';
-import 'widgets/transaction_listview.dart';
 
 class HomePage extends StatefulWidget {
   const HomePage({super.key});
@@ -34,9 +34,9 @@ class _HomePageState extends State<HomePage> {
         children: [
           const AppHeader(),
           const BalanceCard(
-            totalAmount: 1231231231212.23,
-            incomeAmount: 1312312.12,
-            outcomeAmount: 1231231.32,
+            totalAmount: 1232.23,
+            incomeAmount: 1311.12,
+            outcomeAmount: -1231231.32,
           ),
           Positioned(
             top: 397.h,

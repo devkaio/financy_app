@@ -1,8 +1,8 @@
 import 'package:flutter/material.dart';
 
-import '../../../common/constants/app_colors.dart';
-import '../../../common/constants/app_text_styles.dart';
-import '../../../common/models/transaction_model.dart';
+import '../constants/app_colors.dart';
+import '../constants/app_text_styles.dart';
+import '../models/transaction_model.dart';
 
 class TransactionListView extends StatelessWidget {
   const TransactionListView({
