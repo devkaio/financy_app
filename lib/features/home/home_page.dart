@@ -9,7 +9,8 @@ import '../../common/widgets/transaction_listview.dart';
 import '../../locator.dart';
 import 'home_controller.dart';
 import 'home_state.dart';
-import 'widgets/balance_card_widget.dart';
+import 'widgets/balance_card/balance_card_widget.dart';
+import 'widgets/balance_card/balance_card_widget_controller.dart';
 
 class HomePage extends StatefulWidget {
   const HomePage({super.key});
@@ -20,11 +21,13 @@ class HomePage extends StatefulWidget {
 
 class _HomePageState extends State<HomePage> {
   final controller = locator.get<HomeController>();
+  final balanceController = locator.get<BalanceCardWidgetController>();
 
   @override
   void initState() {
     super.initState();
     controller.getAllTransactions();
+    balanceController.getBalances();
   }
 
   @override
@@ -33,11 +36,7 @@ class _HomePageState extends State<HomePage> {
       body: Stack(
         children: [
           const AppHeader(),
-          const BalanceCard(
-            totalAmount: 1232.23,
-            incomeAmount: 1311.12,
-            outcomeAmount: -1231231.32,
-          ),
+          BalanceCard(controller: balanceController),
           Positioned(
             top: 397.h,
             left: 0,
