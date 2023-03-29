@@ -20,6 +20,8 @@ class CustomTextFormField extends StatefulWidget {
   final List<TextInputFormatter>? inputFormatters;
   final FormFieldValidator<String>? validator;
   final String? helperText;
+  final GestureTapCallback? onTap;
+  final bool readOnly;
 
   const CustomTextFormField({
     Key? key,
@@ -36,6 +38,8 @@ class CustomTextFormField extends StatefulWidget {
     this.inputFormatters,
     this.validator,
     this.helperText,
+    this.onTap,
+    this.readOnly = false,
   }) : super(key: key);
 
   @override
@@ -66,6 +70,8 @@ class _CustomTextFormFieldState extends State<CustomTextFormField> {
             vertical: 12.0,
           ),
       child: TextFormField(
+        readOnly: widget.readOnly,
+        onTap: widget.onTap,
         onChanged: (value) {
           if (value.length == 1) {
             setState(() {
@@ -93,25 +99,8 @@ class _CustomTextFormFieldState extends State<CustomTextFormField> {
           helperMaxLines: 3,
           suffixIcon: widget.suffixIcon,
           hintText: widget.hintText,
-          hintStyle:
-              AppTextStyles.inputHintText.copyWith(color: AppColors.greenTwo),
           floatingLabelBehavior: FloatingLabelBehavior.always,
           labelText: widget.labelText?.toUpperCase(),
-          labelStyle:
-              AppTextStyles.inputLabelText.copyWith(color: AppColors.grey),
-          focusedBorder: defaultBorder,
-          errorBorder: defaultBorder.copyWith(
-            borderSide: const BorderSide(
-              color: AppColors.error,
-            ),
-          ),
-          focusedErrorBorder: defaultBorder.copyWith(
-            borderSide: const BorderSide(
-              color: AppColors.error,
-            ),
-          ),
-          enabledBorder: defaultBorder,
-          disabledBorder: defaultBorder,
         ),
       ),
     );
