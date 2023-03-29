@@ -9,4 +9,5 @@ class NamedRoute {
   static const String stats = "/stats";
   static const String wallet = "/wallet";
   static const String profile = "/profile";
+  static const String transaction = "/transaction";
 }
