@@ -74,14 +74,14 @@ class _HomePageState extends State<HomePage> {
                           child: Text('An error has occurred'),
                         );
                       }
-                      if (controller.transactions.isEmpty) {
-                        return const Center(
-                          child: Text('There is no transactions at this time.'),
+                      if (controller.state is HomeStateSuccess) {
+                        return TransactionListView(
+                          transactionList: controller.transactions,
+                          itemCount: 5,
                         );
                       }
-                      return TransactionListView(
-                        transactionList: controller.transactions,
-                        itemCount: 5,
+                      return const Center(
+                        child: Text('There are no transactions at this time.'),
                       );
                     },
                   ),
