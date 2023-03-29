@@ -1,7 +1,11 @@
 import 'package:flutter/material.dart';
 
+import '../../features/home/home_controller.dart';
+import '../../features/home/widgets/balance_card/balance_card_widget_controller.dart';
+import '../../locator.dart';
 import '../constants/app_colors.dart';
 import '../constants/app_text_styles.dart';
+import '../extensions/date_formatter.dart';
 import '../models/transaction_model.dart';
 
 class TransactionListView extends StatelessWidget {
@@ -27,6 +31,17 @@ class TransactionListView extends StatelessWidget {
             item.value.isNegative ? AppColors.outcome : AppColors.income;
         final value = "\$${item.value.toStringAsFixed(2)}";
         return ListTile(
+          onTap: () async {
+            final result = await Navigator.pushNamed(
+              context,
+              '/transaction',
+              arguments: item,
+            );
+            if (result != null) {
+              locator.get<HomeController>().getAllTransactions();
+              locator.get<BalanceCardWidgetController>().getBalances();
+            }
+          },
           contentPadding: const EdgeInsets.symmetric(horizontal: 8.0),
           leading: Container(
             decoration: const BoxDecoration(
@@ -43,7 +58,7 @@ class TransactionListView extends StatelessWidget {
             style: AppTextStyles.mediumText16w500,
           ),
           subtitle: Text(
-            DateTime.fromMillisecondsSinceEpoch(item.date).toString(),
+            DateTime.fromMillisecondsSinceEpoch(item.date).toText,
             style: AppTextStyles.smallText13,
           ),
           trailing: Text(

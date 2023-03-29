@@ -4,10 +4,13 @@ import 'package:flutter/material.dart';
 
 import '../../common/constants/app_colors.dart';
 import '../../common/widgets/custom_bottom_app_bar.dart';
+import '../../locator.dart';
 import '../profile/profile_page.dart';
 import '../stats/stats_page.dart';
 import '../wallet/wallet_page.dart';
+import 'home_controller.dart';
 import 'home_page.dart';
+import 'widgets/balance_card/balance_card_widget_controller.dart';
 
 class HomePageView extends StatefulWidget {
   const HomePageView({super.key});
@@ -28,6 +31,12 @@ class _HomePageViewState extends State<HomePageView> {
   }
 
   @override
+  void dispose() {
+    pageController.dispose();
+    super.dispose();
+  }
+
+  @override
   Widget build(BuildContext context) {
     return Scaffold(
       body: PageView(
@@ -41,8 +50,13 @@ class _HomePageViewState extends State<HomePageView> {
         ],
       ),
       floatingActionButton: FloatingActionButton(
-        backgroundColor: AppColors.green,
-        onPressed: () {},
+        onPressed: () async {
+          final result = await Navigator.pushNamed(context, '/transaction');
+          if (result != null) {
+            locator.get<HomeController>().getAllTransactions();
+            locator.get<BalanceCardWidgetController>().getBalances();
+          }
+        },
         child: const Icon(Icons.add),
       ),
       floatingActionButtonLocation: FloatingActionButtonLocation.centerDocked,
