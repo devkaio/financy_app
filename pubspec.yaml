@@ -42,6 +42,7 @@ dependencies:
   mocktail: ^0.3.0
   cloud_functions: ^4.0.8
   graphql_flutter: ^5.1.1
+  intl: ^0.17.0
 
 dev_dependencies:
   flutter_test:
