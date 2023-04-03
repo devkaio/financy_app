@@ -21,31 +21,13 @@ class AppHeader extends StatefulWidget {
 }
 
 class _AppHeaderState extends State<AppHeader> {
-  Widget get _innerHeader => widget.title != null
-      ? Row(
-          mainAxisAlignment: MainAxisAlignment.spaceBetween,
-          children: [
-            GestureDetector(
-              onTap: () => Navigator.pop(context),
-              child: const Icon(
-                Icons.arrow_back_ios,
-                size: 16.0,
-                color: AppColors.white,
-              ),
-            ),
-            Text(
-              widget.title!,
-              style: AppTextStyles.mediumText18.apply(
-                color: AppColors.white,
-              ),
-            ),
-            widget.hasOptions
-                ? const Icon(
-                    Icons.more_horiz,
-                    color: AppColors.white,
-                  )
-                : const SizedBox(width: 16.0),
-          ],
+  Widget get _child => widget.title != null
+      ? Text(
+          textAlign: TextAlign.center,
+          widget.title!,
+          style: AppTextStyles.mediumText18.apply(
+            color: AppColors.white,
+          ),
         )
       : Row(
           mainAxisAlignment: MainAxisAlignment.spaceBetween,
@@ -78,11 +60,38 @@ class _AppHeaderState extends State<AppHeader> {
           ),
         ),
         Positioned(
-          left: 24.0,
-          right: 24.0,
+          left: 24.0.w,
+          right: 24.0.w,
           top: 74.h,
-          child: _innerHeader,
+          child: _child,
         ),
+        if (widget.title != null)
+          Positioned(
+            left: 8.0.w,
+            top: 56.h,
+            child: GestureDetector(
+              onTap: () => Navigator.pop(context),
+              child: const Padding(
+                padding: EdgeInsets.all(16.0),
+                child: Icon(
+                  Icons.arrow_back_ios,
+                  color: AppColors.white,
+                ),
+              ),
+            ),
+          ),
+        if (widget.hasOptions)
+          Positioned(
+            right: 8.0.w,
+            top: 56.0.h,
+            child: const Padding(
+              padding: EdgeInsets.all(16.0),
+              child: Icon(
+                Icons.more_horiz,
+                color: AppColors.white,
+              ),
+            ),
+          ),
       ],
     );
   }
