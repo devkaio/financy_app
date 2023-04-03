@@ -36,7 +36,7 @@ class _TransactionPageState extends State<TransactionPage>
 
   final _incomes = ['Services', 'Investment', 'Other'];
   final _outcomes = ['House', 'Grocery', 'Other'];
-  DateTime? _date;
+  DateTime? _newDate;
   bool value = false;
 
   final _descriptionController = TextEditingController();
@@ -56,13 +56,24 @@ class _TransactionPageState extends State<TransactionPage>
     return 0;
   }
 
+  String get _date {
+    if (widget.transaction?.date != null) {
+      return DateTime.fromMillisecondsSinceEpoch(widget.transaction!.date)
+          .toText;
+    } else {
+      return '';
+    }
+  }
+
   @override
   void initState() {
     super.initState();
     _amountController.updateValue(widget.transaction?.value ?? 0);
+    value = widget.transaction?.status ?? false;
     _descriptionController.text = widget.transaction?.description ?? '';
     _categoryController.text = widget.transaction?.category ?? '';
-    _date = DateTime.fromMillisecondsSinceEpoch(widget.transaction?.date ?? 0);
+    _newDate =
+        DateTime.fromMillisecondsSinceEpoch(widget.transaction?.date ?? 0);
     _dateController.text = widget.transaction?.date != null
         ? DateTime.fromMillisecondsSinceEpoch(widget.transaction!.date).toText
         : '';
@@ -264,23 +275,23 @@ class _TransactionPageState extends State<TransactionPage>
                           return null;
                         },
                         onTap: () async {
-                          _date = await showDatePicker(
+                          _newDate = await showDatePicker(
                             context: context,
                             initialDate: DateTime.now(),
                             firstDate: DateTime(1970),
                             lastDate: DateTime(2030),
                           );
 
-                          _date = _date?.microsecondsSinceEpoch != 0
+                          _newDate = _newDate != null
                               ? DateTime.now().copyWith(
-                                  day: _date?.day,
-                                  month: _date?.month,
-                                  year: _date?.year,
+                                  day: _newDate?.day,
+                                  month: _newDate?.month,
+                                  year: _newDate?.year,
                                 )
                               : null;
 
                           _dateController.text =
-                              _date != null ? _date!.toText : '';
+                              _newDate != null ? _newDate!.toText : _date;
                         },
                       ),
                       const SizedBox(height: 16.0),
@@ -302,8 +313,8 @@ class _TransactionPageState extends State<TransactionPage>
                                 value: _tabController.index == 1
                                     ? newValue * -1
                                     : newValue,
-                                date: _date != null
-                                    ? _date!.millisecondsSinceEpoch
+                                date: _newDate != null
+                                    ? _newDate!.millisecondsSinceEpoch
                                     : DateTime.now().millisecondsSinceEpoch,
                                 status: value,
                                 id: widget.transaction?.id,
