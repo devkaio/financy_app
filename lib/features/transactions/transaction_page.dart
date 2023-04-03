@@ -14,8 +14,6 @@ import '../../common/widgets/custom_circular_progress_indicator.dart';
 import '../../common/widgets/custom_text_form_field.dart';
 import '../../common/widgets/primary_button.dart';
 import '../../locator.dart';
-import '../../repositories/transaction_repository.dart';
-import '../../services/secure_storage.dart';
 import 'transaction_controller.dart';
 import 'transaction_state.dart';
 
@@ -32,10 +30,7 @@ class TransactionPage extends StatefulWidget {
 
 class _TransactionPageState extends State<TransactionPage>
     with SingleTickerProviderStateMixin {
-  final _transactionController = TransactionController(
-    repository: locator.get<TransactionRepository>(),
-    storage: const SecureStorage(),
-  );
+  final _transactionController = locator.get<TransactionController>();
 
   final _formKey = GlobalKey<FormState>();
 
@@ -98,6 +93,7 @@ class _TransactionPageState extends State<TransactionPage>
     _descriptionController.dispose();
     _categoryController.dispose();
     _dateController.dispose();
+    _transactionController.dispose();
     super.dispose();
   }
 
