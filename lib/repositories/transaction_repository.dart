@@ -35,7 +35,8 @@ class TransactionRepositoryImpl implements TransactionRepository {
       final response = await client.query(QueryOptions(
         variables: {
           "category": transaction.category,
-          "date": DateTime.fromMillisecondsSinceEpoch(transaction.date).toString(),
+          "date":
+              DateTime.fromMillisecondsSinceEpoch(transaction.date).toString(),
           "description": transaction.description,
           "status": transaction.status,
           "value": transaction.value,
@@ -43,7 +44,8 @@ class TransactionRepositoryImpl implements TransactionRepository {
         },
         document: gql(mAddNewTransaction),
       ));
-      final parsedData = TransactionModel.fromMap(response.data?["insert_transaction_one"] ?? {});
+      final parsedData = TransactionModel.fromMap(
+          response.data?["insert_transaction_one"] ?? {});
 
       if (parsedData.id != null) {
         return true;
@@ -57,11 +59,13 @@ class TransactionRepositoryImpl implements TransactionRepository {
   @override
   Future<List<TransactionModel>> getAllTransactions() async {
     try {
-      final response = await client.query(QueryOptions(document: gql(qGetAllTransactions)));
+      final response =
+          await client.query(QueryOptions(document: gql(qGetAllTransactions)));
 
       final parsedData = List.from(response.data?['transaction'] ?? []);
 
-      final transactions = parsedData.map((e) => TransactionModel.fromMap(e)).toList();
+      final transactions =
+          parsedData.map((e) => TransactionModel.fromMap(e)).toList();
       return transactions;
     } catch (e) {
       rethrow;
@@ -71,7 +75,8 @@ class TransactionRepositoryImpl implements TransactionRepository {
   @override
   Future<BalancesModel> getBalances() async {
     try {
-      final response = await client.query(QueryOptions(document: gql(qGetBalances)));
+      final response =
+          await client.query(QueryOptions(document: gql(qGetBalances)));
 
       final balances = BalancesModel.fromMap(response.data ?? {});
 
@@ -90,14 +95,16 @@ class TransactionRepositoryImpl implements TransactionRepository {
         variables: {
           "id": transaction.id,
           "category": transaction.category,
-          "date": DateTime.fromMillisecondsSinceEpoch(transaction.date).toString(),
+          "date":
+              DateTime.fromMillisecondsSinceEpoch(transaction.date).toString(),
           "description": transaction.description,
           "status": transaction.status,
           "value": transaction.value,
         },
         document: gql(mUpdateTransaction),
       ));
-      final parsedData = TransactionModel.fromMap(response.data?["update_transaction_by_pk"] ?? {});
+      final parsedData = TransactionModel.fromMap(
+          response.data?["update_transaction_by_pk"] ?? {});
 
       if (parsedData.id != null) {
         return true;
