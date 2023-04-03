@@ -1,5 +1,3 @@
-import 'dart:developer';
-
 import 'package:flutter/material.dart';
 
 import '../../common/constants/app_colors.dart';
@@ -20,19 +18,19 @@ class HomePageView extends StatefulWidget {
 }
 
 class _HomePageViewState extends State<HomePageView> {
-  final pageController = PageController();
+  final homeController = locator.get<HomeController>();
+  final balanceController = locator.get<BalanceCardWidgetController>();
 
   @override
   void initState() {
+    homeController.setPageController = PageController();
     super.initState();
-    pageController.addListener(() {
-      log(pageController.page.toString());
-    });
   }
 
   @override
   void dispose() {
-    pageController.dispose();
+    homeController.dispose();
+    balanceController.dispose();
     super.dispose();
   }
 
@@ -41,7 +39,7 @@ class _HomePageViewState extends State<HomePageView> {
     return Scaffold(
       body: PageView(
         physics: const NeverScrollableScrollPhysics(),
-        controller: pageController,
+        controller: homeController.pageController,
         children: const [
           HomePage(),
           StatsPage(),
@@ -53,21 +51,22 @@ class _HomePageViewState extends State<HomePageView> {
         onPressed: () async {
           final result = await Navigator.pushNamed(context, '/transaction');
           if (result != null) {
-            locator.get<HomeController>().getAllTransactions();
-            locator.get<BalanceCardWidgetController>().getBalances();
+            homeController.getAllTransactions();
+            balanceController.getBalances();
           }
         },
         child: const Icon(Icons.add),
       ),
       floatingActionButtonLocation: FloatingActionButtonLocation.centerDocked,
       bottomNavigationBar: CustomBottomAppBar(
+        controller: homeController.pageController,
         selectedItemColor: AppColors.green,
         children: [
           CustomBottomAppBarItem(
             label: 'home',
             primaryIcon: Icons.home,
             secondaryIcon: Icons.home_outlined,
-            onPressed: () => pageController.jumpToPage(
+            onPressed: () => homeController.pageController.jumpToPage(
               0,
             ),
           ),
@@ -75,7 +74,7 @@ class _HomePageViewState extends State<HomePageView> {
             label: 'stats',
             primaryIcon: Icons.analytics,
             secondaryIcon: Icons.analytics_outlined,
-            onPressed: () => pageController.jumpToPage(
+            onPressed: () => homeController.pageController.jumpToPage(
               1,
             ),
           ),
@@ -84,7 +83,7 @@ class _HomePageViewState extends State<HomePageView> {
             label: 'wallet',
             primaryIcon: Icons.account_balance_wallet,
             secondaryIcon: Icons.account_balance_wallet_outlined,
-            onPressed: () => pageController.jumpToPage(
+            onPressed: () => homeController.pageController.jumpToPage(
               2,
             ),
           ),
@@ -92,7 +91,7 @@ class _HomePageViewState extends State<HomePageView> {
             label: 'profile',
             primaryIcon: Icons.person,
             secondaryIcon: Icons.person_outline,
-            onPressed: () => pageController.jumpToPage(
+            onPressed: () => homeController.pageController.jumpToPage(
               3,
             ),
           ),
