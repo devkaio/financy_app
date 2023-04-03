@@ -20,13 +20,13 @@ class HomePage extends StatefulWidget {
 }
 
 class _HomePageState extends State<HomePage> {
-  final controller = locator.get<HomeController>();
+  final homeController = locator.get<HomeController>();
   final balanceController = locator.get<BalanceCardWidgetController>();
 
   @override
   void initState() {
     super.initState();
-    controller.getAllTransactions();
+    homeController.getAllTransactions();
     balanceController.getBalances();
   }
 
@@ -48,35 +48,40 @@ class _HomePageState extends State<HomePage> {
                   padding: const EdgeInsets.all(8.0),
                   child: Row(
                     mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                    children: const [
-                      Text(
+                    children: [
+                      const Text(
                         'Transaction History',
                         style: AppTextStyles.mediumText18,
                       ),
-                      Text(
-                        'See all',
-                        style: AppTextStyles.inputLabelText,
+                      GestureDetector(
+                        onTap: () {
+                          homeController.pageController.jumpToPage(2);
+                        },
+                        child: const Text(
+                          'See all',
+                          style: AppTextStyles.inputLabelText,
+                        ),
                       ),
                     ],
                   ),
                 ),
                 Expanded(
                   child: AnimatedBuilder(
-                    animation: controller,
+                    animation: homeController,
                     builder: (context, _) {
-                      if (controller.state is HomeStateLoading) {
+                      if (homeController.state is HomeStateLoading) {
                         return const CustomCircularProgressIndicator(
                           color: AppColors.green,
                         );
                       }
-                      if (controller.state is HomeStateError) {
+                      if (homeController.state is HomeStateError) {
                         return const Center(
                           child: Text('An error has occurred'),
                         );
                       }
-                      if (controller.state is HomeStateSuccess) {
+                      if (homeController.state is HomeStateSuccess) {
                         return TransactionListView(
-                          transactionList: controller.transactions,
+                          transactionList: homeController.transactions,
                           itemCount: 5,
                         );
                       }
