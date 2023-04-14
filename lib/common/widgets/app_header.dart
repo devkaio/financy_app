@@ -9,11 +9,13 @@ import 'notification_widget.dart';
 class AppHeader extends StatefulWidget {
   final String? title;
   final bool hasOptions;
+  final VoidCallback? onPressed;
 
   const AppHeader({
     Key? key,
     this.title,
     this.hasOptions = false,
+    this.onPressed,
   }) : super(key: key);
 
   @override
@@ -70,7 +72,7 @@ class _AppHeaderState extends State<AppHeader> {
             left: 8.0.w,
             top: 56.h,
             child: GestureDetector(
-              onTap: () => Navigator.pop(context),
+              onTap: widget.onPressed ?? () => Navigator.pop(context),
               child: const Padding(
                 padding: EdgeInsets.all(16.0),
                 child: Icon(
