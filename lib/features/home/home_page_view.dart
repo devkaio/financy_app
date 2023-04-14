@@ -5,6 +5,7 @@ import '../../common/widgets/custom_bottom_app_bar.dart';
 import '../../locator.dart';
 import '../profile/profile_page.dart';
 import '../stats/stats_page.dart';
+import '../wallet/wallet_controller.dart';
 import '../wallet/wallet_page.dart';
 import 'home_controller.dart';
 import 'home_page.dart';
@@ -20,6 +21,7 @@ class HomePageView extends StatefulWidget {
 class _HomePageViewState extends State<HomePageView> {
   final homeController = locator.get<HomeController>();
   final balanceController = locator.get<BalanceCardWidgetController>();
+  final walletController = locator.get<WalletController>();
 
   @override
   void initState() {
@@ -29,8 +31,9 @@ class _HomePageViewState extends State<HomePageView> {
 
   @override
   void dispose() {
-    homeController.dispose();
-    balanceController.dispose();
+    locator.resetLazySingleton<HomeController>();
+    locator.resetLazySingleton<BalanceCardWidgetController>();
+    locator.resetLazySingleton<WalletController>();
     super.dispose();
   }
 
@@ -51,8 +54,9 @@ class _HomePageViewState extends State<HomePageView> {
         onPressed: () async {
           final result = await Navigator.pushNamed(context, '/transaction');
           if (result != null) {
-            homeController.getAllTransactions();
+            homeController.getLatestTransactions();
             balanceController.getBalances();
+            walletController.getAllTransactions();
           }
         },
         child: const Icon(Icons.add),
