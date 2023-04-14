@@ -6,6 +6,7 @@ import 'features/sign_in/sign_in_controller.dart';
 import 'features/sign_up/sign_up_controller.dart';
 import 'features/splash/splash_controller.dart';
 import 'features/transactions/transaction_controller.dart';
+import 'features/wallet/wallet_controller.dart';
 import 'repositories/transaction_repository.dart';
 import 'services/auth_service.dart';
 import 'services/firebase_auth_service.dart';
@@ -61,6 +62,12 @@ void setupDependencies() {
     () => TransactionController(
       repository: locator.get<TransactionRepository>(),
       storage: const SecureStorage(),
+    ),
+  );
+
+  locator.registerLazySingleton(
+    () => WalletController(
+      repository: locator.get<TransactionRepository>(),
     ),
   );
 }
