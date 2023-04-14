@@ -4,6 +4,7 @@ import '../common/constants/mutations/add_new_transaction.dart';
 import '../common/constants/mutations/update_transaction.dart';
 import '../common/constants/queries/get_all_transactions.dart';
 import '../common/constants/queries/get_balances.dart';
+import '../common/constants/queries/get_latest_transactions.dart';
 import '../common/models/balances_model.dart';
 import '../common/models/transaction_model.dart';
 import '../locator.dart';
@@ -18,7 +19,13 @@ abstract class TransactionRepository {
   Future<bool> updateTransaction(
     TransactionModel transactionModel,
   );
-  Future<List<TransactionModel>> getAllTransactions();
+
+  Future<List<TransactionModel>> getAllTransactions({
+    required int limit,
+    required int offset,
+  });
+
+  Future<List<TransactionModel>> getLatestTransactions();
 
   Future<BalancesModel> getBalances();
 }
@@ -57,10 +64,17 @@ class TransactionRepositoryImpl implements TransactionRepository {
   }
 
   @override
-  Future<List<TransactionModel>> getAllTransactions() async {
+  Future<List<TransactionModel>> getAllTransactions({
+    required int limit,
+    required int offset,
+  }) async {
     try {
-      final response =
-          await client.query(QueryOptions(document: gql(qGetAllTransactions)));
+      final response = await client.query(
+        QueryOptions(document: gql(qGetAllTransactions), variables: {
+          'limit': limit,
+          'offset': offset,
+        }),
+      );
 
       final parsedData = List.from(response.data?['transaction'] ?? []);
 
@@ -110,6 +124,22 @@ class TransactionRepositoryImpl implements TransactionRepository {
         return true;
       }
       throw Exception(response.exception);
+    } catch (e) {
+      rethrow;
+    }
+  }
+
+  @override
+  Future<List<TransactionModel>> getLatestTransactions() async {
+    try {
+      final response = await client
+          .query(QueryOptions(document: gql(qGetLatestTransactions)));
+
+      final parsedData = List.from(response.data?['transaction'] ?? []);
+
+      final transactions =
+          parsedData.map((e) => TransactionModel.fromMap(e)).toList();
+      return transactions;
     } catch (e) {
       rethrow;
     }
