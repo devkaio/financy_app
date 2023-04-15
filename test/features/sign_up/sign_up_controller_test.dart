@@ -19,7 +19,7 @@ void main() {
 
     signUpController = SignUpController(
       authService: mockFirebaseAuthService,
-      secureStorage: mockSecureStorage,
+      secureStorageService: mockSecureStorage,
       graphQLService: mockGraphQLService,
     );
 

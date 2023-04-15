@@ -16,7 +16,7 @@ void main() {
     secureStorage = MockSecureStorage();
     mockGraphQLService = MockGraphQLService();
     splashController = SplashController(
-      secureStorage: secureStorage,
+      secureStorageService: secureStorage,
       graphQLService: mockGraphQLService,
     );
     user = UserModel(

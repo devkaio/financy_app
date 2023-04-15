@@ -5,11 +5,11 @@ import '../../repositories/transaction_repository.dart';
 import 'wallet_state.dart';
 
 class WalletController extends ChangeNotifier {
-  final TransactionRepository repository;
-
   WalletController({
-    required this.repository,
+    required this.transactionRepository,
   });
+
+  final TransactionRepository transactionRepository;
 
   WalletState _state = WalletStateInitial();
 
@@ -38,7 +38,7 @@ class WalletController extends ChangeNotifier {
     try {
       if (transactions.isNotEmpty) transactions.clear();
 
-      _transactions = await repository.getAllTransactions(
+      _transactions = await transactionRepository.getAllTransactions(
         limit: _limit,
         offset: _offset,
       );
@@ -54,7 +54,7 @@ class WalletController extends ChangeNotifier {
   void get fetchMore async {
     try {
       if (isLoading) {
-        final result = await repository.getAllTransactions(
+        final result = await transactionRepository.getAllTransactions(
           limit: _limit,
           offset: _offset,
         );

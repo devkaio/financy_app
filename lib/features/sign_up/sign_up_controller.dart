@@ -6,15 +6,15 @@ import '../../services/secure_storage.dart';
 import 'sign_up_state.dart';
 
 class SignUpController extends ChangeNotifier {
-  final AuthService authService;
-  final SecureStorage secureStorage;
-  final GraphQLService graphQLService;
-
   SignUpController({
     required this.authService,
-    required this.secureStorage,
+    required this.secureStorageService,
     required this.graphQLService,
   });
+
+  final AuthService authService;
+  final SecureStorageService secureStorageService;
+  final GraphQLService graphQLService;
 
   SignUpState _state = SignUpStateInitial();
 
@@ -39,7 +39,7 @@ class SignUpController extends ChangeNotifier {
         password: password,
       );
       if (user.id != null) {
-        await secureStorage.write(
+        await secureStorageService.write(
           key: "CURRENT_USER",
           value: user.toJson(),
         );

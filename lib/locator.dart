@@ -25,7 +25,7 @@ void setupDependencies() {
 
   locator.registerFactory<SplashController>(
     () => SplashController(
-      secureStorage: const SecureStorage(),
+      secureStorageService: const SecureStorageService(),
       graphQLService: locator.get<GraphQLService>(),
     ),
   );
@@ -33,7 +33,7 @@ void setupDependencies() {
   locator.registerFactory<SignInController>(
     () => SignInController(
       authService: locator.get<AuthService>(),
-      secureStorage: const SecureStorage(),
+      secureStorageService: const SecureStorageService(),
       graphQLService: locator.get<GraphQLService>(),
     ),
   );
@@ -41,7 +41,7 @@ void setupDependencies() {
   locator.registerFactory<SignUpController>(
     () => SignUpController(
       authService: locator.get<AuthService>(),
-      secureStorage: const SecureStorage(),
+      secureStorageService: const SecureStorageService(),
       graphQLService: locator.get<GraphQLService>(),
     ),
   );
@@ -49,8 +49,8 @@ void setupDependencies() {
   locator.registerFactory<TransactionRepository>(
       () => TransactionRepositoryImpl());
 
-  locator.registerLazySingleton<HomeController>(
-      () => HomeController(locator.get<TransactionRepository>()));
+  locator.registerLazySingleton<HomeController>(() => HomeController(
+      transactionRepository: locator.get<TransactionRepository>()));
 
   locator.registerLazySingleton<BalanceCardWidgetController>(
     () => BalanceCardWidgetController(
@@ -60,14 +60,14 @@ void setupDependencies() {
 
   locator.registerFactory<TransactionController>(
     () => TransactionController(
-      repository: locator.get<TransactionRepository>(),
-      storage: const SecureStorage(),
+      transactionRepository: locator.get<TransactionRepository>(),
+      storage: const SecureStorageService(),
     ),
   );
 
   locator.registerLazySingleton(
     () => WalletController(
-      repository: locator.get<TransactionRepository>(),
+      transactionRepository: locator.get<TransactionRepository>(),
     ),
   );
 }

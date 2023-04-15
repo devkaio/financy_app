@@ -6,7 +6,7 @@ import 'package:mocktail/mocktail.dart';
 
 class MockFirebaseAuthService extends Mock implements AuthService {}
 
-class MockSecureStorage extends Mock implements SecureStorage {}
+class MockSecureStorage extends Mock implements SecureStorageService {}
 
 class MockGraphQLService extends Mock implements GraphQLService {}
 
