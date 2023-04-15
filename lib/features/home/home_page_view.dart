@@ -20,8 +20,6 @@ class HomePageView extends StatefulWidget {
 
 class _HomePageViewState extends State<HomePageView> {
   final homeController = locator.get<HomeController>();
-  final balanceController = locator.get<BalanceCardWidgetController>();
-  final walletController = locator.get<WalletController>();
 
   @override
   void initState() {
@@ -55,8 +53,8 @@ class _HomePageViewState extends State<HomePageView> {
           final result = await Navigator.pushNamed(context, '/transaction');
           if (result != null) {
             homeController.getLatestTransactions();
-            balanceController.getBalances();
-            walletController.getAllTransactions();
+            locator.get<BalanceCardWidgetController>().getBalances();
+            locator.get<WalletController>().getAllTransactions();
           }
         },
         child: const Icon(Icons.add),
