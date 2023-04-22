@@ -7,8 +7,7 @@ import '../common/constants/queries/get_balances.dart';
 import '../common/constants/queries/get_latest_transactions.dart';
 import '../common/models/balances_model.dart';
 import '../common/models/transaction_model.dart';
-import '../locator.dart';
-import '../services/graphql_service.dart';
+import '../services/api_service.dart';
 
 abstract class TransactionRepository {
   Future<bool> addTransaction(
@@ -31,7 +30,11 @@ abstract class TransactionRepository {
 }
 
 class TransactionRepositoryImpl implements TransactionRepository {
-  final client = locator.get<GraphQLService>().client;
+  const TransactionRepositoryImpl({
+    required this.graphqlService,
+  });
+
+  final ApiService<GraphQLClient, QueryResult> graphqlService;
 
   @override
   Future<bool> addTransaction(
@@ -39,8 +42,9 @@ class TransactionRepositoryImpl implements TransactionRepository {
     String userId,
   ) async {
     try {
-      final response = await client.query(QueryOptions(
-        variables: {
+      final response = await graphqlService.create(
+        path: mAddNewTransaction,
+        params: {
           "category": transaction.category,
           "date":
               DateTime.fromMillisecondsSinceEpoch(transaction.date).toString(),
@@ -49,8 +53,8 @@ class TransactionRepositoryImpl implements TransactionRepository {
           "value": transaction.value,
           "user_id": userId,
         },
-        document: gql(mAddNewTransaction),
-      ));
+      );
+
       final parsedData = TransactionModel.fromMap(
           response.data?["insert_transaction_one"] ?? {});
 
@@ -69,11 +73,12 @@ class TransactionRepositoryImpl implements TransactionRepository {
     required int offset,
   }) async {
     try {
-      final response = await client.query(
-        QueryOptions(document: gql(qGetAllTransactions), variables: {
+      final response = await graphqlService.read(
+        path: qGetAllTransactions,
+        params: {
           'limit': limit,
           'offset': offset,
-        }),
+        },
       );
 
       final parsedData = List.from(response.data?['transaction'] ?? []);
@@ -89,8 +94,7 @@ class TransactionRepositoryImpl implements TransactionRepository {
   @override
   Future<BalancesModel> getBalances() async {
     try {
-      final response =
-          await client.query(QueryOptions(document: gql(qGetBalances)));
+      final response = await graphqlService.read(path: qGetBalances);
 
       final balances = BalancesModel.fromMap(response.data ?? {});
 
@@ -105,8 +109,9 @@ class TransactionRepositoryImpl implements TransactionRepository {
     TransactionModel transaction,
   ) async {
     try {
-      final response = await client.query(QueryOptions(
-        variables: {
+      final response = await graphqlService.update(
+        path: mUpdateTransaction,
+        params: {
           "id": transaction.id,
           "category": transaction.category,
           "date":
@@ -115,15 +120,15 @@ class TransactionRepositoryImpl implements TransactionRepository {
           "status": transaction.status,
           "value": transaction.value,
         },
-        document: gql(mUpdateTransaction),
-      ));
+      );
       final parsedData = TransactionModel.fromMap(
           response.data?["update_transaction_by_pk"] ?? {});
 
       if (parsedData.id != null) {
         return true;
+      } else {
+        return false;
       }
-      throw Exception(response.exception);
     } catch (e) {
       rethrow;
     }
@@ -132,8 +137,9 @@ class TransactionRepositoryImpl implements TransactionRepository {
   @override
   Future<List<TransactionModel>> getLatestTransactions() async {
     try {
-      final response = await client
-          .query(QueryOptions(document: gql(qGetLatestTransactions)));
+      final response = await graphqlService.read(
+        path: qGetLatestTransactions,
+      );
 
       final parsedData = List.from(response.data?['transaction'] ?? []);
 
