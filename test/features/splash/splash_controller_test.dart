@@ -17,7 +17,6 @@ void main() {
     mockGraphQLService = MockGraphQLService();
     splashController = SplashController(
       secureStorageService: secureStorage,
-      graphQLService: mockGraphQLService,
     );
     user = UserModel(
       name: 'User',
@@ -41,7 +40,8 @@ void main() {
       when(() => secureStorage.readOne(key: 'CURRENT_USER'))
           .thenAnswer((_) async => user.toJson());
 
-      when(() => mockGraphQLService.init()).thenAnswer((_) async => {});
+      when(() => mockGraphQLService.init())
+          .thenAnswer((_) async => mockGraphQLService);
 
       expect(splashController.state, isInstanceOf<SplashStateInitial>());
 

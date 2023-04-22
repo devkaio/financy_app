@@ -26,7 +26,6 @@ void setupDependencies() {
   locator.registerFactory<SplashController>(
     () => SplashController(
       secureStorageService: const SecureStorageService(),
-      graphQLService: locator.get<GraphQLService>(),
     ),
   );
 
@@ -34,7 +33,6 @@ void setupDependencies() {
     () => SignInController(
       authService: locator.get<AuthService>(),
       secureStorageService: const SecureStorageService(),
-      graphQLService: locator.get<GraphQLService>(),
     ),
   );
 
@@ -42,12 +40,11 @@ void setupDependencies() {
     () => SignUpController(
       authService: locator.get<AuthService>(),
       secureStorageService: const SecureStorageService(),
-      graphQLService: locator.get<GraphQLService>(),
     ),
   );
 
-  locator.registerFactory<TransactionRepository>(
-      () => TransactionRepositoryImpl());
+  locator.registerFactory<TransactionRepository>(() =>
+      TransactionRepositoryImpl(graphqlService: locator.get<GraphQLService>()));
 
   locator.registerLazySingleton<HomeController>(() => HomeController(
       transactionRepository: locator.get<TransactionRepository>()));
