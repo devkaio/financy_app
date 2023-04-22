@@ -8,7 +8,6 @@ enum SnackBarType { success, warning, error, general }
 void showCustomSnackBar({
   required BuildContext context,
   required String text,
-  Color? backgroundColor,
   SnackBarType type = SnackBarType.general,
 }) {
   Color setColor() {
