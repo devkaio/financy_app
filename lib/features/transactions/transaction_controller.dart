@@ -40,12 +40,13 @@ class TransactionController extends ChangeNotifier {
         throw Exception('error');
       }
     } catch (e) {
-      _changeState(TransactionStateError());
+      _changeState(TransactionStateError(message: e.toString()));
     }
   }
 
   Future<void> updateTransaction(TransactionModel transaction) async {
     _changeState(TransactionStateLoading());
+    await Future.delayed(const Duration(seconds: 2));
     try {
       final result = await transactionRepository.updateTransaction(transaction);
 
@@ -55,7 +56,7 @@ class TransactionController extends ChangeNotifier {
         throw Exception('error');
       }
     } catch (e) {
-      _changeState(TransactionStateError());
+      _changeState(TransactionStateError(message: e.toString()));
     }
   }
 }

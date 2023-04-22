@@ -11,6 +11,7 @@ import '../../common/models/transaction_model.dart';
 import '../../common/utils/money_mask_controller.dart';
 import '../../common/widgets/app_header.dart';
 import '../../common/widgets/custom_circular_progress_indicator.dart';
+import '../../common/widgets/custom_snackbar.dart';
 import '../../common/widgets/custom_text_form_field.dart';
 import '../../common/widgets/primary_button.dart';
 import '../../locator.dart';
@@ -93,6 +94,14 @@ class _TransactionPageState extends State<TransactionPage>
       }
       if (_transactionController.state is TransactionStateSuccess) {
         Navigator.of(context).pop();
+      }
+      if (_transactionController.state is TransactionStateError) {
+        final error = _transactionController.state as TransactionStateError;
+        showCustomSnackBar(
+          context: context,
+          text: error.message,
+          type: SnackBarType.error,
+        );
       }
     });
   }
