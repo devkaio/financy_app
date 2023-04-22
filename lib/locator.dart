@@ -20,8 +20,8 @@ void setupDependencies() {
     () => FirebaseAuthService(),
   );
 
-  locator.registerLazySingleton<GraphQLService>(
-      () => GraphQLService(authService: locator.get<AuthService>()));
+  locator.registerSingletonAsync<GraphQLService>(() async =>
+      GraphQLService(authService: locator.get<AuthService>()).init());
 
   locator.registerFactory<SplashController>(
     () => SplashController(
