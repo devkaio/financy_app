@@ -30,7 +30,7 @@ class TransactionPage extends StatefulWidget {
 }
 
 class _TransactionPageState extends State<TransactionPage>
-    with SingleTickerProviderStateMixin {
+    with SingleTickerProviderStateMixin, CustomSnackBar {
   final _transactionController = locator.get<TransactionController>();
 
   final _formKey = GlobalKey<FormState>();
@@ -316,6 +316,9 @@ class _TransactionPageState extends State<TransactionPage>
                                   .replaceAll('\$', '')
                                   .replaceAll('.', '')
                                   .replaceAll(',', '.'));
+
+                              final now = DateTime.now().millisecondsSinceEpoch;
+
                               final newTransaction = TransactionModel(
                                 category: _categoryController.text,
                                 description: _descriptionController.text,
@@ -324,7 +327,8 @@ class _TransactionPageState extends State<TransactionPage>
                                     : newValue,
                                 date: _newDate != null
                                     ? _newDate!.millisecondsSinceEpoch
-                                    : DateTime.now().millisecondsSinceEpoch,
+                                    : now,
+                                createdAt: widget.transaction?.createdAt ?? now,
                                 status: value,
                                 id: widget.transaction?.id,
                               );

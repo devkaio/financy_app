@@ -25,7 +25,7 @@ class SignUpPage extends StatefulWidget {
   State<SignUpPage> createState() => _SignUpPageState();
 }
 
-class _SignUpPageState extends State<SignUpPage> {
+class _SignUpPageState extends State<SignUpPage> with CustomModalSheetMixin {
   final _formKey = GlobalKey<FormState>();
   final _nameController = TextEditingController();
   final _emailController = TextEditingController();
@@ -64,8 +64,8 @@ class _SignUpPageState extends State<SignUpPage> {
         if (_controller.state is SignUpStateError) {
           final error = _controller.state as SignUpStateError;
           Navigator.pop(context);
-          customModalBottomSheet(
-            context,
+          showCustomModalBottomSheet(
+            context: context,
             content: error.message,
             buttonText: "Tentar novamente",
           );

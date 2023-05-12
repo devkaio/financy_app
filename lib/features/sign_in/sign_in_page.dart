@@ -24,7 +24,7 @@ class SignInPage extends StatefulWidget {
   State<SignInPage> createState() => _SignInPageState();
 }
 
-class _SignInPageState extends State<SignInPage> {
+class _SignInPageState extends State<SignInPage> with CustomModalSheetMixin {
   final _formKey = GlobalKey<FormState>();
   final _emailController = TextEditingController();
   final _passwordController = TextEditingController();
@@ -60,8 +60,8 @@ class _SignInPageState extends State<SignInPage> {
         if (_controller.state is SignInStateError) {
           final error = _controller.state as SignInStateError;
           Navigator.pop(context);
-          customModalBottomSheet(
-            context,
+          showCustomModalBottomSheet(
+            context: context,
             content: error.message,
             buttonText: "Tentar novamente",
           );
