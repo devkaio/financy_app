@@ -1,29 +1,37 @@
 import 'dart:convert';
 
+import 'package:financy_app/common/extensions/date_formatter.dart';
+import 'package:uuid/uuid.dart';
+
 class TransactionModel {
-  final String description;
-  final String category;
-  final double value;
-  final int date;
-  final bool status;
-  final String? id;
   TransactionModel({
     required this.category,
     required this.description,
     required this.value,
     required this.date,
     required this.status,
+    required this.createdAt,
     this.id,
   });
+
+  final String description;
+  final String category;
+  final double value;
+  final int date;
+  final bool status;
+  final int createdAt;
+  final String? id;
 
   Map<String, dynamic> toMap() {
     return <String, dynamic>{
       'description': description,
       'category': category,
       'value': value,
-      'date': date,
+      'date': DateTime.fromMillisecondsSinceEpoch(date).formatISOTime,
+      'created_at':
+          DateTime.fromMillisecondsSinceEpoch(createdAt).formatISOTime,
       'status': status,
-      'id': id,
+      'id': id ?? const Uuid().v4(),
     };
   }
 
@@ -33,6 +41,8 @@ class TransactionModel {
       category: map['category'] as String,
       value: double.tryParse(map['value'].toString()) ?? 0,
       date: DateTime.parse(map['date'] as String).millisecondsSinceEpoch,
+      createdAt:
+          DateTime.parse(map['created_at'] as String).millisecondsSinceEpoch,
       status: map['status'] as bool,
       id: map['id'] as String?,
     );
