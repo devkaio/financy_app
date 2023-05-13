@@ -1,3 +1,4 @@
+import 'package:financy_app/common/widgets/transaction_listview/transaction_listview_controller.dart';
 import 'package:get_it/get_it.dart';
 
 import 'features/home/home_controller.dart';
@@ -67,4 +68,9 @@ void setupDependencies() {
       transactionRepository: locator.get<TransactionRepository>(),
     ),
   );
+
+  locator.registerFactory<TransactionListViewController>(
+      () => TransactionListViewController(
+            transactionRepository: locator.get<TransactionRepository>(),
+          ));
 }
