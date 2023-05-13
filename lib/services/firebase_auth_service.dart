@@ -86,10 +86,10 @@ class FirebaseAuthService implements AuthService {
       if (token != null) {
         return token;
       } else {
-        throw Exception('user not found');
+        return '';
       }
     } catch (e) {
-      rethrow;
+      return '';
     }
   }
 }
