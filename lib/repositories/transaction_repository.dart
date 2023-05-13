@@ -1,4 +1,6 @@
 import 'package:financy_app/common/constants/mutations/delete_transaction.dart';
+import 'package:financy_app/data/data_result.dart';
+import 'package:financy_app/data/exceptions.dart';
 import 'package:graphql_flutter/graphql_flutter.dart';
 
 import '../common/constants/mutations/add_new_transaction.dart';
@@ -22,7 +24,7 @@ abstract class TransactionRepository {
     int? offset,
   });
 
-  Future<bool> deleteTransaction(String id);
+  Future<DataResult<bool>> deleteTransaction(String id);
 
   Future<BalancesModel> getBalances();
 }
@@ -121,18 +123,29 @@ class TransactionRepositoryImpl implements TransactionRepository {
   }
 
   @override
-  Future<bool> deleteTransaction(String id) async {
+  Future<DataResult<bool>> deleteTransaction(String id) async {
     try {
       final response = await graphqlService.delete(
         path: mDeleteTransaction,
         params: {'id': id},
       );
       if (response.data == null || response.hasException) {
-        throw Exception();
+        return DataResult.success(false);
+      } else {
+        return DataResult.success(true);
       }
-      return true;
+    } on ServerException {
+      return DataResult.failure(
+          const ConnectionException(code: 'connection-error'));
+    } on GraphQLError catch (e) {
+      return DataResult.failure(
+        APIException(
+          code: 0,
+          textCode: e.extensions?['code'],
+        ),
+      );
     } catch (e) {
-      rethrow;
+      return DataResult.failure(const GeneralException());
     }
   }
 }

@@ -23,11 +23,10 @@ class TransactionListViewController extends ChangeNotifier {
     _changeState(TransactionListViewStateLoading());
     final result =
         await transactionRepository.deleteTransaction(transaction.id!);
-    if (result) {
-      _changeState(TransactionListViewStateSuccess());
-    } else {
-      _changeState(TransactionListViewStateError(
-          'It was not possible to delete transaction at this moment. Try again later.'));
-    }
+
+    result.fold(
+      (error) => _changeState(TransactionListViewStateError(error.message)),
+      (data) => _changeState(TransactionListViewStateSuccess()),
+    );
   }
 }

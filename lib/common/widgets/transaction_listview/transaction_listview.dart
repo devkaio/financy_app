@@ -61,6 +61,7 @@ class _TransactionListViewState extends State<TransactionListView>
           showCustomSnackBar(
             context: context,
             text: state.message,
+            type: SnackBarType.error,
           );
         });
       }
@@ -99,6 +100,7 @@ class _TransactionListViewState extends State<TransactionListView>
 
               return Dismissible(
                 key: UniqueKey(),
+                direction: DismissDirection.endToStart,
                 dismissThresholds: const {DismissDirection.endToStart: 0.5},
                 background: Container(
                   color: Colors.red,
@@ -109,7 +111,6 @@ class _TransactionListViewState extends State<TransactionListView>
                     color: Colors.white,
                   ),
                 ),
-                direction: DismissDirection.endToStart,
                 onDismissed: (direction) {
                   if (confirmDelete!) {
                     _transactionListViewController.deleteTransaction(item);
