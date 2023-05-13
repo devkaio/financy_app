@@ -38,7 +38,7 @@ class WalletController extends ChangeNotifier {
     try {
       if (transactions.isNotEmpty) transactions.clear();
 
-      _transactions = await transactionRepository.getAllTransactions(
+      _transactions = await transactionRepository.getTransactions(
         limit: _limit,
         offset: _offset,
       );
@@ -54,7 +54,7 @@ class WalletController extends ChangeNotifier {
   void get fetchMore async {
     try {
       if (isLoading) {
-        final result = await transactionRepository.getAllTransactions(
+        final result = await transactionRepository.getTransactions(
           limit: _limit,
           offset: _offset,
         );
