@@ -5,7 +5,7 @@ import '../../common/constants/app_text_styles.dart';
 import '../../common/extensions/sizes.dart';
 import '../../common/widgets/app_header.dart';
 import '../../common/widgets/custom_circular_progress_indicator.dart';
-import '../../common/widgets/transaction_listview.dart';
+import '../../common/widgets/transaction_listview/transaction_listview.dart';
 import '../../locator.dart';
 import 'home_controller.dart';
 import 'home_state.dart';
@@ -83,7 +83,7 @@ class _HomePageState extends State<HomePage> {
                           homeController.transactions.isNotEmpty) {
                         return TransactionListView(
                           transactionList: homeController.transactions,
-                          itemCount: 5,
+                          itemCount: homeController.transactions.length,
                         );
                       }
                       return const Center(
