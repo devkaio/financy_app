@@ -6,4 +6,8 @@ class WalletStateLoading extends WalletState {}
 
 class WalletStateSuccess extends WalletState {}
 
-class WalletStateError extends WalletState {}
+class WalletStateError extends WalletState {
+  WalletStateError({required this.message});
+
+  final String message;
+}
