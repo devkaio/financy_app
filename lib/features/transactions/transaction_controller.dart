@@ -26,37 +26,27 @@ class TransactionController extends ChangeNotifier {
 
   Future<void> addTransaction(TransactionModel transaction) async {
     _changeState(TransactionStateLoading());
-    try {
-      final data = await storage.readOne(key: 'CURRENT_USER');
-      final user = UserModel.fromJson(data ?? '');
-      final result = await transactionRepository.addTransaction(
-        transaction,
-        user.id!,
-      );
 
-      if (result) {
-        _changeState(TransactionStateSuccess());
-      } else {
-        throw Exception('error');
-      }
-    } catch (e) {
-      _changeState(TransactionStateError(message: e.toString()));
-    }
+    final data = await storage.readOne(key: 'CURRENT_USER');
+    final user = UserModel.fromJson(data ?? '');
+    final result = await transactionRepository.addTransaction(
+      transaction,
+      user.id!,
+    );
+
+    result.fold(
+      (error) => _changeState(TransactionStateError(message: error.message)),
+      (data) => _changeState(TransactionStateSuccess()),
+    );
   }
 
   Future<void> updateTransaction(TransactionModel transaction) async {
     _changeState(TransactionStateLoading());
-    await Future.delayed(const Duration(seconds: 2));
-    try {
-      final result = await transactionRepository.updateTransaction(transaction);
+    final result = await transactionRepository.updateTransaction(transaction);
 
-      if (result) {
-        _changeState(TransactionStateSuccess());
-      } else {
-        throw Exception('error');
-      }
-    } catch (e) {
-      _changeState(TransactionStateError(message: e.toString()));
-    }
+    result.fold(
+      (error) => _changeState(TransactionStateError(message: error.message)),
+      (data) => _changeState(TransactionStateSuccess()),
+    );
   }
 }

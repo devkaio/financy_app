@@ -29,11 +29,16 @@ class BalanceCardWidgetController extends ChangeNotifier {
 
   Future<void> getBalances() async {
     _changeState(BalanceCardWidgetStateLoading());
-    try {
-      _balances = await transactionRepository.getBalances();
-      _changeState(BalanceCardWidgetStateSuccess());
-    } catch (e) {
-      _changeState(BalanceCardWidgetStateError());
-    }
+
+    final result = await transactionRepository.getBalances();
+
+    result.fold(
+      (error) => _changeState(BalanceCardWidgetStateError()),
+      (data) {
+        _balances = data;
+
+        _changeState(BalanceCardWidgetStateSuccess());
+      },
+    );
   }
 }

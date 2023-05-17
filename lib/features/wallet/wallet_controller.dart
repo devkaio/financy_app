@@ -35,38 +35,46 @@ class WalletController extends ChangeNotifier {
   Future<void> getAllTransactions() async {
     _changeState(WalletStateLoading());
 
-    try {
-      if (transactions.isNotEmpty) transactions.clear();
+    if (transactions.isNotEmpty) transactions.clear();
 
-      _transactions = await transactionRepository.getTransactions(
-        limit: _limit,
-        offset: _offset,
-      );
-      if (_offset >= _limit) {
-        _isLoading = true;
-      }
-      _changeState(WalletStateSuccess());
-    } catch (e) {
-      _changeState(WalletStateError());
+    final result = await transactionRepository.getTransactions(
+      limit: _limit,
+      offset: _offset,
+    );
+
+    result.fold(
+      (error) => _changeState(WalletStateError(message: error.message)),
+      (data) {
+        _transactions = data;
+
+        _changeState(WalletStateSuccess());
+      },
+    );
+
+    if (_offset >= _limit) {
+      _isLoading = true;
     }
   }
 
   void get fetchMore async {
-    try {
-      if (isLoading) {
-        final result = await transactionRepository.getTransactions(
-          limit: _limit,
-          offset: _offset,
-        );
-        if (result.isNotEmpty) {
-          _transactions.addAll(result);
-        } else {
-          _isLoading = false;
-        }
-      }
-      _changeState(WalletStateSuccess());
-    } catch (e) {
-      _changeState(WalletStateError());
+    if (isLoading) {
+      final result = await transactionRepository.getTransactions(
+        limit: _limit,
+        offset: _offset,
+      );
+
+      result.fold(
+        (error) => _changeState(WalletStateError(message: error.message)),
+        (data) {
+          if (data.isNotEmpty) {
+            _transactions.addAll(data);
+          } else {
+            _isLoading = false;
+          }
+
+          _changeState(WalletStateSuccess());
+        },
+      );
     }
   }
 }
