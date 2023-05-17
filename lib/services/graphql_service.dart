@@ -21,10 +21,12 @@ class GraphQLService implements ApiService<GraphQLClient, QueryResult> {
       'https://concrete-pangolin-58.hasura.app/v1/graphql',
     );
 
+    final AuthLink authLink = AuthLink(
+      getToken: () async {
     final result = await authService.userToken();
 
-    final AuthLink authLink = AuthLink(
-      getToken: () async => 'Bearer ${result.data}',
+        return 'Bearer ${result.data}';
+      },
     );
 
     final Link link = authLink.concat(httpLink);
