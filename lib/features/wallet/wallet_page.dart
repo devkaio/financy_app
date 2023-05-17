@@ -1,7 +1,9 @@
+import 'package:financy_app/common/widgets/custom_bottom_sheet.dart';
 import 'package:flutter/material.dart';
 
 import '../../common/constants/app_colors.dart';
 import '../../common/constants/app_text_styles.dart';
+import '../../common/constants/routes.dart';
 import '../../common/extensions/sizes.dart';
 import '../../common/widgets/app_header.dart';
 import '../../common/widgets/base_page.dart';
@@ -22,7 +24,7 @@ class WalletPage extends StatefulWidget {
 }
 
 class _WalletPageState extends State<WalletPage>
-    with SingleTickerProviderStateMixin {
+    with SingleTickerProviderStateMixin, CustomModalSheetMixin {
   final walletController = locator.get<WalletController>();
   final ballanceController = locator.get<BalanceCardWidgetController>();
   late final TabController _tabController;
@@ -36,11 +38,28 @@ class _WalletPageState extends State<WalletPage>
     );
     walletController.getAllTransactions();
     ballanceController.getBalances();
+
+    walletController.addListener(() {
+      if (walletController.state is WalletStateError) {
+        showCustomModalBottomSheet(
+          context: context,
+          content: (walletController.state as WalletStateError).message,
+          buttonText: 'Go to login',
+          isDismissible: false,
+          onPressed: () => Navigator.pushNamedAndRemoveUntil(
+            context,
+            NamedRoute.signIn,
+            ModalRoute.withName(NamedRoute.initial),
+          ),
+        );
+      }
+    });
   }
 
   @override
   void dispose() {
     locator.resetLazySingleton<WalletController>();
+    locator.resetLazySingleton<BalanceCardWidgetController>();
     super.dispose();
   }
 
