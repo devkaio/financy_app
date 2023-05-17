@@ -21,8 +21,11 @@ void setupDependencies() {
     () => FirebaseAuthService(),
   );
 
-  locator.registerSingletonAsync<GraphQLService>(() async =>
-      GraphQLService(authService: locator.get<AuthService>()).init());
+  locator.registerSingletonAsync<GraphQLService>(
+    () async => GraphQLService(
+      authService: locator.get<AuthService>(),
+    ).init(),
+  );
 
   locator.registerFactory<SplashController>(
     () => SplashController(
@@ -44,11 +47,17 @@ void setupDependencies() {
     ),
   );
 
-  locator.registerFactory<TransactionRepository>(() =>
-      TransactionRepositoryImpl(graphqlService: locator.get<GraphQLService>()));
+  locator.registerFactory<TransactionRepository>(
+    () => TransactionRepositoryImpl(
+      graphqlService: locator.get<GraphQLService>(),
+    ),
+  );
 
-  locator.registerLazySingleton<HomeController>(() => HomeController(
-      transactionRepository: locator.get<TransactionRepository>()));
+  locator.registerLazySingleton<HomeController>(
+    () => HomeController(
+      transactionRepository: locator.get<TransactionRepository>(),
+    ),
+  );
 
   locator.registerLazySingleton<BalanceCardWidgetController>(
     () => BalanceCardWidgetController(
@@ -70,7 +79,8 @@ void setupDependencies() {
   );
 
   locator.registerFactory<TransactionListViewController>(
-      () => TransactionListViewController(
-            transactionRepository: locator.get<TransactionRepository>(),
-          ));
+    () => TransactionListViewController(
+      transactionRepository: locator.get<TransactionRepository>(),
+    ),
+  );
 }
