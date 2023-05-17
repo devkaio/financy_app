@@ -1,4 +1,6 @@
 import 'package:cloud_functions/cloud_functions.dart';
+import 'package:financy_app/data/data_result.dart';
+import 'package:financy_app/data/exceptions.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 
 import '../common/models/user_model.dart';
@@ -9,7 +11,7 @@ class FirebaseAuthService implements AuthService {
   final _functions = FirebaseFunctions.instance;
 
   @override
-  Future<UserModel> signIn({
+  Future<DataResult<UserModel>> signIn({
     required String email,
     required String password,
   }) async {
@@ -18,24 +20,25 @@ class FirebaseAuthService implements AuthService {
         email: email,
         password: password,
       );
+
       if (result.user != null) {
-        return UserModel(
+        return DataResult.success(UserModel(
           name: _auth.currentUser?.displayName,
           email: _auth.currentUser?.email,
           id: _auth.currentUser?.uid,
-        );
-      } else {
-        throw Exception();
+        ));
       }
+
+      return DataResult.failure(const GeneralException());
     } on FirebaseAuthException catch (e) {
-      throw e.message ?? "null";
+      return DataResult.failure(AuthException(code: e.code));
     } catch (e) {
-      rethrow;
+      return DataResult.failure(const AuthException(code: 'error'));
     }
   }
 
   @override
-  Future<UserModel> signUp({
+  Future<DataResult<UserModel>> signUp({
     String? name,
     required String email,
     required String password,
@@ -53,20 +56,22 @@ class FirebaseAuthService implements AuthService {
       );
 
       if (result.user != null) {
-        return UserModel(
-          name: _auth.currentUser?.displayName,
-          email: _auth.currentUser?.email,
-          id: _auth.currentUser?.uid,
+        return DataResult.success(
+          UserModel(
+            name: _auth.currentUser?.displayName,
+            email: _auth.currentUser?.email,
+            id: _auth.currentUser?.uid,
+          ),
         );
-      } else {
-        throw Exception();
       }
+
+      return DataResult.failure(const GeneralException());
     } on FirebaseAuthException catch (e) {
-      throw e.message ?? "null";
+      return DataResult.failure(AuthException(code: e.code));
     } on FirebaseFunctionsException catch (e) {
-      throw e.message ?? "null";
+      return DataResult.failure(AuthException(code: e.code));
     } catch (e) {
-      rethrow;
+      return DataResult.failure(const AuthException(code: 'error'));
     }
   }
 
@@ -80,16 +85,13 @@ class FirebaseAuthService implements AuthService {
   }
 
   @override
-  Future<String> get userToken async {
+  Future<DataResult<String>> userToken() async {
     try {
       final token = await _auth.currentUser?.getIdToken();
-      if (token != null) {
-        return token;
-      } else {
-        return '';
-      }
+
+      return DataResult.success(token ?? '');
     } catch (e) {
-      return '';
+      return DataResult.success('');
     }
   }
 }

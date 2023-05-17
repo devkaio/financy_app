@@ -1,18 +1,20 @@
+import 'package:financy_app/data/data_result.dart';
+
 import '../common/models/user_model.dart';
 
 abstract class AuthService {
-  Future<UserModel> signUp({
+  Future<DataResult<UserModel>> signUp({
     String? name,
     required String email,
     required String password,
   });
 
-  Future<UserModel> signIn({
+  Future<DataResult<UserModel>> signIn({
     required String email,
     required String password,
   });
 
   Future<void> signOut();
 
-  Future<String> get userToken;
+  Future<DataResult<String>> userToken();
 }
