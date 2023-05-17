@@ -12,21 +12,21 @@ import '../common/models/transaction_model.dart';
 import '../services/api_service.dart';
 
 abstract class TransactionRepository {
-  Future<bool> addTransaction(
+  Future<DataResult<bool>> addTransaction(
     TransactionModel transactionModel,
     String userId,
   );
 
-  Future<bool> updateTransaction(TransactionModel transactionModel);
+  Future<DataResult<bool>> updateTransaction(TransactionModel transactionModel);
 
-  Future<List<TransactionModel>> getTransactions({
+  Future<DataResult<List<TransactionModel>>> getTransactions({
     int? limit,
     int? offset,
   });
 
   Future<DataResult<bool>> deleteTransaction(String id);
 
-  Future<BalancesModel> getBalances();
+  Future<DataResult<BalancesModel>> getBalances();
 }
 
 class TransactionRepositoryImpl implements TransactionRepository {
@@ -36,7 +36,7 @@ class TransactionRepositoryImpl implements TransactionRepository {
 
   final ApiService<GraphQLClient, QueryResult> graphqlService;
   @override
-  Future<bool> addTransaction(
+  Future<DataResult<bool>> addTransaction(
     TransactionModel transaction,
     String userId,
   ) async {
@@ -49,18 +49,24 @@ class TransactionRepositoryImpl implements TransactionRepository {
         },
       );
 
-      if (response.data == null || response.hasException) {
-        throw Exception(response.exception);
-      }
-
-      return true;
+      return DataResult.success(response.data != null);
+    } on ServerException {
+      return DataResult.failure(
+          const ConnectionException(code: 'connection-error'));
+    } on GraphQLError catch (e) {
+      return DataResult.failure(
+        APIException(
+          code: 0,
+          textCode: e.extensions?['code'],
+        ),
+      );
     } catch (e) {
-      rethrow;
+      return DataResult.failure(const GeneralException());
     }
   }
 
   @override
-  Future<List<TransactionModel>> getTransactions({
+  Future<DataResult<List<TransactionModel>>> getTransactions({
     int? limit,
     int? offset,
   }) async {
@@ -72,39 +78,57 @@ class TransactionRepositoryImpl implements TransactionRepository {
           'offset': offset,
         },
       );
-      if (response.data == null || response.hasException) {
-        throw Exception();
-      }
 
       final parsedData = List.from(response.data?['transaction'] ?? []);
 
       final transactions =
           parsedData.map((e) => TransactionModel.fromMap(e)).toList();
-      return transactions;
+
+      return DataResult.success(transactions);
+    } on ServerException {
+      return DataResult.failure(
+          const ConnectionException(code: 'connection-error'));
+    } on GraphQLError catch (e) {
+      return DataResult.failure(
+        APIException(
+          code: 0,
+          textCode: e.extensions?['code'],
+        ),
+      );
+    } on AuthException catch (e) {
+      return DataResult.failure(AuthException(code: e.code));
     } catch (e) {
-      rethrow;
+      return DataResult.failure(const GeneralException());
     }
   }
 
   @override
-  Future<BalancesModel> getBalances() async {
+  Future<DataResult<BalancesModel>> getBalances() async {
     try {
       final response = await graphqlService.read(path: qGetBalances);
 
-      if (response.data == null || response.hasException) {
-        throw Exception();
-      }
-
       final balances = BalancesModel.fromMap(response.data ?? {});
 
-      return balances;
+      return DataResult.success(balances);
+    } on ServerException {
+      return DataResult.failure(
+          const ConnectionException(code: 'connection-error'));
+    } on GraphQLError catch (e) {
+      return DataResult.failure(
+        APIException(
+          code: 0,
+          textCode: e.extensions?['code'],
+        ),
+      );
+    } on AuthException catch (e) {
+      return DataResult.failure(AuthException(code: e.code));
     } catch (e) {
-      rethrow;
+      return DataResult.failure(const GeneralException());
     }
   }
 
   @override
-  Future<bool> updateTransaction(
+  Future<DataResult<bool>> updateTransaction(
     TransactionModel transaction,
   ) async {
     try {
@@ -112,13 +136,19 @@ class TransactionRepositoryImpl implements TransactionRepository {
         path: mUpdateTransaction,
         params: transaction.toMap(),
       );
-      if (response.data == null || response.hasException) {
-        throw Exception();
-      }
-
-      return true;
+      return DataResult.success(response.data != null);
+    } on ServerException {
+      return DataResult.failure(
+          const ConnectionException(code: 'connection-error'));
+    } on GraphQLError catch (e) {
+      return DataResult.failure(
+        APIException(
+          code: 0,
+          textCode: e.extensions?['code'],
+        ),
+      );
     } catch (e) {
-      rethrow;
+      return DataResult.failure(const GeneralException());
     }
   }
 
@@ -129,11 +159,8 @@ class TransactionRepositoryImpl implements TransactionRepository {
         path: mDeleteTransaction,
         params: {'id': id},
       );
-      if (response.data == null || response.hasException) {
-        return DataResult.success(false);
-      } else {
-        return DataResult.success(true);
-      }
+
+      return DataResult.success(response.data != null);
     } on ServerException {
       return DataResult.failure(
           const ConnectionException(code: 'connection-error'));
