@@ -1,3 +1,4 @@
+import 'package:financy_app/data/exceptions.dart';
 import 'package:graphql_flutter/graphql_flutter.dart';
 
 import 'api_service.dart';
@@ -20,8 +21,10 @@ class GraphQLService implements ApiService<GraphQLClient, QueryResult> {
       'https://concrete-pangolin-58.hasura.app/v1/graphql',
     );
 
+    final result = await authService.userToken();
+
     final AuthLink authLink = AuthLink(
-      getToken: () async => 'Bearer ${await authService.userToken}',
+      getToken: () async => 'Bearer ${result.data}',
     );
 
     final Link link = authLink.concat(httpLink);
@@ -58,6 +61,15 @@ class GraphQLService implements ApiService<GraphQLClient, QueryResult> {
         throw result.exception as Object;
       }
       return result;
+    } on OperationException catch (e) {
+      if (e.graphqlErrors.isNotEmpty) {
+        throw e.graphqlErrors.first;
+      }
+      if (e.linkException != null) {
+        throw e.linkException!;
+      }
+
+      rethrow;
     } catch (e) {
       rethrow;
     }
@@ -80,6 +92,13 @@ class GraphQLService implements ApiService<GraphQLClient, QueryResult> {
 
       if (result.data != null && !result.hasException) {
         return result;
+      } else if (result.hasException &&
+          result.exception!.graphqlErrors.isNotEmpty &&
+          (result.exception!.graphqlErrors.first.extensions!
+                  .containsValue('invalid-jwt') ||
+              result.exception!.graphqlErrors.first.extensions!
+                  .containsValue('invalid-headers'))) {
+        throw const AuthException(code: 'invalid-jwt');
       } else {
         return QueryResult(
           options: options,
@@ -87,6 +106,15 @@ class GraphQLService implements ApiService<GraphQLClient, QueryResult> {
           data: cacheResult,
         );
       }
+    } on OperationException catch (e) {
+      if (e.graphqlErrors.isNotEmpty) {
+        throw e.graphqlErrors.first;
+      }
+      if (e.linkException != null) {
+        throw e.linkException!;
+      }
+
+      rethrow;
     } catch (e) {
       rethrow;
     }
@@ -110,6 +138,15 @@ class GraphQLService implements ApiService<GraphQLClient, QueryResult> {
       }
 
       return result;
+    } on OperationException catch (e) {
+      if (e.graphqlErrors.isNotEmpty) {
+        throw e.graphqlErrors.first;
+      }
+      if (e.linkException != null) {
+        throw e.linkException!;
+      }
+
+      rethrow;
     } catch (e) {
       rethrow;
     }
