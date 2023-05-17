@@ -1,4 +1,5 @@
 import 'package:financy_app/common/models/user_model.dart';
+import 'package:financy_app/data/data_result.dart';
 import 'package:financy_app/features/sign_up/sign_up_controller.dart';
 import 'package:financy_app/features/sign_up/sign_up_state.dart';
 import 'package:flutter_test/flutter_test.dart';
@@ -48,7 +49,7 @@ void main() {
           password: 'user@123',
         ),
       ).thenAnswer(
-        (_) async => user,
+        (_) async => DataResult.success(user),
       );
 
       await signUpController.signUp(

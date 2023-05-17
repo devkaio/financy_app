@@ -1,3 +1,4 @@
+import 'package:financy_app/data/data_result.dart';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:mocktail/mocktail.dart';
 
@@ -22,7 +23,7 @@ void main() {
             password: 'user@123',
           ),
         ).thenAnswer(
-          (_) async => user,
+          (_) async => DataResult.success(user),
         );
 
         final result = await mockFirebaseAuthService.signUp(
@@ -69,7 +70,7 @@ void main() {
           password: 'user@123',
         ),
       ).thenAnswer(
-        (_) async => user,
+        (_) async => DataResult.success(user),
       );
 
       final result = await mockFirebaseAuthService.signIn(
