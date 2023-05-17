@@ -28,28 +28,28 @@ class _SignInPageState extends State<SignInPage> with CustomModalSheetMixin {
   final _formKey = GlobalKey<FormState>();
   final _emailController = TextEditingController();
   final _passwordController = TextEditingController();
-  final _controller = locator.get<SignInController>();
+  final _signInController = locator.get<SignInController>();
 
   @override
   void dispose() {
     _emailController.dispose();
     _passwordController.dispose();
-    _controller.dispose();
+    _signInController.dispose();
     super.dispose();
   }
 
   @override
   void initState() {
     super.initState();
-    _controller.addListener(
+    _signInController.addListener(
       () {
-        if (_controller.state is SignInStateLoading) {
+        if (_signInController.state is SignInStateLoading) {
           showDialog(
             context: context,
             builder: (context) => const CustomCircularProgressIndicator(),
           );
         }
-        if (_controller.state is SignInStateSuccess) {
+        if (_signInController.state is SignInStateSuccess) {
           Navigator.pop(context);
           Navigator.pushReplacementNamed(
             context,
@@ -57,13 +57,13 @@ class _SignInPageState extends State<SignInPage> with CustomModalSheetMixin {
           );
         }
 
-        if (_controller.state is SignInStateError) {
-          final error = _controller.state as SignInStateError;
+        if (_signInController.state is SignInStateError) {
+          final error = _signInController.state as SignInStateError;
           Navigator.pop(context);
           showCustomModalBottomSheet(
             context: context,
             content: error.message,
-            buttonText: "Tentar novamente",
+            buttonText: "Try again",
           );
         }
       },
@@ -119,7 +119,7 @@ class _SignInPageState extends State<SignInPage> with CustomModalSheetMixin {
                 final valid = _formKey.currentState != null &&
                     _formKey.currentState!.validate();
                 if (valid) {
-                  _controller.signIn(
+                  _signInController.signIn(
                     email: _emailController.text,
                     password: _passwordController.text,
                   );
