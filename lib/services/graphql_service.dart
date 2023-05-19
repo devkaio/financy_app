@@ -1,6 +1,6 @@
-import 'package:financy_app/data/exceptions.dart';
 import 'package:graphql_flutter/graphql_flutter.dart';
 
+import '../data/exceptions.dart';
 import 'api_service.dart';
 import 'auth_service.dart';
 
@@ -23,7 +23,7 @@ class GraphQLService implements ApiService<GraphQLClient, QueryResult> {
 
     final AuthLink authLink = AuthLink(
       getToken: () async {
-    final result = await authService.userToken();
+        final result = await authService.userToken();
 
         return 'Bearer ${result.data}';
       },
@@ -50,28 +50,19 @@ class GraphQLService implements ApiService<GraphQLClient, QueryResult> {
   @override
   Future<QueryResult> create({
     required String path,
-    Map<String, dynamic>? params,
+    Map<String, dynamic> params = const {},
   }) async {
     try {
       final options = MutationOptions(
-        variables: params ?? {},
+        variables: params,
         document: gql(path),
       );
 
       final result = await client.mutate(options);
       if (result.hasException) {
-        throw result.exception as Object;
+        throw result.exception!;
       }
       return result;
-    } on OperationException catch (e) {
-      if (e.graphqlErrors.isNotEmpty) {
-        throw e.graphqlErrors.first;
-      }
-      if (e.linkException != null) {
-        throw e.linkException!;
-      }
-
-      rethrow;
     } catch (e) {
       rethrow;
     }
@@ -80,27 +71,23 @@ class GraphQLService implements ApiService<GraphQLClient, QueryResult> {
   @override
   Future<QueryResult> read({
     required String path,
-    Map<String, dynamic>? params,
+    Map<String, dynamic> params = const {},
   }) async {
     try {
       final options = QueryOptions(
-        variables: params ?? {},
+        variables: params,
         document: gql(path),
       );
-      final cacheResult = client.readQuery(
-        options.asRequest,
-      );
+
+      final cacheResult = client.readQuery(options.asRequest);
       final result = await client.query(options);
+
+      if (result.hasException && _containsInvalidResult(result)) {
+        throw const AuthException(code: 'session-expired');
+      }
 
       if (result.data != null && !result.hasException) {
         return result;
-      } else if (result.hasException &&
-          result.exception!.graphqlErrors.isNotEmpty &&
-          (result.exception!.graphqlErrors.first.extensions!
-                  .containsValue('invalid-jwt') ||
-              result.exception!.graphqlErrors.first.extensions!
-                  .containsValue('invalid-headers'))) {
-        throw const AuthException(code: 'invalid-jwt');
       } else {
         return QueryResult(
           options: options,
@@ -108,15 +95,6 @@ class GraphQLService implements ApiService<GraphQLClient, QueryResult> {
           data: cacheResult,
         );
       }
-    } on OperationException catch (e) {
-      if (e.graphqlErrors.isNotEmpty) {
-        throw e.graphqlErrors.first;
-      }
-      if (e.linkException != null) {
-        throw e.linkException!;
-      }
-
-      rethrow;
     } catch (e) {
       rethrow;
     }
@@ -125,30 +103,21 @@ class GraphQLService implements ApiService<GraphQLClient, QueryResult> {
   @override
   Future<QueryResult> update({
     required String path,
-    Map<String, dynamic>? params,
+    Map<String, dynamic> params = const {},
   }) async {
     try {
       final options = MutationOptions(
-        variables: params ?? {},
+        variables: params,
         document: gql(path),
       );
 
       final result = await client.mutate(options);
 
       if (result.hasException) {
-        throw result.exception as Object;
+        throw result.exception!;
       }
 
       return result;
-    } on OperationException catch (e) {
-      if (e.graphqlErrors.isNotEmpty) {
-        throw e.graphqlErrors.first;
-      }
-      if (e.linkException != null) {
-        throw e.linkException!;
-      }
-
-      rethrow;
     } catch (e) {
       rethrow;
     }
@@ -157,32 +126,36 @@ class GraphQLService implements ApiService<GraphQLClient, QueryResult> {
   @override
   Future<QueryResult> delete({
     required String path,
-    Map<String, dynamic>? params,
+    Map<String, dynamic> params = const {},
   }) async {
     try {
       final options = MutationOptions(
         document: gql(path),
-        variables: params ?? {},
+        variables: params,
       );
 
       final result = await client.mutate(options);
 
       if (result.hasException) {
-        throw result.exception as Object;
+        throw result.exception!;
       }
 
       return result;
-    } on OperationException catch (e) {
-      if (e.graphqlErrors.isNotEmpty) {
-        throw e.graphqlErrors.first;
-      }
-      if (e.linkException != null) {
-        throw e.linkException!;
-      }
-
-      rethrow;
     } catch (e) {
       rethrow;
     }
   }
+}
+
+bool _containsInvalidResult(QueryResult result) {
+  final List<GraphQLError> graphqlErrors = result.exception!.graphqlErrors;
+
+  if (graphqlErrors.isNotEmpty) {
+    final Map<String, dynamic>? errorExtensions =
+        graphqlErrors.first.extensions;
+
+    return errorExtensions != null &&
+        ['invalid-jwt', 'invalid-headers'].any(errorExtensions.containsValue);
+  }
+  return false;
 }

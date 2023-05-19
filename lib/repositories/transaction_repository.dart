@@ -120,17 +120,17 @@ class TransactionRepositoryImpl implements TransactionRepository {
   }
 
   DataResult<T> _handleException<T>(dynamic e) {
-    if (e is ServerException) {
+    if (e is OperationException && e.linkException != null) {
       return DataResult.failure(
         const ConnectionException(code: 'connection-error'),
       );
     }
 
-    if (e is GraphQLError) {
+    if (e is OperationException && e.graphqlErrors.isNotEmpty) {
       return DataResult.failure(
         APIException(
           code: 0,
-          textCode: e.extensions?['code'],
+          textCode: e.graphqlErrors.first.extensions?['code'],
         ),
       );
     }

@@ -64,9 +64,9 @@ class AuthException extends Failure {
   @override
   String get message {
     switch (code) {
+      case 'session-expired':
       case 'invalid-jwt':
       case 'invalid-headers':
-        return 'Your session has expired. Please loggin again.';
       case 'user-not-authenticated':
         return 'Your session has expired. Please loggin again.';
       case 'email-already-exists':
