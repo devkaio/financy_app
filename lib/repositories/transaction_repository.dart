@@ -1,14 +1,11 @@
-import 'package:financy_app/common/constants/mutations/delete_transaction.dart';
-import 'package:financy_app/data/data_result.dart';
-import 'package:financy_app/data/exceptions.dart';
 import 'package:graphql_flutter/graphql_flutter.dart';
 
-import '../common/constants/mutations/add_new_transaction.dart';
-import '../common/constants/mutations/update_transaction.dart';
-import '../common/constants/queries/get_balances.dart';
-import '../common/constants/queries/get_transactions.dart';
+import '../common/constants/mutations.dart';
+import '../common/constants/queries.dart';
 import '../common/models/balances_model.dart';
 import '../common/models/transaction_model.dart';
+import '../data/data_result.dart';
+import '../data/exceptions.dart';
 import '../services/api_service.dart';
 
 abstract class TransactionRepository {
@@ -42,7 +39,7 @@ class TransactionRepositoryImpl implements TransactionRepository {
   ) async {
     try {
       final response = await graphqlService.create(
-        path: mAddNewTransaction,
+        path: Mutations.mAddNewTransaction,
         params: {
           ...transaction.toMap(),
           "user_id": userId,
@@ -50,18 +47,8 @@ class TransactionRepositoryImpl implements TransactionRepository {
       );
 
       return DataResult.success(response.data != null);
-    } on ServerException {
-      return DataResult.failure(
-          const ConnectionException(code: 'connection-error'));
-    } on GraphQLError catch (e) {
-      return DataResult.failure(
-        APIException(
-          code: 0,
-          textCode: e.extensions?['code'],
-        ),
-      );
     } catch (e) {
-      return DataResult.failure(const GeneralException());
+      return _handleException(e);
     }
   }
 
@@ -72,7 +59,7 @@ class TransactionRepositoryImpl implements TransactionRepository {
   }) async {
     try {
       final response = await graphqlService.read(
-        path: qGetTrasactions,
+        path: Queries.qGetTrasactions,
         params: {
           'limit': limit,
           'offset': offset,
@@ -85,45 +72,21 @@ class TransactionRepositoryImpl implements TransactionRepository {
           parsedData.map((e) => TransactionModel.fromMap(e)).toList();
 
       return DataResult.success(transactions);
-    } on ServerException {
-      return DataResult.failure(
-          const ConnectionException(code: 'connection-error'));
-    } on GraphQLError catch (e) {
-      return DataResult.failure(
-        APIException(
-          code: 0,
-          textCode: e.extensions?['code'],
-        ),
-      );
-    } on AuthException catch (e) {
-      return DataResult.failure(AuthException(code: e.code));
     } catch (e) {
-      return DataResult.failure(const GeneralException());
+      return _handleException(e);
     }
   }
 
   @override
   Future<DataResult<BalancesModel>> getBalances() async {
     try {
-      final response = await graphqlService.read(path: qGetBalances);
+      final response = await graphqlService.read(path: Queries.qGetBalances);
 
       final balances = BalancesModel.fromMap(response.data ?? {});
 
       return DataResult.success(balances);
-    } on ServerException {
-      return DataResult.failure(
-          const ConnectionException(code: 'connection-error'));
-    } on GraphQLError catch (e) {
-      return DataResult.failure(
-        APIException(
-          code: 0,
-          textCode: e.extensions?['code'],
-        ),
-      );
-    } on AuthException catch (e) {
-      return DataResult.failure(AuthException(code: e.code));
     } catch (e) {
-      return DataResult.failure(const GeneralException());
+      return _handleException(e);
     }
   }
 
@@ -133,22 +96,12 @@ class TransactionRepositoryImpl implements TransactionRepository {
   ) async {
     try {
       final response = await graphqlService.update(
-        path: mUpdateTransaction,
+        path: Mutations.mUpdateTransaction,
         params: transaction.toMap(),
       );
       return DataResult.success(response.data != null);
-    } on ServerException {
-      return DataResult.failure(
-          const ConnectionException(code: 'connection-error'));
-    } on GraphQLError catch (e) {
-      return DataResult.failure(
-        APIException(
-          code: 0,
-          textCode: e.extensions?['code'],
-        ),
-      );
     } catch (e) {
-      return DataResult.failure(const GeneralException());
+      return _handleException(e);
     }
   }
 
@@ -156,23 +109,38 @@ class TransactionRepositoryImpl implements TransactionRepository {
   Future<DataResult<bool>> deleteTransaction(String id) async {
     try {
       final response = await graphqlService.delete(
-        path: mDeleteTransaction,
+        path: Mutations.mDeleteTransaction,
         params: {'id': id},
       );
 
       return DataResult.success(response.data != null);
-    } on ServerException {
+    } catch (e) {
+      return _handleException(e);
+    }
+  }
+
+  DataResult<T> _handleException<T>(dynamic e) {
+    if (e is ServerException) {
       return DataResult.failure(
-          const ConnectionException(code: 'connection-error'));
-    } on GraphQLError catch (e) {
+        const ConnectionException(code: 'connection-error'),
+      );
+    }
+
+    if (e is GraphQLError) {
       return DataResult.failure(
         APIException(
           code: 0,
           textCode: e.extensions?['code'],
         ),
       );
-    } catch (e) {
-      return DataResult.failure(const GeneralException());
     }
+
+    if (e is AuthException) {
+      return DataResult.failure(
+        AuthException(code: e.code),
+      );
+    }
+
+    return DataResult.failure(const GeneralException());
   }
 }

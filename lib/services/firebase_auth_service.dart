@@ -1,14 +1,18 @@
 import 'package:cloud_functions/cloud_functions.dart';
-import 'package:financy_app/data/data_result.dart';
-import 'package:financy_app/data/exceptions.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 
 import '../common/models/user_model.dart';
+import '../data/data_result.dart';
+import '../data/exceptions.dart';
 import 'auth_service.dart';
 
 class FirebaseAuthService implements AuthService {
-  final _auth = FirebaseAuth.instance;
-  final _functions = FirebaseFunctions.instance;
+  FirebaseAuthService()
+      : _auth = FirebaseAuth.instance,
+        _functions = FirebaseFunctions.instance;
+
+  final FirebaseAuth _auth;
+  final FirebaseFunctions _functions;
 
   @override
   Future<DataResult<UserModel>> signIn({
@@ -22,18 +26,12 @@ class FirebaseAuthService implements AuthService {
       );
 
       if (result.user != null) {
-        return DataResult.success(UserModel(
-          name: _auth.currentUser?.displayName,
-          email: _auth.currentUser?.email,
-          id: _auth.currentUser?.uid,
-        ));
+        return DataResult.success(_createUserModelFromAuthUser(result.user!));
       }
 
       return DataResult.failure(const GeneralException());
     } on FirebaseAuthException catch (e) {
       return DataResult.failure(AuthException(code: e.code));
-    } catch (e) {
-      return DataResult.failure(const AuthException(code: 'error'));
     }
   }
 
@@ -56,13 +54,7 @@ class FirebaseAuthService implements AuthService {
       );
 
       if (result.user != null) {
-        return DataResult.success(
-          UserModel(
-            name: _auth.currentUser?.displayName,
-            email: _auth.currentUser?.email,
-            id: _auth.currentUser?.uid,
-          ),
-        );
+        return DataResult.success(_createUserModelFromAuthUser(result.user!));
       }
 
       return DataResult.failure(const GeneralException());
@@ -70,8 +62,6 @@ class FirebaseAuthService implements AuthService {
       return DataResult.failure(AuthException(code: e.code));
     } on FirebaseFunctionsException catch (e) {
       return DataResult.failure(AuthException(code: e.code));
-    } catch (e) {
-      return DataResult.failure(const AuthException(code: 'error'));
     }
   }
 
@@ -93,5 +83,13 @@ class FirebaseAuthService implements AuthService {
     } catch (e) {
       return DataResult.success('');
     }
+  }
+
+  UserModel _createUserModelFromAuthUser(User user) {
+    return UserModel(
+      name: user.displayName,
+      email: user.email,
+      id: user.uid,
+    );
   }
 }
