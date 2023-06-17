@@ -30,6 +30,14 @@ void setupDependencies() {
   locator.registerSingletonAsync<DatabaseService>(
     () async => DatabaseService().init(),
   );
+  locator.registerFactory<SyncService>(
+    () => SyncService(
+      connectionService: const ConnectionService(),
+      databaseService: locator.get<DatabaseService>(),
+      graphQLService: locator.get<GraphQLService>(),
+      secureStorageService: const SecureStorageService(),
+    ),
+  );
   locator.registerFactory<SplashController>(
     () => SplashController(
       secureStorageService: const SecureStorageService(),
