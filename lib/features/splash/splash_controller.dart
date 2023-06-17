@@ -1,6 +1,6 @@
-import 'package:financy_app/services/services.dart';
 import 'package:flutter/foundation.dart';
 
+import '../../services/services.dart';
 import 'splash_state.dart';
 
 class SplashController extends ChangeNotifier {

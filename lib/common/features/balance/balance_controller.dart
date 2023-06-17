@@ -1,7 +1,7 @@
-import 'package:financy_app/common/models/models.dart';
-import 'package:financy_app/repositories/repositories.dart';
 import 'package:flutter/foundation.dart';
 
+import '../../../repositories/repositories.dart';
+import '../../models/models.dart';
 import 'balance_state.dart';
 
 class BalanceController extends ChangeNotifier {

@@ -1,8 +1,8 @@
 import 'dart:developer';
 
-import 'package:financy_app/common/constants/constants.dart';
-import 'package:financy_app/common/extensions/extensions.dart';
-import 'package:financy_app/common/features/balance/balance.dart';
+import '../../../common/constants/constants.dart';
+import '../../../common/extensions/extensions.dart';
+import '../../../common/features/balance/balance.dart';
 import 'package:flutter/material.dart';
 
 class BalanceCardWidget extends StatelessWidget {

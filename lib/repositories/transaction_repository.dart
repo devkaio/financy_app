@@ -1,7 +1,7 @@
 import 'dart:async';
 
-import 'package:financy_app/common/data/data_result.dart';
-import 'package:financy_app/common/models/models.dart';
+import '../common/data/data_result.dart';
+import '../common/models/models.dart';
 
 /// {@template transaction_repository}
 /// Communicates Transactions CRUD operations between Controllers and Data Sources

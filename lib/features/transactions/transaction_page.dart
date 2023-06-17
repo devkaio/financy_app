@@ -1,13 +1,13 @@
 import 'dart:developer';
 import 'dart:math' as math;
 
-import 'package:financy_app/common/features/transaction/transaction.dart';
 import 'package:flutter/material.dart';
 
 import '../../common/constants/app_colors.dart';
 import '../../common/constants/app_text_styles.dart';
 import '../../common/extensions/date_formatter.dart';
 import '../../common/extensions/sizes.dart';
+import '../../common/features/transaction/transaction.dart';
 import '../../common/models/transaction_model.dart';
 import '../../common/utils/money_mask_controller.dart';
 import '../../common/widgets/app_header.dart';

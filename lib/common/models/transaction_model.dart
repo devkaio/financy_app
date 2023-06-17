@@ -1,6 +1,6 @@
 import 'dart:convert';
 
-import 'package:financy_app/common/extensions/extensions.dart';
+import '../extensions/extensions.dart';
 import 'package:uuid/uuid.dart';
 
 enum SyncStatus {

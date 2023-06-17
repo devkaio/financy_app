@@ -1,4 +1,4 @@
-import 'package:financy_app/services/services.dart';
+import '../../services/services.dart';
 import 'package:flutter/foundation.dart';
 
 import 'sign_in_state.dart';
