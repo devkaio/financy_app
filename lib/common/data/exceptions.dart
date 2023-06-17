@@ -94,10 +94,8 @@ class SecureStorageException extends Failure {
 }
 
 class CacheException extends Failure {
-  const CacheException();
 
   @override
-  String get message => 'An error has occurred while fetching Local Cache.';
 }
 
 //System Exceptions
