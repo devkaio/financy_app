@@ -1,9 +1,9 @@
 import 'dart:developer';
 
-import 'package:financy_app/common/data/data.dart';
-import 'package:financy_app/locator.dart';
 import 'package:sqflite/sqflite.dart';
 
+import '../common/data/data.dart';
+import '../locator.dart';
 import 'data_service.dart';
 
 class DatabaseService implements DataService<Map<String, dynamic>> {
@@ -113,6 +113,9 @@ class DatabaseService implements DataService<Map<String, dynamic>> {
           limit: params['limit'],
           offset: params['offset'],
           orderBy: params['order_by'],
+          where: params.containsKey('skip_status') ? 'sync_status != ?' : null,
+          whereArgs:
+              params.containsKey('skip_status') ? [params['skip_status']] : [],
         );
         return {'data': result};
       }
