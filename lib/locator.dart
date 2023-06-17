@@ -55,6 +55,7 @@ void setupDependencies() {
     () => SignInController(
       authService: locator.get<AuthService>(),
       secureStorageService: const SecureStorageService(),
+      syncService: locator.get<SyncService>(),
     ),
   );
 
