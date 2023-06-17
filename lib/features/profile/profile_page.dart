@@ -1,8 +1,7 @@
 import 'package:flutter/material.dart';
 
 import '../../locator.dart';
-import '../../services/auth_service.dart';
-import '../../services/secure_storage.dart';
+import '../../services/services.dart';
 
 class ProfilePage extends StatefulWidget {
   const ProfilePage({super.key});
@@ -29,6 +28,7 @@ class _ProfilePageState extends State<ProfilePage>
               onPressed: () async {
                 await locator.get<AuthService>().signOut();
                 await const SecureStorageService().deleteAll();
+                await locator.get<DatabaseService>().deleteDB;
                 if (mounted) {
                   Navigator.popUntil(context, ModalRoute.withName('/'));
                 }
