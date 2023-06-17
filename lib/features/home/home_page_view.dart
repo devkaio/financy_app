@@ -1,13 +1,13 @@
-import 'package:financy_app/common/features/transaction/transaction.dart';
-import 'package:financy_app/features/wallet/wallet_controller.dart';
 import 'package:flutter/material.dart';
 
 import '../../common/constants/app_colors.dart';
 import '../../common/features/balance/balance.dart';
+import '../../common/features/transaction/transaction.dart';
 import '../../common/widgets/custom_bottom_app_bar.dart';
 import '../../locator.dart';
 import '../profile/profile_page.dart';
 import '../stats/stats_page.dart';
+import '../wallet/wallet_controller.dart';
 import '../wallet/wallet_page.dart';
 import 'home_controller.dart';
 import 'home_page.dart';
@@ -22,6 +22,7 @@ class HomePageView extends StatefulWidget {
 class _HomePageViewState extends State<HomePageView> {
   final homeController = locator.get<HomeController>();
   final walletController = locator.get<WalletController>();
+  final balanceController = locator.get<BalanceController>();
 
   @override
   void initState() {
@@ -53,7 +54,16 @@ class _HomePageViewState extends State<HomePageView> {
       ),
       floatingActionButton: FloatingActionButton(
         onPressed: () async {
-          await Navigator.pushNamed(context, '/transaction');
+          final result = await Navigator.pushNamed(context, '/transaction');
+          if (result != null) {
+            if (homeController.pageController.page == 0) {
+              homeController.getLatestTransactions();
+            }
+            if (homeController.pageController.page == 2) {
+              walletController.getAllTransactions();
+            }
+            balanceController.getBalances();
+          }
         },
         child: const Icon(Icons.add),
       ),
