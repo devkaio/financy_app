@@ -44,14 +44,24 @@ class TransactionRepositoryImpl implements TransactionRepository {
     int? offset,
     bool latest = false,
   }) async {
+    final params = {
+      'limit': limit,
+      'offset': offset,
+      'skip_status': SyncStatus.delete.name,
+    };
+
     try {
       final cachedTransactionsResponse = await databaseService.read(
         path: TransactionRepository.transactionsPath,
-        params: {
-          'limit': limit,
-          'offset': offset,
-          'order_by': latest ? 'date desc' : null,
-        },
+        params: latest
+            ? {
+                ...params,
+                'order_by': 'date desc',
+              }
+            : {
+                ...params,
+                'order_by': 'date asc',
+              },
       );
 
       final parsedcachedTransactions =
