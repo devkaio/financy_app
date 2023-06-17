@@ -83,8 +83,8 @@ void setupDependencies() {
     ),
   );
 
-  locator.registerLazySingleton(
-    () => WalletController(
+  locator.registerLazySingleton<BalanceController>(
+    () => BalanceController(
       transactionRepository: locator.get<TransactionRepository>(),
     ),
   );
