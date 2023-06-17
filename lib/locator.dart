@@ -27,6 +27,9 @@ void setupDependencies() {
     ).init(),
   );
 
+  locator.registerSingletonAsync<DatabaseService>(
+    () async => DatabaseService().init(),
+  );
   locator.registerFactory<SplashController>(
     () => SplashController(
       secureStorageService: const SecureStorageService(),
