@@ -44,6 +44,8 @@ dependencies:
   graphql_flutter: ^5.1.1
   intl: ^0.17.0
   uuid: ^3.0.7
+  http: ^0.13.6
+  sqflite: ^2.2.8+4
 
 dev_dependencies:
   flutter_test:
