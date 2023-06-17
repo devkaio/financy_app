@@ -1,5 +1,6 @@
+import 'package:financy_app/common/data/data_result.dart';
+import 'package:financy_app/common/data/exceptions.dart';
 import 'package:financy_app/common/models/user_model.dart';
-import 'package:financy_app/data/data_result.dart';
 import 'package:financy_app/features/sign_in/sign_in_controller.dart';
 import 'package:financy_app/features/sign_in/sign_in_state.dart';
 import 'package:flutter_test/flutter_test.dart';
@@ -8,38 +9,44 @@ import 'package:mocktail/mocktail.dart';
 import '../../mock/mock_classes.dart';
 
 void main() {
-  late MockSecureStorage mockSecureStorage;
+  //Mocking dependencies to test SUT
+  late MockSecureStorageService mockSecureStorage;
   late MockFirebaseAuthService mockFirebaseAuthService;
-  late SignInController signInController;
-  late MockGraphQLService mockGraphQLService;
+  late MockSyncService mockSyncService;
+
+  //Subject Under Test
+  late SignInController sut;
+
   late UserModel user;
 
   setUp(() {
-    mockSecureStorage = MockSecureStorage();
+    mockSecureStorage = MockSecureStorageService();
     mockFirebaseAuthService = MockFirebaseAuthService();
-    mockGraphQLService = MockGraphQLService();
-    signInController = SignInController(
+    mockSyncService = MockSyncService();
+
+    sut = SignInController(
       authService: mockFirebaseAuthService,
       secureStorageService: mockSecureStorage,
+      syncService: mockSyncService,
     );
+
     user = UserModel(
       name: 'User',
       email: 'user@email.com',
       id: '1a2b3c4d5e',
     );
+
+    when(() => mockSyncService.syncFromServer()).thenAnswer((_) async {});
+
+    when(() => mockSecureStorage.write(
+          key: "CURRENT_USER",
+          value: user.toJson(),
+        )).thenAnswer((_) async {});
   });
 
   group('Tests Sign In Controller State', () {
     test('Should update state to SignInStateSuccess', () async {
-      expect(signInController.state, isInstanceOf<SignInStateInitial>());
-
-      when(() => mockGraphQLService.init())
-          .thenAnswer((_) async => mockGraphQLService);
-
-      when(() => mockSecureStorage.write(
-            key: "CURRENT_USER",
-            value: user.toJson(),
-          )).thenAnswer((_) async {});
+      expect(sut.state, isInstanceOf<SignInStateInitial>());
 
       when(
         () => mockFirebaseAuthService.signIn(
@@ -50,37 +57,34 @@ void main() {
         (_) async => DataResult.success(user),
       );
 
-      await signInController.signIn(
+      await sut.signIn(
         email: 'user@email.com',
         password: 'user@123',
       );
-      expect(signInController.state, isInstanceOf<SignInStateSuccess>());
+
+      expect(sut.state, isInstanceOf<SignInStateLoading>());
+
+      await Future.delayed(Duration.zero);
+
+      expect(sut.state, isInstanceOf<SignInStateSuccess>());
     });
 
     test('Should update state to SignInStateError', () async {
-      expect(signInController.state, isInstanceOf<SignInStateInitial>());
-
-      when(
-        () => mockSecureStorage.write(
-          key: "CURRENT_USER",
-          value: user.toJson(),
-        ),
-      ).thenAnswer((_) async {});
+      expect(sut.state, isInstanceOf<SignInStateInitial>());
 
       when(
         () => mockFirebaseAuthService.signIn(
           email: 'user@email.com',
           password: 'user@123',
         ),
-      ).thenThrow(
-        Exception(),
-      );
+      ).thenAnswer((_) async => DataResult.failure(const GeneralException()));
 
-      await signInController.signIn(
+      await sut.signIn(
         email: 'user@email.com',
         password: 'user@123',
       );
-      expect(signInController.state, isInstanceOf<SignInStateError>());
+
+      expect(sut.state, isInstanceOf<SignInStateError>());
     });
   });
 }

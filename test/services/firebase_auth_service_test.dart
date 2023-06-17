@@ -1,4 +1,4 @@
-import 'package:financy_app/data/data_result.dart';
+import 'package:financy_app/common/data/data.dart';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:mocktail/mocktail.dart';
 
@@ -33,7 +33,7 @@ void main() {
         );
 
         expect(
-          result,
+          result.data,
           user,
         );
       });
@@ -79,7 +79,7 @@ void main() {
       );
 
       expect(
-        result,
+        result.data,
         user,
       );
     });
@@ -90,17 +90,16 @@ void main() {
           email: 'user@email.com',
           password: 'user@123',
         ),
-      ).thenThrow(
-        Exception(),
+      ).thenAnswer((_) async => DataResult.failure(const GeneralException()));
+
+      final result = await mockFirebaseAuthService.signIn(
+        email: 'user@email.com',
+        password: 'user@123',
       );
 
-      expect(
-        () => mockFirebaseAuthService.signIn(
-          email: 'user@email.com',
-          password: 'user@123',
-        ),
-        // throwsA(isInstanceOf<Exception>()),
-        throwsException,
+      result.fold(
+        (error) => expect(error, isA<Exception>()),
+        (data) => expect(data, null),
       );
     });
   });
