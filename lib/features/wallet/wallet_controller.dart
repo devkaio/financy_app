@@ -18,15 +18,6 @@ class WalletController extends ChangeNotifier {
   List<TransactionModel> _transactions = [];
   List<TransactionModel> get transactions => _transactions;
 
-  int get _limit => 10;
-  int get _offset => transactions.isEmpty ? 0 : transactions.length;
-
-  bool _isLoading = false;
-
-  bool get isLoading {
-    return _isLoading;
-  }
-
   void _changeState(WalletState newState) {
     _state = newState;
     notifyListeners();
@@ -35,46 +26,17 @@ class WalletController extends ChangeNotifier {
   Future<void> getAllTransactions() async {
     _changeState(WalletStateLoading());
 
-    if (transactions.isNotEmpty) transactions.clear();
-
-    final result = await transactionRepository.getTransactions(
-      limit: _limit,
-      offset: _offset,
-    );
+    final result = await transactionRepository.getTransactions();
 
     result.fold(
       (error) => _changeState(WalletStateError(message: error.message)),
       (data) {
         _transactions = data;
 
+        _transactions.removeWhere((t) => t.syncStatus == SyncStatus.delete);
+
         _changeState(WalletStateSuccess());
       },
     );
-
-    if (_offset >= _limit) {
-      _isLoading = true;
-    }
-  }
-
-  void get fetchMore async {
-    if (isLoading) {
-      final result = await transactionRepository.getTransactions(
-        limit: _limit,
-        offset: _offset,
-      );
-
-      result.fold(
-        (error) => _changeState(WalletStateError(message: error.message)),
-        (data) {
-          if (data.isNotEmpty) {
-            _transactions.addAll(data);
-          } else {
-            _isLoading = false;
-          }
-
-          _changeState(WalletStateSuccess());
-        },
-      );
-    }
   }
 }

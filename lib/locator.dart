@@ -76,10 +76,9 @@ void setupDependencies() {
     ),
   );
 
-  locator.registerFactory<TransactionController>(
-    () => TransactionController(
+  locator.registerLazySingleton<WalletController>(
+    () => WalletController(
       transactionRepository: locator.get<TransactionRepository>(),
-      storage: const SecureStorageService(),
     ),
   );
 
