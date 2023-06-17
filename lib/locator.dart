@@ -89,9 +89,10 @@ void setupDependencies() {
     ),
   );
 
-  locator.registerFactory<TransactionListViewController>(
-    () => TransactionListViewController(
+  locator.registerLazySingleton<TransactionController>(
+    () => TransactionController(
       transactionRepository: locator.get<TransactionRepository>(),
+      storage: const SecureStorageService(),
     ),
   );
 }
