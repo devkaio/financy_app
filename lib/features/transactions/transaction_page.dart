@@ -1,6 +1,7 @@
 import 'dart:developer';
 import 'dart:math' as math;
 
+import 'package:financy_app/common/features/transaction/transaction.dart';
 import 'package:flutter/material.dart';
 
 import '../../common/constants/app_colors.dart';
@@ -15,8 +16,6 @@ import '../../common/widgets/custom_snackbar.dart';
 import '../../common/widgets/custom_text_form_field.dart';
 import '../../common/widgets/primary_button.dart';
 import '../../locator.dart';
-import 'transaction_controller.dart';
-import 'transaction_state.dart';
 
 class TransactionPage extends StatefulWidget {
   final TransactionModel? transaction;
@@ -37,15 +36,14 @@ class _TransactionPageState extends State<TransactionPage>
 
   final _incomes = ['Services', 'Investment', 'Other'];
   final _outcomes = ['House', 'Grocery', 'Other'];
+
   DateTime? _newDate;
   bool value = false;
 
   final _descriptionController = TextEditingController();
   final _categoryController = TextEditingController();
   final _dateController = TextEditingController();
-  final _amountController = MoneyMaskedTextController(
-    prefix: '\$',
-  );
+  final _amountController = MoneyMaskedTextController(prefix: '\$');
 
   late final TabController _tabController;
 
@@ -70,7 +68,9 @@ class _TransactionPageState extends State<TransactionPage>
   void initState() {
     super.initState();
     _amountController.updateValue(widget.transaction?.value ?? 0);
+
     value = widget.transaction?.status ?? false;
+
     _descriptionController.text = widget.transaction?.description ?? '';
     _categoryController.text = widget.transaction?.category ?? '';
     _newDate =
@@ -78,6 +78,7 @@ class _TransactionPageState extends State<TransactionPage>
     _dateController.text = widget.transaction?.date != null
         ? DateTime.fromMillisecondsSinceEpoch(widget.transaction!.date).toText
         : '';
+
     _tabController = TabController(
       length: 2,
       vsync: this,
@@ -86,6 +87,7 @@ class _TransactionPageState extends State<TransactionPage>
 
     _transactionController.addListener(() {
       if (_transactionController.state is TransactionStateLoading) {
+        if (!mounted) return;
         showDialog(
           barrierDismissible: false,
           context: context,
@@ -93,9 +95,11 @@ class _TransactionPageState extends State<TransactionPage>
         );
       }
       if (_transactionController.state is TransactionStateSuccess) {
+        if (!mounted) return;
         Navigator.of(context).pop();
       }
       if (_transactionController.state is TransactionStateError) {
+        if (!mounted) return;
         final error = _transactionController.state as TransactionStateError;
         showCustomSnackBar(
           context: context,
@@ -113,7 +117,6 @@ class _TransactionPageState extends State<TransactionPage>
     _descriptionController.dispose();
     _categoryController.dispose();
     _dateController.dispose();
-    _transactionController.dispose();
     super.dispose();
   }
 
@@ -275,6 +278,7 @@ class _TransactionPageState extends State<TransactionPage>
                         padding: const EdgeInsets.symmetric(vertical: 8.0),
                         controller: _dateController,
                         readOnly: true,
+                        suffixIcon: const Icon(Icons.calendar_month_outlined),
                         labelText: "Date",
                         hintText: "Select a date",
                         validator: (value) {
@@ -343,9 +347,8 @@ class _TransactionPageState extends State<TransactionPage>
                                   Navigator.of(context).pop(true);
                                 }
                               } else {
-                                await _transactionController.addTransaction(
-                                  newTransaction,
-                                );
+                                await _transactionController
+                                    .addTransaction(newTransaction);
                                 if (mounted) {
                                   Navigator.of(context).pop(true);
                                 }
