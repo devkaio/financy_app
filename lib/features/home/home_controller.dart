@@ -1,6 +1,6 @@
-import 'package:financy_app/common/models/models.dart';
 import 'package:flutter/material.dart';
 
+import '../../common/models/models.dart';
 import '../../repositories/repositories.dart';
 import '../../services/sync_service.dart';
 import 'home_state.dart';
@@ -45,8 +45,6 @@ class HomeController extends ChangeNotifier {
       (error) => _changeState(HomeStateError(message: error.message)),
       (data) {
         _transactions = data;
-
-        _transactions.removeWhere((t) => t.syncStatus == SyncStatus.delete);
 
         _changeState(HomeStateSuccess());
       },
