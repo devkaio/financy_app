@@ -1,7 +1,6 @@
 import 'package:flutter/material.dart';
 
-import '../../../common/constants/app_colors.dart';
-import '../../../common/constants/app_text_styles.dart';
+import '../constants/constants.dart';
 
 class GreetingsWidget extends StatelessWidget {
   const GreetingsWidget({
@@ -10,7 +9,8 @@ class GreetingsWidget extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    double textScaleFactor = MediaQuery.of(context).size.width < 360 ? 0.7 : 1.0;
+    double textScaleFactor =
+        MediaQuery.of(context).size.width < 360 ? 0.7 : 1.0;
 
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,

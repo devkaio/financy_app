@@ -5,6 +5,7 @@ export 'custom_bottom_sheet.dart';
 export 'custom_circular_progress_indicator.dart';
 export 'custom_snackbar.dart';
 export 'custom_text_form_field.dart';
+export 'greetings_widget.dart';
 export 'multi_text_button.dart';
 export 'notification_widget.dart';
 export 'password_form_field.dart';
