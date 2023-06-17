@@ -52,10 +52,6 @@ class _TransactionListViewState extends State<TransactionListView>
     _tabController = TabController(length: 1, vsync: this);
 
     transactionController.addListener(() {
-      if (transactionController.state is TransactionStateSuccess) {
-        widget.onChange();
-      }
-
       if (transactionController.state is TransactionStateError) {
         if (!mounted) return;
         final state = transactionController.state as TransactionStateError;
@@ -88,6 +84,9 @@ class _TransactionListViewState extends State<TransactionListView>
   void dispose() {
     _tabController.dispose();
     _scrollController.dispose();
+    transactionController.removeListener(() {
+      widget.onChange();
+    });
     locator.resetLazySingleton<TransactionController>();
     super.dispose();
   }
@@ -163,7 +162,9 @@ class _TransactionListViewState extends State<TransactionListView>
                 ),
                 onDismissed: (direction) async {
                   if (confirmDelete!) {
-                    transactionController.deleteTransaction(item);
+                    await transactionController.deleteTransaction(item);
+                    if (!mounted) return;
+                    widget.onChange();
                   }
                 },
                 confirmDismiss: (direction) async {
@@ -201,6 +202,7 @@ class _TransactionListViewState extends State<TransactionListView>
                       arguments: item,
                     );
                     if (result != null) {
+                      if (!mounted) return;
                       widget.onChange();
                     }
                   },
