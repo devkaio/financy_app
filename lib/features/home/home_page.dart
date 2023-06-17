@@ -1,18 +1,13 @@
-import 'package:financy_app/common/constants/routes.dart';
-import 'package:financy_app/common/widgets/custom_bottom_sheet.dart';
 import 'package:flutter/material.dart';
 
-import '../../common/constants/app_colors.dart';
-import '../../common/constants/app_text_styles.dart';
-import '../../common/extensions/sizes.dart';
-import '../../common/widgets/app_header.dart';
-import '../../common/widgets/custom_circular_progress_indicator.dart';
-import '../../common/widgets/transaction_listview/transaction_listview.dart';
+import '../../common/constants/constants.dart';
+import '../../common/extensions/extensions.dart';
+import '../../common/features/balance/balance.dart';
+import '../../common/widgets/widgets.dart';
 import '../../locator.dart';
 import 'home_controller.dart';
 import 'home_state.dart';
-import 'widgets/balance_card/balance_card_widget.dart';
-import 'widgets/balance_card/balance_card_widget_controller.dart';
+import 'widgets/balance_card_widget.dart';
 
 class HomePage extends StatefulWidget {
   const HomePage({super.key});
@@ -23,16 +18,19 @@ class HomePage extends StatefulWidget {
 
 class _HomePageState extends State<HomePage> with CustomModalSheetMixin {
   final homeController = locator.get<HomeController>();
-  final balanceController = locator.get<BalanceCardWidgetController>();
+  final balanceController = locator.get<BalanceController>();
 
   @override
   void initState() {
     super.initState();
+
     homeController.getLatestTransactions();
     balanceController.getBalances();
 
     homeController.addListener(() {
       if (homeController.state is HomeStateError) {
+        if (!mounted) return;
+
         showCustomModalBottomSheet(
           context: context,
           content: (homeController.state as HomeStateError).message,
@@ -50,7 +48,7 @@ class _HomePageState extends State<HomePage> with CustomModalSheetMixin {
 
   @override
   void dispose() {
-    locator.resetLazySingleton<BalanceCardWidgetController>();
+    locator.resetLazySingleton<BalanceController>();
     super.dispose();
   }
 
@@ -60,7 +58,7 @@ class _HomePageState extends State<HomePage> with CustomModalSheetMixin {
       body: Stack(
         children: [
           const AppHeader(),
-          BalanceCard(controller: balanceController),
+          BalanceCardWidget(controller: balanceController),
           Positioned(
             top: 397.h,
             left: 0,
@@ -103,13 +101,20 @@ class _HomePageState extends State<HomePage> with CustomModalSheetMixin {
                           child: Text('An error has occurred'),
                         );
                       }
+
                       if (homeController.state is HomeStateSuccess &&
                           homeController.transactions.isNotEmpty) {
                         return TransactionListView(
                           transactionList: homeController.transactions,
                           itemCount: homeController.transactions.length,
+                          onChange: () {
+                            homeController
+                                .getLatestTransactions()
+                                .then((_) => balanceController.getBalances());
+                          },
                         );
                       }
+
                       return const Center(
                         child: Text('There are no transactions at this time.'),
                       );
