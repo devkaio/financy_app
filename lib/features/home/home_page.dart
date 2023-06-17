@@ -48,7 +48,6 @@ class _HomePageState extends State<HomePage> with CustomModalSheetMixin {
 
   @override
   void dispose() {
-    locator.resetLazySingleton<BalanceController>();
     super.dispose();
   }
 

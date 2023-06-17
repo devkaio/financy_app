@@ -55,7 +55,6 @@ class _WalletPageState extends State<WalletPage>
   @override
   void dispose() {
     _tabController.dispose();
-    locator.resetLazySingleton<BalanceController>();
     super.dispose();
   }
 
