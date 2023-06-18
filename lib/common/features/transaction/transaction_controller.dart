@@ -18,9 +18,6 @@ class TransactionController extends ChangeNotifier {
 
   TransactionState get state => _state;
 
-  List<TransactionModel> _transactions = [];
-  List<TransactionModel> get transactions => _transactions;
-
   void _changeState(TransactionState newState) {
     _state = newState;
     notifyListeners();
@@ -39,47 +36,6 @@ class TransactionController extends ChangeNotifier {
     result.fold(
       (error) => _changeState(TransactionStateError(message: error.message)),
       (data) => _changeState(TransactionStateSuccess()),
-    );
-  }
-
-  Future<void> getLatestTransactions() async {
-    _changeState(TransactionStateLoading());
-
-    final result = await transactionRepository.getTransactions();
-
-    result.fold(
-      (error) => _changeState(TransactionStateError(message: error.message)),
-      (data) {
-        _transactions = data;
-        _transactions.removeWhere((t) => t.syncStatus == SyncStatus.delete);
-
-        _transactions.sort((b, a) => a.date.compareTo(b.date));
-
-        _transactions = _transactions.length > 5
-            ? _transactions.getRange(0, 5).toList()
-            : _transactions;
-
-        _changeState(TransactionStateSuccess());
-      },
-    );
-  }
-
-  Future<void> getAllTransactions() async {
-    _changeState(TransactionStateLoading());
-
-    final result = await transactionRepository.getTransactions();
-
-    result.fold(
-      (error) => _changeState(TransactionStateError(message: error.message)),
-      (data) {
-        _transactions = data;
-
-        _transactions.sort((a, b) => a.date.compareTo(b.date));
-
-        _transactions.removeWhere((t) => t.syncStatus == SyncStatus.delete);
-
-        _changeState(TransactionStateSuccess());
-      },
     );
   }
 
