@@ -33,8 +33,6 @@ class WalletController extends ChangeNotifier {
       (data) {
         _transactions = data;
 
-        _transactions.removeWhere((t) => t.syncStatus == SyncStatus.delete);
-
         _changeState(WalletStateSuccess());
       },
     );
