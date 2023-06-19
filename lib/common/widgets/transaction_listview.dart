@@ -84,9 +84,6 @@ class _TransactionListViewState extends State<TransactionListView>
   void dispose() {
     _tabController.dispose();
     _scrollController.dispose();
-    transactionController.removeListener(() {
-      widget.onChange();
-    });
     locator.resetLazySingleton<TransactionController>();
     super.dispose();
   }
