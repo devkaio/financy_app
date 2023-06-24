@@ -41,6 +41,7 @@ class _CustomBottomAppBarState extends State<CustomBottomAppBar> {
             return Builder(
               builder: (context) {
                 return Expanded(
+                  key: item.key,
                   child: InkWell(
                     onTap: item.onPressed,
                     onTapUp: (_) {
@@ -68,12 +69,14 @@ class _CustomBottomAppBarState extends State<CustomBottomAppBar> {
 }
 
 class CustomBottomAppBarItem {
+  final Key? key;
   final String? label;
   final IconData? primaryIcon;
   final IconData? secondaryIcon;
   final VoidCallback? onPressed;
 
   CustomBottomAppBarItem({
+    this.key,
     this.label,
     this.primaryIcon,
     this.secondaryIcon,
@@ -81,6 +84,7 @@ class CustomBottomAppBarItem {
   });
 
   CustomBottomAppBarItem.empty({
+    this.key,
     this.label,
     this.primaryIcon,
     this.secondaryIcon,

@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 
+import '../../common/constants/constants.dart';
 import '../../locator.dart';
 import '../../services/services.dart';
 
@@ -25,6 +26,7 @@ class _ProfilePageState extends State<ProfilePage>
           children: [
             const Text("Profile"),
             TextButton(
+              key: Keys.profilePagelogoutButton,
               onPressed: () async {
                 await locator.get<AuthService>().signOut();
                 await const SecureStorageService().deleteAll();

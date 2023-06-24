@@ -60,11 +60,13 @@ class SyncService {
     );
 
     final parsedTransactionsFromServer =
-        List.from(transactionsFromServerResponse['transaction']);
+        List.from(transactionsFromServerResponse['transaction'] ?? []);
 
     final transactionsFromServer = parsedTransactionsFromServer
         .map((e) => TransactionModel.fromMap(e))
         .toList();
+
+    if (transactionsFromServer.isEmpty) return;
 
     clock.start();
 

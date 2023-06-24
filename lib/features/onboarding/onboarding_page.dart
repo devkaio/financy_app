@@ -1,12 +1,7 @@
-// ignore_for_file: public_member_api_docs, sort_constructors_first
-
-import 'package:financy_app/common/constants/app_colors.dart';
-import 'package:financy_app/common/constants/app_text_styles.dart';
-import 'package:financy_app/common/constants/routes.dart';
 import 'package:flutter/material.dart';
 
-import '../../common/widgets/multi_text_button.dart';
-import '../../common/widgets/primary_button.dart';
+import '../../common/constants/constants.dart';
+import '../../common/widgets/widgets.dart';
 
 class OnboardingPage extends StatelessWidget {
   const OnboardingPage({super.key});
@@ -45,6 +40,7 @@ class OnboardingPage extends StatelessWidget {
               bottom: 4.0,
             ),
             child: PrimaryButton(
+              key: Keys.onboardingGetStartedButton,
               text: 'Get Started',
               onPressed: () {
                 Navigator.pushNamed(
@@ -55,6 +51,7 @@ class OnboardingPage extends StatelessWidget {
             ),
           ),
           MultiTextButton(
+            key: Keys.onboardingAlreadyHaveAccountButton,
             onPressed: () => Navigator.pushNamed(context, NamedRoute.signIn),
             children: [
               Text(
