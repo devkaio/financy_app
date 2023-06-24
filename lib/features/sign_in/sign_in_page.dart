@@ -1,19 +1,11 @@
-// ignore_for_file: public_member_api_docs, sort_constructors_first
 import 'dart:developer';
 
-import 'package:financy_app/common/constants/routes.dart';
-import 'package:financy_app/common/utils/validator.dart';
-import 'package:financy_app/common/widgets/custom_circular_progress_indicator.dart';
-import 'package:financy_app/common/widgets/password_form_field.dart';
-import 'package:financy_app/locator.dart';
 import 'package:flutter/material.dart';
 
-import '../../common/constants/app_colors.dart';
-import '../../common/constants/app_text_styles.dart';
-import '../../common/widgets/custom_bottom_sheet.dart';
-import '../../common/widgets/custom_text_form_field.dart';
-import '../../common/widgets/multi_text_button.dart';
-import '../../common/widgets/primary_button.dart';
+import '../../common/constants/constants.dart';
+import '../../common/utils/utils.dart';
+import '../../common/widgets/widgets.dart';
+import '../../locator.dart';
 import 'sign_in_controller.dart';
 import 'sign_in_state.dart';
 
@@ -90,12 +82,14 @@ class _SignInPageState extends State<SignInPage> with CustomModalSheetMixin {
             child: Column(
               children: [
                 CustomTextFormField(
+                  key: Keys.signInEmailField,
                   controller: _emailController,
                   labelText: "your email",
                   hintText: "john@email.com",
                   validator: Validator.validateEmail,
                 ),
                 PasswordFormField(
+                  key: Keys.signInPasswordField,
                   controller: _passwordController,
                   labelText: "your password",
                   hintText: "*********",
@@ -114,6 +108,7 @@ class _SignInPageState extends State<SignInPage> with CustomModalSheetMixin {
               bottom: 4.0,
             ),
             child: PrimaryButton(
+              key: Keys.signInButton,
               text: 'Sign In',
               onPressed: () {
                 final valid = _formKey.currentState != null &&
@@ -130,6 +125,7 @@ class _SignInPageState extends State<SignInPage> with CustomModalSheetMixin {
             ),
           ),
           MultiTextButton(
+            key: Keys.signInDontHaveAccountButton,
             onPressed: () => Navigator.popAndPushNamed(
               context,
               NamedRoute.signUp,

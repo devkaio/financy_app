@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 
-import '../../common/constants/app_colors.dart';
+import '../../common/constants/constants.dart';
 import '../../common/features/balance/balance.dart';
 import '../../common/features/transaction/transaction.dart';
 import '../../common/widgets/custom_bottom_app_bar.dart';
@@ -73,6 +73,7 @@ class _HomePageViewState extends State<HomePageView> {
         selectedItemColor: AppColors.green,
         children: [
           CustomBottomAppBarItem(
+            key: Keys.homePageBottomAppBarItem,
             label: 'home',
             primaryIcon: Icons.home,
             secondaryIcon: Icons.home_outlined,
@@ -81,6 +82,7 @@ class _HomePageViewState extends State<HomePageView> {
             ),
           ),
           CustomBottomAppBarItem(
+            key: Keys.statsPageBottomAppBarItem,
             label: 'stats',
             primaryIcon: Icons.analytics,
             secondaryIcon: Icons.analytics_outlined,
@@ -90,6 +92,7 @@ class _HomePageViewState extends State<HomePageView> {
           ),
           CustomBottomAppBarItem.empty(),
           CustomBottomAppBarItem(
+            key: Keys.walletPageBottomAppBarItem,
             label: 'wallet',
             primaryIcon: Icons.account_balance_wallet,
             secondaryIcon: Icons.account_balance_wallet_outlined,
@@ -98,6 +101,7 @@ class _HomePageViewState extends State<HomePageView> {
             ),
           ),
           CustomBottomAppBarItem(
+            key: Keys.profilePageBottomAppBarItem,
             label: 'profile',
             primaryIcon: Icons.person,
             secondaryIcon: Icons.person_outline,
