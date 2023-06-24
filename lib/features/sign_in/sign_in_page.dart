@@ -66,6 +66,7 @@ class _SignInPageState extends State<SignInPage> with CustomModalSheetMixin {
   Widget build(BuildContext context) {
     return Scaffold(
       body: ListView(
+        key: Keys.signInListView,
         children: [
           Text(
             'Welcome Back!',
