@@ -1,0 +1,65 @@
+name: Flutter E2E Tests
+
+on:
+  # remove push after testing
+  push:
+
+  pull_request:
+    branches:
+      - master
+
+env:
+  GCLOUD_PROJECT_ID: ${{ secrets.GCLOUD_PROJECT_ID }}
+  GCLOUD_SERVICE_KEY: ${{ secrets.GCLOUD_SERVICE_KEY }}
+  JAVA_VERSION: 11
+  FLUTTER_VERSION: '3.7.9'
+  FLUTTER_CHANNEL: 'stable'
+
+jobs:
+  build_and_test:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v2
+
+      - name: Set up Java ${{ env.JAVA_VERSION }}
+        uses: actions/setup-java@v2
+        with:
+          java-version: ${{ env.JAVA_VERSION }}
+          distribution: 'adopt'
+
+      - name: Set up Flutter ${{ env.FLUTTER_VERSION }}
+        uses: subosito/flutter-action@v2
+        with:
+          flutter-version: ${{ env.FLUTTER_VERSION }}
+          channel: ${{ env.FLUTTER_CHANNEL }}
+
+      - name: Install dependencies
+        run: flutter pub get
+
+      - name: Build Debug APK
+        run: flutter build apk --debug
+
+      - name: Unit Tests
+        run: flutter test
+
+      - name: Build Instrumentation Test APK
+        run: |
+          pushd android
+          ./gradlew app:assembleDebugAndroidTest
+          ./gradlew app:assembleDebug -Ptarget="integration_test/integration_test.dart"
+          popd
+
+          # To Run Test Locally
+          #./gradlew app:connectedDebugAndroidTest -Ptarget="integration_test/integration_test.dart"
+
+      - name: Upload APKs to Firebase Test Lab
+        run: |
+          gcloud auth activate-service-account --key-file <(echo $GCLOUD_SERVICE_KEY)
+          gcloud config set project $GCLOUD_PROJECT_ID
+          gcloud firebase test android run \
+            --type instrumentation \
+            --app build/app/outputs/apk/debug/app-debug.apk \
+            --test build/app/outputs/apk/androidTest/debug/app-debug-androidTest.apk \
+            --timeout 5m \
+            
