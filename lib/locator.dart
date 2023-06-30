@@ -97,7 +97,7 @@ void setupDependencies() {
   locator.registerLazySingleton<TransactionController>(
     () => TransactionController(
       transactionRepository: locator.get<TransactionRepository>(),
-      storage: const SecureStorageService(),
+      secureStorageService: const SecureStorageService(),
     ),
   );
 }

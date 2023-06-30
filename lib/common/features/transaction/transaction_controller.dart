@@ -8,10 +8,10 @@ import 'transaction_state.dart';
 class TransactionController extends ChangeNotifier {
   TransactionController({
     required this.transactionRepository,
-    required this.storage,
+    required this.secureStorageService,
   });
 
-  final SecureStorageService storage;
+  final SecureStorageService secureStorageService;
   final TransactionRepository transactionRepository;
 
   TransactionState _state = TransactionStateInitial();
@@ -26,7 +26,7 @@ class TransactionController extends ChangeNotifier {
   Future<void> addTransaction(TransactionModel transaction) async {
     _changeState(TransactionStateLoading());
 
-    final data = await storage.readOne(key: 'CURRENT_USER');
+    final data = await secureStorageService.readOne(key: 'CURRENT_USER');
     final user = UserModel.fromJson(data ?? '');
     final result = await transactionRepository.addTransaction(
       transaction: transaction,
