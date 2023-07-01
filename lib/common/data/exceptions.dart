@@ -142,7 +142,7 @@ class SyncException extends Failure {
   String get message {
     switch (code) {
       case 'error':
-        return 'error while syncing';
+        return 'Error while syncing. Please restart the app or relogin.';
       default:
         return 'unkown error';
     }
