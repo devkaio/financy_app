@@ -38,7 +38,7 @@ class TransactionListView extends StatefulWidget {
 class _TransactionListViewState extends State<TransactionListView>
     with CustomModalSheetMixin, CustomSnackBar, SingleTickerProviderStateMixin {
   final _scrollController = ScrollController();
-  final transactionController = locator.get<TransactionController>();
+  final _transactionController = locator.get<TransactionController>();
   bool? confirmDelete = false;
 
   late TabController _tabController;
@@ -51,10 +51,24 @@ class _TransactionListViewState extends State<TransactionListView>
     _currentMonth = DateTime.now();
     _tabController = TabController(length: 1, vsync: this);
 
-    transactionController.addListener(() {
-      if (transactionController.state is TransactionStateError) {
+    _transactionController.addListener(_handleTransactionStateChange);
+  }
+
+  @override
+  void dispose() {
+    _tabController.dispose();
+    _scrollController.dispose();
+    _transactionController.removeListener(_handleTransactionStateChange);
+    locator.resetLazySingleton<TransactionController>();
+    super.dispose();
+  }
+
+  void _handleTransactionStateChange() {
+    final state = _transactionController.state as TransactionStateError;
+
+    switch (state.runtimeType) {
+      case TransactionStateError:
         if (!mounted) return;
-        final state = transactionController.state as TransactionStateError;
         setState(() {
           showCustomSnackBar(
             context: context,
@@ -62,8 +76,8 @@ class _TransactionListViewState extends State<TransactionListView>
             type: SnackBarType.error,
           );
         });
-      }
-    });
+        break;
+    }
   }
 
   void _goToPreviousMonth() {
@@ -78,14 +92,6 @@ class _TransactionListViewState extends State<TransactionListView>
       _currentMonth = DateTime(_currentMonth.year, _currentMonth.month + 1);
       _tabController.index = 0;
     });
-  }
-
-  @override
-  void dispose() {
-    _tabController.dispose();
-    _scrollController.dispose();
-    locator.resetLazySingleton<TransactionController>();
-    super.dispose();
   }
 
   @override
@@ -159,7 +165,7 @@ class _TransactionListViewState extends State<TransactionListView>
                 ),
                 onDismissed: (direction) async {
                   if (confirmDelete!) {
-                    await transactionController.deleteTransaction(item);
+                    await _transactionController.deleteTransaction(item);
                     if (!mounted) return;
                     widget.onChange();
                   }

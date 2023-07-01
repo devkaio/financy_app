@@ -85,29 +85,7 @@ class _TransactionPageState extends State<TransactionPage>
       initialIndex: _initialIndex,
     );
 
-    _transactionController.addListener(() {
-      if (_transactionController.state is TransactionStateLoading) {
-        if (!mounted) return;
-        showDialog(
-          barrierDismissible: false,
-          context: context,
-          builder: (context) => const CustomCircularProgressIndicator(),
-        );
-      }
-      if (_transactionController.state is TransactionStateSuccess) {
-        if (!mounted) return;
-        Navigator.of(context).pop();
-      }
-      if (_transactionController.state is TransactionStateError) {
-        if (!mounted) return;
-        final error = _transactionController.state as TransactionStateError;
-        showCustomSnackBar(
-          context: context,
-          text: error.message,
-          type: SnackBarType.error,
-        );
-      }
-    });
+    _transactionController.addListener(_handleTransactionStateChange);
   }
 
   @override
@@ -117,7 +95,34 @@ class _TransactionPageState extends State<TransactionPage>
     _descriptionController.dispose();
     _categoryController.dispose();
     _dateController.dispose();
+    _transactionController.removeListener(_handleTransactionStateChange);
     super.dispose();
+  }
+
+  void _handleTransactionStateChange() {
+    final state = _transactionController.state;
+    switch (state.runtimeType) {
+      case TransactionStateLoading:
+        if (!mounted) return;
+        showDialog(
+          barrierDismissible: false,
+          context: context,
+          builder: (context) => const CustomCircularProgressIndicator(),
+        );
+        break;
+      case TransactionStateSuccess:
+        if (!mounted) return;
+        Navigator.of(context).pop();
+        break;
+      case TransactionStateError:
+        if (!mounted) return;
+        showCustomSnackBar(
+          context: context,
+          text: (state as TransactionStateError).message,
+          type: SnackBarType.error,
+        );
+        break;
+    }
   }
 
   @override

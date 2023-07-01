@@ -35,34 +35,35 @@ class _SignUpPageState extends State<SignUpPage> with CustomModalSheetMixin {
   @override
   void initState() {
     super.initState();
-    _signUpController.addListener(
-      () {
-        if (_signUpController.state is SignUpStateLoading) {
-          showDialog(
-            context: context,
-            builder: (context) => const CustomCircularProgressIndicator(),
-          );
-        }
-        if (_signUpController.state is SignUpStateSuccess) {
-          Navigator.pop(context);
+    _signUpController.addListener(_handleSignUpstateChange);
+  }
 
-          Navigator.pushReplacementNamed(
-            context,
-            NamedRoute.home,
-          );
-        }
+  void _handleSignUpstateChange() {
+    final state = _signUpController.state;
+    switch (state.runtimeType) {
+      case SignUpStateLoading:
+        showDialog(
+          context: context,
+          builder: (context) => const CustomCircularProgressIndicator(),
+        );
+        break;
+      case SignUpStateSuccess:
+        Navigator.pop(context);
 
-        if (_signUpController.state is SignUpStateError) {
-          final error = _signUpController.state as SignUpStateError;
-          Navigator.pop(context);
-          showCustomModalBottomSheet(
-            context: context,
-            content: error.message,
-            buttonText: "Try again",
-          );
-        }
-      },
-    );
+        Navigator.pushReplacementNamed(
+          context,
+          NamedRoute.home,
+        );
+        break;
+      case SignUpStateError:
+        Navigator.pop(context);
+        showCustomModalBottomSheet(
+          context: context,
+          content: (state as SignUpStateError).message,
+          buttonText: "Try again",
+        );
+        break;
+    }
   }
 
   @override

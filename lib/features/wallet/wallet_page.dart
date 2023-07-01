@@ -19,7 +19,7 @@ class WalletPage extends StatefulWidget {
 class _WalletPageState extends State<WalletPage>
     with SingleTickerProviderStateMixin, CustomModalSheetMixin {
   final balanceController = locator.get<BalanceController>();
-  final walletController = locator.get<WalletController>();
+  final _walletController = locator.get<WalletController>();
   late final TabController _tabController;
 
   @override
@@ -30,16 +30,28 @@ class _WalletPageState extends State<WalletPage>
       vsync: this,
     );
 
-    walletController.getAllTransactions();
+    _walletController.getAllTransactions();
     balanceController.getBalances();
 
-    walletController.addListener(() {
-      if (walletController.state is WalletStateError) {
+    _walletController.addListener(_handleWalletStateChange);
+  }
+
+  @override
+  void dispose() {
+    _tabController.dispose();
+    _walletController.removeListener(_handleWalletStateChange);
+    super.dispose();
+  }
+
+  void _handleWalletStateChange() {
+    final state = _walletController.state;
+    switch (state.runtimeType) {
+      case WalletStateError:
         if (!mounted) return;
 
         showCustomModalBottomSheet(
           context: context,
-          content: (walletController.state as WalletStateError).message,
+          content: (_walletController.state as WalletStateError).message,
           buttonText: 'Go to login',
           isDismissible: false,
           onPressed: () => Navigator.pushNamedAndRemoveUntil(
@@ -48,14 +60,8 @@ class _WalletPageState extends State<WalletPage>
             ModalRoute.withName(NamedRoute.initial),
           ),
         );
-      }
-    });
-  }
-
-  @override
-  void dispose() {
-    _tabController.dispose();
-    super.dispose();
+        break;
+    }
   }
 
   @override
@@ -161,25 +167,25 @@ class _WalletPageState extends State<WalletPage>
                     const SizedBox(height: 32.0),
                     Expanded(
                       child: AnimatedBuilder(
-                        animation: walletController,
+                        animation: _walletController,
                         builder: (context, _) {
-                          if (walletController.state is WalletStateLoading) {
+                          if (_walletController.state is WalletStateLoading) {
                             return const CustomCircularProgressIndicator(
                               color: AppColors.green,
                             );
                           }
-                          if (walletController.state is WalletStateError) {
+                          if (_walletController.state is WalletStateError) {
                             return const Center(
                               child: Text('An error has occurred'),
                             );
                           }
-                          if (walletController.state is WalletStateSuccess &&
-                              walletController.transactions.isNotEmpty) {
+                          if (_walletController.state is WalletStateSuccess &&
+                              _walletController.transactions.isNotEmpty) {
                             return TransactionListView.withCalendar(
-                              transactionList: walletController.transactions,
-                              itemCount: walletController.transactions.length,
+                              transactionList: _walletController.transactions,
+                              itemCount: _walletController.transactions.length,
                               onChange: () {
-                                walletController.getAllTransactions().then(
+                                _walletController.getAllTransactions().then(
                                     (_) => balanceController.getBalances());
                               },
                             );
