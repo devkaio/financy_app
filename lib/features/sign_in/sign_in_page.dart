@@ -1,11 +1,13 @@
 import 'dart:developer';
 
+import 'package:financy_app/services/sync_service/sync_controller.dart';
 import 'package:flutter/material.dart';
 
 import '../../common/constants/constants.dart';
 import '../../common/utils/utils.dart';
 import '../../common/widgets/widgets.dart';
 import '../../locator.dart';
+import '../../services/sync_service/sync_state.dart';
 import 'sign_in_controller.dart';
 import 'sign_in_state.dart';
 
@@ -21,45 +23,73 @@ class _SignInPageState extends State<SignInPage> with CustomModalSheetMixin {
   final _emailController = TextEditingController();
   final _passwordController = TextEditingController();
   final _signInController = locator.get<SignInController>();
+  final _syncController = locator.get<SyncController>();
+
+  @override
+  void initState() {
+    super.initState();
+    _signInController.addListener(_handleSignInStateChange);
+    _syncController.addListener(_handleSyncStateChange);
+  }
 
   @override
   void dispose() {
     _emailController.dispose();
     _passwordController.dispose();
     _signInController.dispose();
+    _syncController.dispose();
     super.dispose();
   }
 
-  @override
-  void initState() {
-    super.initState();
-    _signInController.addListener(
-      () {
-        if (_signInController.state is SignInStateLoading) {
-          showDialog(
-            context: context,
-            builder: (context) => const CustomCircularProgressIndicator(),
-          );
-        }
-        if (_signInController.state is SignInStateSuccess) {
-          Navigator.pop(context);
-          Navigator.pushReplacementNamed(
-            context,
-            NamedRoute.home,
-          );
-        }
+  void _handleSignInStateChange() {
+    switch (_signInController.state.runtimeType) {
+      case SignInStateLoading:
+        showDialog(
+          context: context,
+          builder: (context) => const CustomCircularProgressIndicator(),
+        );
+        break;
+      case SignInStateSuccess:
+        _syncController.syncFromServer();
+        break;
+      case SignInStateError:
+        Navigator.pop(context);
+        showCustomModalBottomSheet(
+          context: context,
+          content: (_signInController.state as SignInStateError).message,
+          buttonText: "Try again",
+        );
+        break;
+    }
+  }
 
-        if (_signInController.state is SignInStateError) {
-          final error = _signInController.state as SignInStateError;
-          Navigator.pop(context);
-          showCustomModalBottomSheet(
-            context: context,
-            content: error.message,
-            buttonText: "Try again",
-          );
-        }
-      },
-    );
+  void _handleSyncStateChange() {
+    switch (_syncController.state.runtimeType) {
+      case DownloadedDataFromServer:
+        _syncController.syncToServer();
+        break;
+      case UploadedDataToServer:
+        Navigator.pushReplacementNamed(
+          context,
+          NamedRoute.home,
+        );
+        break;
+      case SyncStateError:
+      case UploadDataToServerError:
+      case DownloadDataFromServerError:
+        Navigator.pop(context);
+        showCustomModalBottomSheet(
+          context: context,
+          content: (_syncController.state as SyncStateError).message,
+          buttonText: "Try again",
+          onPressed: () => Navigator.pushNamedAndRemoveUntil(
+            context,
+            NamedRoute.signIn,
+            (route) => false,
+          ),
+        );
+        break;
+    }
   }
 
   @override
