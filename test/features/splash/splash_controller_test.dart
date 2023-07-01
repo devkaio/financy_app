@@ -1,3 +1,4 @@
+import 'package:financy_app/common/data/data.dart';
 import 'package:financy_app/common/models/user_model.dart';
 import 'package:financy_app/features/splash/splash_controller.dart';
 import 'package:financy_app/features/splash/splash_state.dart';
@@ -17,7 +18,6 @@ void main() {
     mockSyncService = MockSyncService();
     splashController = SplashController(
       secureStorageService: mockSecureStorage,
-      syncService: mockSyncService,
     );
     user = UserModel(
       name: 'User',
@@ -25,8 +25,10 @@ void main() {
       id: '1a2b3c4d5e',
     );
 
-    when(() => mockSyncService.syncFromServer()).thenAnswer((_) async {});
-    when(() => mockSyncService.syncToServer()).thenAnswer((_) async {});
+    when(() => mockSyncService.syncFromServer())
+        .thenAnswer((_) async => DataResult.success(null));
+    when(() => mockSyncService.syncToServer())
+        .thenAnswer((_) async => DataResult.success(null));
   });
 
   group('Tests Splash Controller', () {

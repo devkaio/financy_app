@@ -20,7 +20,6 @@ void main() {
 
     sut = HomeController(
       transactionRepository: mockTransactionRepository,
-      syncService: mockSyncService,
     );
 
     transactions = [
@@ -38,17 +37,16 @@ void main() {
       }),
     ];
 
-    when(() => mockSyncService.syncFromServer()).thenAnswer((_) async {});
+    when(() => mockSyncService.syncFromServer())
+        .thenAnswer((_) async => DataResult.success(null));
   });
 
   group('Tests Home Controller State', () {
-    test(
-        '''
+    test('''
 \nGiven: that the initial state is HomeStateInitial
 When: getLatestTransactions is called and returns transactions
 Then: HomeState should be HomeStateSuccess
-''',
-        () async {
+''', () async {
       expect(sut.state, isInstanceOf<HomeStateInitial>());
       expect(sut.transactions, isEmpty);
 
@@ -66,13 +64,11 @@ Then: HomeState should be HomeStateSuccess
       expect(sut.state, isInstanceOf<HomeStateSuccess>());
     });
 
-    test(
-        '''
+    test('''
 \nGiven: that the initial state is HomeStateInitial
 When: getLatestTransactions is called and returns failure
 Then: HomeState should be HomeStateError
-''',
-        () async {
+''', () async {
       expect(sut.state, isInstanceOf<HomeStateInitial>());
       expect(sut.transactions, isEmpty);
 

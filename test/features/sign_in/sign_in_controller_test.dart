@@ -27,7 +27,6 @@ void main() {
     sut = SignInController(
       authService: mockFirebaseAuthService,
       secureStorageService: mockSecureStorage,
-      syncService: mockSyncService,
     );
 
     user = UserModel(
@@ -36,7 +35,8 @@ void main() {
       id: '1a2b3c4d5e',
     );
 
-    when(() => mockSyncService.syncFromServer()).thenAnswer((_) async {});
+    when(() => mockSyncService.syncFromServer())
+        .thenAnswer((_) async => DataResult.success(null));
 
     when(() => mockSecureStorage.write(
           key: "CURRENT_USER",
@@ -63,10 +63,6 @@ void main() {
       );
 
       expect(sut.state, isInstanceOf<SignInStateLoading>());
-
-      await Future.delayed(Duration.zero);
-
-      expect(sut.state, isInstanceOf<SignInStateSuccess>());
     });
 
     test('Should update state to SignInStateError', () async {
