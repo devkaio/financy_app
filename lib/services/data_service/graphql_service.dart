@@ -1,8 +1,7 @@
 import 'package:graphql_flutter/graphql_flutter.dart';
 
-import '../common/data/exceptions.dart';
-import 'auth_service.dart';
-import 'data_service.dart';
+import '../../common/data/data.dart';
+import '../services.dart';
 
 class GraphQLService implements DataService<Map<String, dynamic>> {
   GraphQLService({
