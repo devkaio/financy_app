@@ -1,13 +1,12 @@
 import 'dart:developer';
 
-import 'package:financy_app/services/sync_service/sync_controller.dart';
 import 'package:flutter/material.dart';
 
 import '../../common/constants/constants.dart';
 import '../../common/utils/utils.dart';
 import '../../common/widgets/widgets.dart';
 import '../../locator.dart';
-import '../../services/sync_service/sync_state.dart';
+import '../../services/sync_service/sync_service.dart';
 import 'sign_in_controller.dart';
 import 'sign_in_state.dart';
 

@@ -3,18 +3,12 @@ import 'dart:math' as math;
 
 import 'package:flutter/material.dart';
 
-import '../../common/constants/app_colors.dart';
-import '../../common/constants/app_text_styles.dart';
-import '../../common/extensions/date_formatter.dart';
-import '../../common/extensions/sizes.dart';
+import '../../common/constants/constants.dart';
+import '../../common/extensions/extensions.dart';
 import '../../common/features/transaction/transaction.dart';
-import '../../common/models/transaction_model.dart';
-import '../../common/utils/money_mask_controller.dart';
-import '../../common/widgets/app_header.dart';
-import '../../common/widgets/custom_circular_progress_indicator.dart';
-import '../../common/widgets/custom_snackbar.dart';
-import '../../common/widgets/custom_text_form_field.dart';
-import '../../common/widgets/primary_button.dart';
+import '../../common/models/models.dart';
+import '../../common/utils/utils.dart';
+import '../../common/widgets/widgets.dart';
 import '../../locator.dart';
 
 class TransactionPage extends StatefulWidget {

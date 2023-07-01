@@ -1,17 +1,17 @@
 import 'package:flutter/material.dart';
 
-import 'common/constants/routes.dart';
-import 'common/models/transaction_model.dart';
+import 'common/constants/constants.dart';
+import 'common/models/models.dart';
 import 'common/themes/default_theme.dart';
-import 'features/home/home_page_view.dart';
-import 'features/onboarding/onboarding_page.dart';
-import 'features/profile/profile_page.dart';
-import 'features/sign_in/sign_in_page.dart';
-import 'features/sign_up/sign_up_page.dart';
-import 'features/splash/splash_page.dart';
-import 'features/stats/stats_page.dart';
-import 'features/transactions/transaction_page.dart';
-import 'features/wallet/wallet_page.dart';
+import 'features/home/home.dart';
+import 'features/onboarding/onboarding.dart';
+import 'features/profile/profile.dart';
+import 'features/sign_in/sign_in.dart';
+import 'features/sign_up/sign_up.dart';
+import 'features/splash/splash.dart';
+import 'features/stats/stats.dart';
+import 'features/transactions/transactions.dart';
+import 'features/wallet/wallet.dart';
 
 class App extends StatelessWidget {
   const App({super.key});

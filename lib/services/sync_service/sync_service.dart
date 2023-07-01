@@ -7,6 +7,9 @@ import '../../common/models/models.dart';
 import '../../repositories/repositories.dart';
 import '../services.dart';
 
+export 'sync_controller.dart';
+export 'sync_state.dart';
+
 class SyncService {
   const SyncService({
     required this.connectionService,

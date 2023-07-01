@@ -1,6 +1,5 @@
 import 'package:financy_app/common/data/data.dart';
-import 'package:financy_app/services/sync_service/sync_controller.dart';
-import 'package:financy_app/services/sync_service/sync_state.dart';
+import 'package:financy_app/services/sync_service/sync_service.dart';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:mocktail/mocktail.dart';
 

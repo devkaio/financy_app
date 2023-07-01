@@ -1,7 +1,8 @@
 import 'dart:convert';
 
-import '../extensions/extensions.dart';
 import 'package:uuid/uuid.dart';
+
+import '../extensions/extensions.dart';
 
 enum SyncStatus {
   none,

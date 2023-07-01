@@ -1,13 +1,10 @@
-import 'package:financy_app/common/widgets/widgets.dart';
-import 'package:financy_app/services/sync_service/sync_controller.dart';
 import 'package:flutter/material.dart';
 
-import '../../common/constants/app_colors.dart';
-import '../../common/constants/app_text_styles.dart';
-import '../../common/constants/routes.dart';
-import '../../common/extensions/sizes.dart';
+import '../../common/constants/constants.dart';
+import '../../common/extensions/extensions.dart';
+import '../../common/widgets/widgets.dart';
 import '../../locator.dart';
-import '../../services/sync_service/sync_state.dart';
+import '../../services/sync_service/sync_service.dart';
 import 'splash_controller.dart';
 import 'splash_state.dart';
 

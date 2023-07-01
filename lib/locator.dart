@@ -1,4 +1,3 @@
-import 'package:financy_app/services/sync_service/sync_controller.dart';
 import 'package:get_it/get_it.dart';
 
 import 'common/features/balance/balance.dart';
