@@ -33,7 +33,6 @@ class _HomePageState extends State<HomePage> with CustomModalSheetMixin {
   @override
   void dispose() {
     _homeController.removeListener(_handleHomeStateChange);
-    locator.resetLazySingleton<HomeController>();
     super.dispose();
   }
 
