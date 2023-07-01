@@ -73,12 +73,6 @@ void setupDependencies() {
   locator.registerLazySingleton<HomeController>(
     () => HomeController(
       transactionRepository: locator.get<TransactionRepository>(),
-      syncService: SyncService(
-        connectionService: const ConnectionService(),
-        databaseService: locator.get<DatabaseService>(),
-        graphQLService: locator.get<GraphQLService>(),
-        secureStorageService: const SecureStorageService(),
-      ),
     ),
   );
 
