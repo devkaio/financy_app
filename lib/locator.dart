@@ -94,4 +94,10 @@ void setupDependencies() {
       secureStorageService: const SecureStorageService(),
     ),
   );
+
+  locator.registerFactory<SyncController>(
+    () => SyncController(
+      syncService: locator.get<SyncService>(),
+    ),
+  );
 }

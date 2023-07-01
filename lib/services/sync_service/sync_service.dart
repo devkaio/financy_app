@@ -1,11 +1,11 @@
 import 'dart:developer';
 
-import '../common/constants/constants.dart';
-import '../common/data/data.dart';
-import '../common/extensions/types_ext.dart';
-import '../common/models/models.dart';
-import '../repositories/repositories.dart';
-import 'services.dart';
+import '../../common/constants/constants.dart';
+import '../../common/data/data.dart';
+import '../../common/extensions/types_ext.dart';
+import '../../common/models/models.dart';
+import '../../repositories/repositories.dart';
+import '../services.dart';
 
 class SyncService {
   const SyncService({
@@ -22,12 +22,12 @@ class SyncService {
 
   /// Fetch remote information and perform sync from server
   /// with local database. At the end of the process it sets `NEED_SYNC` to `false`.
-  Future<void> syncFromServer() async {
+  Future<DataResult<void>> syncFromServer() async {
     log('syncFromServer called', name: 'INFO');
     await connectionService.checkConnection();
-    if (!connectionService.isConnected) return;
+    if (!connectionService.isConnected) return DataResult.success(null);
     final needSync = await secureStorageService.readOne(key: 'NEED_SYNC');
-    if (needSync != null && !needSync.toBool()) return;
+    if (needSync != null && !needSync.toBool()) return DataResult.success(null);
 
     try {
       await databaseService.init();
@@ -38,9 +38,11 @@ class SyncService {
         key: 'NEED_SYNC',
         value: false.toString(),
       );
+
+      return DataResult.success(null);
     } catch (e) {
       log('syncFromServer exception $e', name: 'ERROR');
-      rethrow;
+      return DataResult.failure(const SyncException(code: 'error'));
     }
   }
 
@@ -128,15 +130,15 @@ class SyncService {
   /// item on the list.
   ///
   /// At the end of the process it sets `NEED_SYNC` to `false`.
-  Future<void> syncToServer() async {
+  Future<DataResult<void>> syncToServer() async {
     log('syncToServer called', name: 'INFO');
     await connectionService.checkConnection();
 
-    if (!connectionService.isConnected) return;
+    if (!connectionService.isConnected) return DataResult.success(null);
 
     List<TransactionModel> localTransactions = await _getLocalTransactions();
 
-    if (localTransactions.isEmpty) return;
+    if (localTransactions.isEmpty) return DataResult.success(null);
 
     try {
       for (final t in localTransactions) {
@@ -158,9 +160,11 @@ class SyncService {
         key: 'NEED_SYNC',
         value: false.toString(),
       );
+
+      return DataResult.success(null);
     } catch (e) {
       log('syncToServer exception $e', name: 'ERROR');
-      throw const SyncException(code: 'error');
+      return DataResult.failure(const SyncException(code: 'error'));
     }
   }
 
