@@ -25,8 +25,6 @@ class TransactionRepositoryImpl implements TransactionRepository {
           .copyWith(userId: userId, syncStatus: SyncStatus.create)
           .toDatabase();
 
-      await updateBalance(TransactionModel.fromMap(newTransaction));
-
       await syncService.saveLocalChanges(
         path: TransactionRepository.transactionsPath,
         params: newTransaction,
@@ -98,8 +96,6 @@ class TransactionRepositoryImpl implements TransactionRepository {
     TransactionModel transaction,
   ) async {
     try {
-      await updateBalance(transaction);
-
       await syncService.saveLocalChanges(
         path: TransactionRepository.transactionsPath,
         params:
@@ -116,8 +112,6 @@ class TransactionRepositoryImpl implements TransactionRepository {
   Future<DataResult<bool>> deleteTransaction(
       TransactionModel transaction) async {
     try {
-      await updateBalance(transaction);
-
       final deleteTransactionResponse = await databaseService.delete(
         path: TransactionRepository.transactionsPath,
         params: {'id': transaction.id},
@@ -136,86 +130,36 @@ class TransactionRepositoryImpl implements TransactionRepository {
   }
 
   @override
-  Future<void> updateBalance(newTransaction) async {
-    final transactionMap = await databaseService.read(
-      path: TransactionRepository.transactionsPath,
-      params: {'id': newTransaction.id},
-    );
-
-    final transactionExists = (transactionMap['data'] as List).isNotEmpty;
-
-    final oldTransaction = transactionExists
-        ? TransactionModel.fromMap((transactionMap['data'] as List).first)
-        : null;
-
+  Future<DataResult<BalancesModel>> updateBalance({
+    TransactionModel? oldTransaction,
+    required TransactionModel newTransaction,
+  }) async {
     final balanceMap =
         await databaseService.read(path: TransactionRepository.balancesPath);
 
     final current = BalancesModel.fromMap((balanceMap['data'] as List).first);
 
     double newTotalBalance = current.totalBalance;
-
     double newTotalIncome = current.totalIncome;
-
     double newTotalOutcome = current.totalOutcome;
 
-    if (transactionExists) {
-      final differentValues = oldTransaction!.value != newTransaction.value;
-
-      double updatedValue = differentValues
-          ? _computeNewValue(
-              oldTransaction.value,
-              newTransaction.value,
-            )
-          : oldTransaction.value;
-
-      if (differentValues) {
-        newTotalBalance -= oldTransaction.value;
-        newTotalBalance += updatedValue;
-
-        if (updatedValue >= 0) {
-          newTotalIncome -= oldTransaction.value;
-          newTotalIncome += updatedValue;
-        } else {
-          newTotalOutcome -= oldTransaction.value;
-          newTotalOutcome += updatedValue;
-        }
-
-        final updatedBalance = current
-            .copyWith(
-              totalBalance: newTotalBalance,
-              totalIncome: newTotalIncome,
-              totalOutcome: newTotalOutcome,
-            )
-            .toMap();
-
-        final updateBalanceResponse = await databaseService.update(
-          path: TransactionRepository.balancesPath,
-          params: updatedBalance,
-        );
-
-        if (!(updateBalanceResponse['data'] as bool)) {
-          throw const CacheException(code: 'write');
-        }
-
-        return;
-      }
-
-      newTotalBalance -= updatedValue;
-
-      if (updatedValue >= 0) {
-        newTotalIncome -= updatedValue;
-      } else {
-        newTotalOutcome -= updatedValue;
-      }
+    if (oldTransaction == null) {
+      newTotalBalance += newTransaction.value;
     } else {
+      newTotalBalance -= oldTransaction.value;
       newTotalBalance += newTransaction.value;
 
-      if (newTransaction.value >= 0) {
-        newTotalIncome += newTransaction.value;
+      if (oldTransaction.value >= 0) {
+        newTotalIncome -= oldTransaction.value;
       } else {
-        newTotalOutcome += newTransaction.value;
+        newTotalOutcome -= oldTransaction.value;
       }
+    }
+
+    if (newTransaction.value >= 0) {
+      newTotalIncome += newTransaction.value;
+    } else {
+      newTotalOutcome += newTransaction.value;
     }
 
     final updatedBalance = current
@@ -232,13 +176,11 @@ class TransactionRepositoryImpl implements TransactionRepository {
     );
 
     if (!(updateBalanceResponse['data'] as bool)) {
-      throw const CacheException(code: 'write');
+      return DataResult.failure(const GeneralException());
     }
-  }
 
-  double _computeNewValue(
-    double oldValue,
-    double newValue,
-  ) =>
-      (oldValue + newValue) - oldValue;
+    return DataResult.success(
+      BalancesModel.fromMap(updatedBalance),
+    );
+  }
 }
