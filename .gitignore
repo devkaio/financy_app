@@ -47,3 +47,7 @@ app.*.map.json
 functions
 .firebaserc
 firebase.json
+
+#Code Coverage
+/coverage
+test/coverage_helper_test.dart
