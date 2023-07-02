@@ -91,21 +91,6 @@ void main() {
           '\n'
           'THEN: it should return a success result', () async {
         //WHEN
-        when(() => mockDatabaseService.read(
-              path: TransactionRepository.transactionsPath,
-              params: any(named: 'params'),
-            )).thenAnswer((_) async => {'data': []});
-
-        when(() => mockDatabaseService.read(
-              path: TransactionRepository.balancesPath,
-              params: any(named: 'params'),
-            )).thenAnswer((_) async => balancesMap);
-
-        when(() => mockDatabaseService.update(
-              path: TransactionRepository.balancesPath,
-              params: any(named: 'params'),
-            )).thenAnswer((_) async => {'data': true});
-
         when(() => mockSyncService.saveLocalChanges(
               path: TransactionRepository.transactionsPath,
               params: any(named: 'params'),
@@ -120,6 +105,35 @@ void main() {
         result.fold(
           (error) => expect(error, null),
           (data) => expect(data, true),
+        );
+      });
+
+      test(
+          '\n'
+          'GIVEN: a transaction and user ID'
+          '\n'
+          'WHEN: adding a new transaction and the sync service throws an error'
+          '\n'
+          'THEN: it should return a failure result', () async {
+        //WHEN
+        when(() => mockSyncService.saveLocalChanges(
+              path: TransactionRepository.transactionsPath,
+              params: any(named: 'params'),
+            )).thenThrow(const CacheException(code: 'write'));
+
+        final result = await transactionRepositoryImpl.addTransaction(
+          transaction: TransactionModel.fromMap(transactionMap),
+          userId: userId,
+        );
+
+        //THEN
+        result.fold(
+          (error) {
+            expect(error, isA<Failure>());
+            expect(error.message,
+                'An error has occurred while writing data into local cache.');
+          },
+          (data) => expect(data, null),
         );
       });
     });
@@ -143,7 +157,10 @@ void main() {
         //THEN
         result.fold(
           (error) => expect(error, null),
-          (data) => expect(data.length, 2),
+          (data) {
+            expect(data, isA<List<TransactionModel>>());
+            expect(data.length, 2);
+          },
         );
       });
 
@@ -165,7 +182,7 @@ void main() {
         //THEN
         result.fold(
           (error) => expect(error, null),
-          (data) => expect(data.length, 0),
+          (data) => expect(data, isEmpty),
         );
       });
 
@@ -186,13 +203,160 @@ void main() {
 
         //THEN
         result.fold(
-          (error) => expect(error, isA<Failure>()),
+          (error) {
+            expect(error, isA<Failure>());
+            expect(error.message,
+                'An error has occurred while reading data into local cache.');
+          },
+          (data) => expect(data, null),
+        );
+      });
+    });
+
+    group('when deleteTransaction is called', () {
+      test(
+          '\n'
+          'GIVEN: a transaction exists in the database'
+          '\n'
+          'WHEN: deleteTransaction is called'
+          '\n'
+          'THEN: deleteTransaction should return true', () async {
+        //WHEN
+        when(
+          () => mockDatabaseService.delete(
+              path: TransactionRepository.transactionsPath,
+              params: {'id': transactionMap['id']}),
+        ).thenAnswer((_) async => {'data': true});
+
+        when(() => mockSyncService.saveLocalChanges(
+            path: TransactionRepository.transactionsPath,
+            params: TransactionModel.fromMap(transactionMap)
+                .copyWith(syncStatus: SyncStatus.delete)
+                .toDatabase())).thenAnswer((_) async {});
+
+        // Act
+        final result = await transactionRepositoryImpl
+            .deleteTransaction(TransactionModel.fromMap(transactionMap));
+
+        result.fold(
+          (error) => null,
+          (data) {
+            expect(data, true);
+          },
+        );
+      });
+
+      test(
+          '\n'
+          'GIVEN: a transaction exists in the database'
+          '\n'
+          'WHEN: deleteTransaction is called and the database throws exception'
+          '\n'
+          'THEN: deleteTransaction should return false', () async {
+        //WHEN
+        when(
+          () => mockDatabaseService.delete(
+              path: TransactionRepository.transactionsPath,
+              params: {'id': transactionMap['id']}),
+        ).thenThrow(const CacheException(code: 'delete'));
+
+        // Act
+        final result = await transactionRepositoryImpl
+            .deleteTransaction(TransactionModel.fromMap(transactionMap));
+
+        result.fold(
+          (error) {
+            expect(error, isA<CacheException>());
+            expect(error.message,
+                'An error has occurred while delete data from local cache.');
+          },
+          (data) => expect(data, null),
+        );
+      });
+
+      test(
+          '\n'
+          'GIVEN: a transaction exists in the database'
+          '\n'
+          'WHEN: deleteTransaction is called and the syncService throws exception'
+          '\n'
+          'THEN: deleteTransaction should return false', () async {
+        //WHEN
+        when(
+          () => mockDatabaseService.delete(
+              path: TransactionRepository.transactionsPath,
+              params: {'id': transactionMap['id']}),
+        ).thenAnswer((_) async => {'data': true});
+
+        when(() => mockSyncService.saveLocalChanges(
+            path: TransactionRepository.transactionsPath,
+            params: TransactionModel.fromMap(transactionMap)
+                .copyWith(syncStatus: SyncStatus.delete)
+                .toDatabase())).thenThrow(const CacheException(code: 'write'));
+
+        // Act
+        final result = await transactionRepositoryImpl
+            .deleteTransaction(TransactionModel.fromMap(transactionMap));
+
+        result.fold(
+          (error) {
+            expect(error, isA<CacheException>());
+            expect(error.message,
+                'An error has occurred while writing data into local cache.');
+          },
           (data) => expect(data, null),
         );
       });
     });
 
     group('when updateTransaction is called', () {
+      test('should return true when transaction is saved in database',
+          () async {
+        //WHEN
+        when(() => mockSyncService.saveLocalChanges(
+            path: TransactionRepository.transactionsPath,
+            params: any(
+              named: 'params',
+            ))).thenAnswer((_) async {});
+
+        // Act
+        final result = await transactionRepositoryImpl
+            .updateTransaction(TransactionModel.fromMap(transactionMap));
+
+        // Assert
+        result.fold(
+          (error) => null,
+          (data) {
+            expect(data, true);
+          },
+        );
+      });
+
+      test('should return failure when sycncService throws exception',
+          () async {
+        //WHEN
+        when(() => mockSyncService.saveLocalChanges(
+            path: TransactionRepository.transactionsPath,
+            params: any(
+              named: 'params',
+            ))).thenThrow(const CacheException(code: 'write'));
+
+        // Act
+        final result = await transactionRepositoryImpl
+            .updateTransaction(TransactionModel.fromMap(transactionMap));
+
+        // Assert
+        result.fold(
+          (error) {
+            expect(error, isA<CacheException>());
+            expect(error.message,
+                'An error has occurred while writing data into local cache.');
+          },
+          (data) => expect(data, null),
+        );
+      });
+    });
+    group('when updateBalance is called', () {
       test('Update balance when a transaction is deleted', () async {
         // Arrange
         balancesMap = {
@@ -205,6 +369,7 @@ void main() {
           ]
         };
 
+        //WHEN
         when(() => mockDatabaseService.read(
             path: TransactionRepository.balancesPath,
             params: any(
@@ -219,6 +384,7 @@ void main() {
 
         final initialBalance = await transactionRepositoryImpl.getBalances();
 
+        // Assert before update
         initialBalance.fold(
           (error) => null,
           (data) {
@@ -228,7 +394,7 @@ void main() {
           },
         );
 
-        // Define the old transaction
+        // Arrange
         final oldTransaction = TransactionModel(
           category: 'category',
           description: 'description',
@@ -240,7 +406,7 @@ void main() {
           syncStatus: SyncStatus.synced,
           userId: userId,
         );
-        // Define the new transaction
+
         final newTransaction = oldTransaction.copyWith(value: 0);
 
         // Act
@@ -365,36 +531,295 @@ void main() {
           },
         );
       });
-    });
 
-    group('when deleteTransaction is called', () {
       test(
-          '\n'
-          'GIVEN: that the balance is empty'
-          '\n'
-          'WHEN: a new transaction of 50 is added'
-          '\n'
-          'THEN: the total balance should be 200, total income should be 200 and total outcome should be 0',
+          'Update balance when an income transaction of value 100 is updated to 200',
+          () async {
+        // Arrange
+        balancesMap = {
+          'data': [
+            {
+              'total_balance': 0,
+              'total_income': 100,
+              'total_outcome': -100,
+            }
+          ]
+        };
+        //WHEN
+        when(() => mockDatabaseService.read(
+            path: TransactionRepository.balancesPath,
+            params: any(
+              named: 'params',
+            ))).thenAnswer((_) async => balancesMap);
+
+        when(() => mockDatabaseService.update(
+            path: TransactionRepository.balancesPath,
+            params: any(
+              named: 'params',
+            ))).thenAnswer((_) async => {'data': true});
+
+        final initialBalance = await transactionRepositoryImpl.getBalances();
+
+        // Assert before update
+        initialBalance.fold(
+          (error) => null,
+          (data) {
+            expect(data.totalBalance, 0);
+            expect(data.totalIncome, 100);
+            expect(data.totalOutcome, -100);
+          },
+        );
+
+        // Arrange
+        final oldTransaction = TransactionModel(
+          category: 'category',
+          description: 'description',
+          value: 100,
+          date: DateTime.now().millisecondsSinceEpoch,
+          status: true,
+          createdAt: DateTime.now().millisecondsSinceEpoch,
+          id: '1',
+          syncStatus: SyncStatus.synced,
+          userId: userId,
+        );
+
+        final updatedTransaction = oldTransaction.copyWith(value: 200);
+
+        // Act
+        final result = await transactionRepositoryImpl.updateBalance(
+          oldTransaction: oldTransaction,
+          newTransaction: updatedTransaction,
+        );
+
+        // Assert
+        result.fold(
+          (error) => null,
+          (data) {
+            expect(data.totalBalance, 100);
+            expect(data.totalIncome, 200);
+            expect(data.totalOutcome, -100);
+          },
+        );
+      });
+
+      test(
+          'Update balance when an outcome transaction of value -100 is updated to -300',
+          () async {
+        // Arrange
+        balancesMap = {
+          'data': [
+            {
+              'total_balance': 0,
+              'total_income': 100,
+              'total_outcome': -100,
+            }
+          ]
+        };
+        //WHEN
+        when(() => mockDatabaseService.read(
+            path: TransactionRepository.balancesPath,
+            params: any(
+              named: 'params',
+            ))).thenAnswer((_) async => balancesMap);
+
+        when(() => mockDatabaseService.update(
+            path: TransactionRepository.balancesPath,
+            params: any(
+              named: 'params',
+            ))).thenAnswer((_) async => {'data': true});
+
+        final initialBalance = await transactionRepositoryImpl.getBalances();
+
+        // Assert before update
+        initialBalance.fold(
+          (error) => null,
+          (data) {
+            expect(data.totalBalance, 0);
+            expect(data.totalIncome, 100);
+            expect(data.totalOutcome, -100);
+          },
+        );
+
+        // Arrange
+        final oldTransaction = TransactionModel(
+          category: 'category',
+          description: 'description',
+          value: -100,
+          date: DateTime.now().millisecondsSinceEpoch,
+          status: true,
+          createdAt: DateTime.now().millisecondsSinceEpoch,
+          id: '1',
+          syncStatus: SyncStatus.synced,
+          userId: userId,
+        );
+
+        final updatedTransaction = oldTransaction.copyWith(value: -300);
+
+        // Act
+        final result = await transactionRepositoryImpl.updateBalance(
+          oldTransaction: oldTransaction,
+          newTransaction: updatedTransaction,
+        );
+
+        // Assert
+        result.fold(
+          (error) => null,
+          (data) {
+            expect(data.totalBalance, -200);
+            expect(data.totalIncome, 100);
+            expect(data.totalOutcome, -300);
+          },
+        );
+      });
+
+      test(
+          'Update balance when an income transaction is updated to an outcome transaction',
+          () async {
+        // Arrange
+        balancesMap = {
+          'data': [
+            {
+              'total_balance': 0,
+              'total_income': 100,
+              'total_outcome': -100,
+            }
+          ]
+        };
+        //WHEN
+        when(() => mockDatabaseService.read(
+            path: TransactionRepository.balancesPath,
+            params: any(
+              named: 'params',
+            ))).thenAnswer((_) async => balancesMap);
+
+        when(() => mockDatabaseService.update(
+            path: TransactionRepository.balancesPath,
+            params: any(
+              named: 'params',
+            ))).thenAnswer((_) async => {'data': true});
+
+        final initialBalance = await transactionRepositoryImpl.getBalances();
+
+        // Assert before update
+        initialBalance.fold(
+          (error) => null,
+          (data) {
+            expect(data.totalBalance, 0);
+            expect(data.totalIncome, 100);
+            expect(data.totalOutcome, -100);
+          },
+        );
+
+        // Arrange
+        final oldTransaction = TransactionModel(
+          category: 'category',
+          description: 'description',
+          value: 100,
+          date: DateTime.now().millisecondsSinceEpoch,
+          status: true,
+          createdAt: DateTime.now().millisecondsSinceEpoch,
+          id: '1',
+          syncStatus: SyncStatus.synced,
+          userId: userId,
+        );
+
+        final updatedTransaction = oldTransaction.copyWith(value: -200);
+
+        // Act
+        final result = await transactionRepositoryImpl.updateBalance(
+          oldTransaction: oldTransaction,
+          newTransaction: updatedTransaction,
+        );
+
+        // Assert
+        result.fold(
+          (error) => null,
+          (data) {
+            expect(data.totalBalance, -300);
+            expect(data.totalIncome, 0);
+            expect(data.totalOutcome, -300);
+          },
+        );
+      });
+
+      test('and database throws exception when reading balance on update',
           () async {
         //WHEN
         when(() => mockDatabaseService.read(
-              path: TransactionRepository.balancesPath,
-              params: any(named: 'params'),
-            )).thenAnswer((_) async => {
-              'data': [
-                {
-                  'total_value': 0,
-                  'total_income': 0,
-                  'total_expense': 0,
-                }
-              ]
-            });
+            path: TransactionRepository.balancesPath,
+            params: any(
+              named: 'params',
+            ))).thenThrow(const CacheException(code: 'read'));
 
-        when(
-          () => mockDatabaseService.read(
-              path: TransactionRepository.transactionsPath,
-              params: {'id': transactionMap['id']}),
-        ).thenAnswer((_) async => {'data': []});
+        final oldTransaction = TransactionModel.fromMap(transactionMap);
+        final newTransaction = oldTransaction.copyWith(value: 200);
+
+        final result = await transactionRepositoryImpl.updateBalance(
+          oldTransaction: oldTransaction,
+          newTransaction: newTransaction,
+        );
+
+        // Assert
+        result.fold(
+          (error) {
+            expect(error, isA<CacheException>());
+            expect(error.message,
+                'An error has occurred while reading data into local cache.');
+          },
+          (data) => null,
+        );
+      });
+      test('and database throws exception when updating balance', () async {
+        //WHEN
+        when(() => mockDatabaseService.read(
+            path: TransactionRepository.balancesPath,
+            params: any(
+              named: 'params',
+            ))).thenAnswer((_) async => balancesMap);
+        when(() => mockDatabaseService.update(
+            path: TransactionRepository.balancesPath,
+            params: any(
+              named: 'params',
+            ))).thenThrow(const CacheException(code: 'update'));
+
+        final oldTransaction = TransactionModel.fromMap(transactionMap);
+        final newTransaction = oldTransaction.copyWith(value: 200);
+
+        final result = await transactionRepositoryImpl.updateBalance(
+          oldTransaction: oldTransaction,
+          newTransaction: newTransaction,
+        );
+
+        // Assert
+        result.fold(
+          (error) {
+            expect(error, isA<CacheException>());
+            expect(error.message,
+                'An error has occurred while updating data from local cache.');
+          },
+          (data) => null,
+        );
+      });
+
+      test('and database throws exception when reading balance', () async {
+        //WHEN
+        when(() => mockDatabaseService.read(
+            path: TransactionRepository.balancesPath,
+            params: any(
+              named: 'params',
+            ))).thenThrow(const CacheException(code: 'read'));
+
+        final result = await transactionRepositoryImpl.getBalances();
+
+        // Assert
+        result.fold(
+          (error) {
+            expect(error, isA<CacheException>());
+            expect(error.message,
+                'An error has occurred while reading data into local cache.');
+          },
+          (data) => null,
+        );
       });
     });
   });
