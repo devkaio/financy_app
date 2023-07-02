@@ -1,4 +1,4 @@
-name: Flutter Unit Tests
+name: Code Coverage
 
 on:
   push:
@@ -25,7 +25,9 @@ jobs:
         run: flutter pub get
 
       - name: Generate test files
-        run: ./coverage.sh
+        run: | 
+          chmod +x ./coverage.sh
+          ./coverage.sh
 
       - name: Unit Tests
         run: flutter test --coverage
