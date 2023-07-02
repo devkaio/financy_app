@@ -4,6 +4,7 @@ import 'package:intl/intl.dart';
 import '../../locator.dart';
 import '../constants/constants.dart';
 import '../extensions/extensions.dart';
+import '../features/balance/balance.dart';
 import '../features/transaction/transaction_controller.dart';
 import '../features/transaction/transaction_state.dart';
 import '../models/models.dart';
@@ -38,7 +39,8 @@ class TransactionListView extends StatefulWidget {
 class _TransactionListViewState extends State<TransactionListView>
     with CustomModalSheetMixin, CustomSnackBar, SingleTickerProviderStateMixin {
   final _scrollController = ScrollController();
-  final transactionController = locator.get<TransactionController>();
+  final _transactionController = locator.get<TransactionController>();
+  final _balanceController = locator.get<BalanceController>();
   bool? confirmDelete = false;
 
   late TabController _tabController;
@@ -51,19 +53,33 @@ class _TransactionListViewState extends State<TransactionListView>
     _currentMonth = DateTime.now();
     _tabController = TabController(length: 1, vsync: this);
 
-    transactionController.addListener(() {
-      if (transactionController.state is TransactionStateError) {
+    _transactionController.addListener(_handleTransactionStateChange);
+  }
+
+  @override
+  void dispose() {
+    _tabController.dispose();
+    _scrollController.dispose();
+    _transactionController.removeListener(_handleTransactionStateChange);
+    locator.resetLazySingleton<TransactionController>();
+    super.dispose();
+  }
+
+  void _handleTransactionStateChange() {
+    final state = _transactionController.state;
+
+    switch (state.runtimeType) {
+      case TransactionStateError:
         if (!mounted) return;
-        final state = transactionController.state as TransactionStateError;
         setState(() {
           showCustomSnackBar(
             context: context,
-            text: state.message,
+            text: (state as TransactionStateError).message,
             type: SnackBarType.error,
           );
         });
-      }
-    });
+        break;
+    }
   }
 
   void _goToPreviousMonth() {
@@ -78,14 +94,6 @@ class _TransactionListViewState extends State<TransactionListView>
       _currentMonth = DateTime(_currentMonth.year, _currentMonth.month + 1);
       _tabController.index = 0;
     });
-  }
-
-  @override
-  void dispose() {
-    _tabController.dispose();
-    _scrollController.dispose();
-    locator.resetLazySingleton<TransactionController>();
-    super.dispose();
   }
 
   @override
@@ -159,7 +167,11 @@ class _TransactionListViewState extends State<TransactionListView>
                 ),
                 onDismissed: (direction) async {
                   if (confirmDelete!) {
-                    await transactionController.deleteTransaction(item);
+                    await _transactionController.deleteTransaction(item);
+                    await _balanceController.updateBalance(
+                      oldTransaction: item,
+                      newTransaction: item.copyWith(value: 0),
+                    );
                     if (!mounted) return;
                     widget.onChange();
                   }

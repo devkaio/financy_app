@@ -21,9 +21,20 @@ class CustomBottomAppBar extends StatefulWidget {
 
 class _CustomBottomAppBarState extends State<CustomBottomAppBar> {
   @override
+  void initState() {
+    super.initState();
+
+    widget.controller.addListener(_handlePageChange);
+  }
+
+  @override
   void dispose() {
     widget.controller.dispose();
     super.dispose();
+  }
+
+  void _handlePageChange() {
+    setState(() {});
   }
 
   @override

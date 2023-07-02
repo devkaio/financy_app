@@ -2,8 +2,8 @@ import 'dart:developer';
 
 import 'package:sqflite/sqflite.dart';
 
-import '../common/data/data.dart';
-import '../locator.dart';
+import '../../common/data/data.dart';
+import '../../locator.dart';
 import 'data_service.dart';
 
 class DatabaseService implements DataService<Map<String, dynamic>> {

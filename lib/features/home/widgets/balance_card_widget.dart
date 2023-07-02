@@ -1,17 +1,40 @@
 import 'dart:developer';
 
+import 'package:flutter/material.dart';
+
 import '../../../common/constants/constants.dart';
 import '../../../common/extensions/extensions.dart';
 import '../../../common/features/balance/balance.dart';
-import 'package:flutter/material.dart';
 
-class BalanceCardWidget extends StatelessWidget {
+class BalanceCardWidget extends StatefulWidget {
   const BalanceCardWidget({
     Key? key,
     required this.controller,
   }) : super(key: key);
 
   final BalanceController controller;
+
+  @override
+  State<BalanceCardWidget> createState() => _BalanceCardWidgetState();
+}
+
+class _BalanceCardWidgetState extends State<BalanceCardWidget> {
+  @override
+  void initState() {
+    super.initState();
+
+    widget.controller.addListener(_handleBalanceStateChange);
+  }
+
+  void _handleBalanceStateChange() {
+    setState(() {});
+  }
+
+  @override
+  void dispose() {
+    widget.controller.removeListener(_handleBalanceStateChange);
+    super.dispose();
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -50,9 +73,9 @@ class BalanceCardWidget extends StatelessWidget {
                           .apply(color: AppColors.white),
                     ),
                     AnimatedBuilder(
-                        animation: controller,
+                        animation: widget.controller,
                         builder: (context, _) {
-                          if (controller.state is BalanceStateLoading) {
+                          if (widget.controller.state is BalanceStateLoading) {
                             return Container(
                               color: AppColors.greenTwo,
                               constraints:
@@ -64,7 +87,7 @@ class BalanceCardWidget extends StatelessWidget {
                             constraints:
                                 BoxConstraints.tightFor(width: 250.0.w),
                             child: Text(
-                              '\$${controller.balances.totalBalance.toStringAsFixed(2)}',
+                              '\$${widget.controller.balances.totalBalance.toStringAsFixed(2)}',
                               textScaleFactor: textScaleFactor,
                               style: AppTextStyles.mediumText30
                                   .apply(color: AppColors.white),
@@ -97,20 +120,20 @@ class BalanceCardWidget extends StatelessWidget {
               mainAxisAlignment: MainAxisAlignment.spaceBetween,
               children: [
                 AnimatedBuilder(
-                  animation: controller,
+                  animation: widget.controller,
                   builder: (context, _) {
                     return TransactionValueWidget(
-                      amount: controller.balances.totalIncome,
-                      controller: controller,
+                      amount: widget.controller.balances.totalIncome,
+                      controller: widget.controller,
                     );
                   },
                 ),
                 AnimatedBuilder(
-                  animation: controller,
+                  animation: widget.controller,
                   builder: (context, _) {
                     return TransactionValueWidget(
-                      amount: controller.balances.totalOutcome,
-                      controller: controller,
+                      amount: widget.controller.balances.totalOutcome,
+                      controller: widget.controller,
                       type: TransactionType.outcome,
                     );
                   },

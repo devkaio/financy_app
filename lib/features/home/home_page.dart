@@ -17,23 +17,34 @@ class HomePage extends StatefulWidget {
 }
 
 class _HomePageState extends State<HomePage> with CustomModalSheetMixin {
-  final homeController = locator.get<HomeController>();
-  final balanceController = locator.get<BalanceController>();
+  final _homeController = locator.get<HomeController>();
+  final _balanceController = locator.get<BalanceController>();
 
   @override
   void initState() {
     super.initState();
 
-    homeController.getLatestTransactions();
-    balanceController.getBalances();
+    _homeController.getLatestTransactions();
+    _balanceController.getBalances();
 
-    homeController.addListener(() {
-      if (homeController.state is HomeStateError) {
+    _homeController.addListener(_handleHomeStateChange);
+  }
+
+  @override
+  void dispose() {
+    _homeController.removeListener(_handleHomeStateChange);
+    super.dispose();
+  }
+
+  void _handleHomeStateChange() {
+    final state = _homeController.state;
+    switch (state.runtimeType) {
+      case HomeStateError:
         if (!mounted) return;
 
         showCustomModalBottomSheet(
           context: context,
-          content: (homeController.state as HomeStateError).message,
+          content: (_homeController.state as HomeStateError).message,
           buttonText: 'Go to login',
           isDismissible: false,
           onPressed: () => Navigator.pushNamedAndRemoveUntil(
@@ -42,13 +53,8 @@ class _HomePageState extends State<HomePage> with CustomModalSheetMixin {
             ModalRoute.withName(NamedRoute.initial),
           ),
         );
-      }
-    });
-  }
-
-  @override
-  void dispose() {
-    super.dispose();
+        break;
+    }
   }
 
   @override
@@ -57,7 +63,7 @@ class _HomePageState extends State<HomePage> with CustomModalSheetMixin {
       body: Stack(
         children: [
           const AppHeader(),
-          BalanceCardWidget(controller: balanceController),
+          BalanceCardWidget(controller: _balanceController),
           Positioned(
             top: 397.h,
             left: 0,
@@ -76,7 +82,7 @@ class _HomePageState extends State<HomePage> with CustomModalSheetMixin {
                       ),
                       GestureDetector(
                         onTap: () {
-                          homeController.pageController.jumpToPage(2);
+                          _homeController.pageController.jumpToPage(2);
                         },
                         child: const Text(
                           'See all',
@@ -88,28 +94,27 @@ class _HomePageState extends State<HomePage> with CustomModalSheetMixin {
                 ),
                 Expanded(
                   child: AnimatedBuilder(
-                    animation: homeController,
+                    animation: _homeController,
                     builder: (context, _) {
-                      if (homeController.state is HomeStateLoading) {
+                      if (_homeController.state is HomeStateLoading) {
                         return const CustomCircularProgressIndicator(
                           color: AppColors.green,
                         );
                       }
-                      if (homeController.state is HomeStateError) {
+                      if (_homeController.state is HomeStateError) {
                         return const Center(
                           child: Text('An error has occurred'),
                         );
                       }
 
-                      if (homeController.state is HomeStateSuccess &&
-                          homeController.transactions.isNotEmpty) {
+                      if (_homeController.state is HomeStateSuccess &&
+                          _homeController.transactions.isNotEmpty) {
                         return TransactionListView(
-                          transactionList: homeController.transactions,
-                          itemCount: homeController.transactions.length,
+                          transactionList: _homeController.transactions,
+                          itemCount: _homeController.transactions.length,
                           onChange: () {
-                            homeController
-                                .getLatestTransactions()
-                                .then((_) => balanceController.getBalances());
+                            _homeController.getLatestTransactions();
+                            _balanceController.getBalances();
                           },
                         );
                       }

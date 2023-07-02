@@ -3,18 +3,13 @@ import 'dart:math' as math;
 
 import 'package:flutter/material.dart';
 
-import '../../common/constants/app_colors.dart';
-import '../../common/constants/app_text_styles.dart';
-import '../../common/extensions/date_formatter.dart';
-import '../../common/extensions/sizes.dart';
+import '../../common/constants/constants.dart';
+import '../../common/extensions/extensions.dart';
+import '../../common/features/balance/balance.dart';
 import '../../common/features/transaction/transaction.dart';
-import '../../common/models/transaction_model.dart';
-import '../../common/utils/money_mask_controller.dart';
-import '../../common/widgets/app_header.dart';
-import '../../common/widgets/custom_circular_progress_indicator.dart';
-import '../../common/widgets/custom_snackbar.dart';
-import '../../common/widgets/custom_text_form_field.dart';
-import '../../common/widgets/primary_button.dart';
+import '../../common/models/models.dart';
+import '../../common/utils/utils.dart';
+import '../../common/widgets/widgets.dart';
 import '../../locator.dart';
 
 class TransactionPage extends StatefulWidget {
@@ -31,6 +26,7 @@ class TransactionPage extends StatefulWidget {
 class _TransactionPageState extends State<TransactionPage>
     with SingleTickerProviderStateMixin, CustomSnackBar {
   final _transactionController = locator.get<TransactionController>();
+  final _balanceController = locator.get<BalanceController>();
 
   final _formKey = GlobalKey<FormState>();
 
@@ -85,29 +81,7 @@ class _TransactionPageState extends State<TransactionPage>
       initialIndex: _initialIndex,
     );
 
-    _transactionController.addListener(() {
-      if (_transactionController.state is TransactionStateLoading) {
-        if (!mounted) return;
-        showDialog(
-          barrierDismissible: false,
-          context: context,
-          builder: (context) => const CustomCircularProgressIndicator(),
-        );
-      }
-      if (_transactionController.state is TransactionStateSuccess) {
-        if (!mounted) return;
-        Navigator.of(context).pop();
-      }
-      if (_transactionController.state is TransactionStateError) {
-        if (!mounted) return;
-        final error = _transactionController.state as TransactionStateError;
-        showCustomSnackBar(
-          context: context,
-          text: error.message,
-          type: SnackBarType.error,
-        );
-      }
-    });
+    _transactionController.addListener(_handleTransactionStateChange);
   }
 
   @override
@@ -117,7 +91,34 @@ class _TransactionPageState extends State<TransactionPage>
     _descriptionController.dispose();
     _categoryController.dispose();
     _dateController.dispose();
+    _transactionController.removeListener(_handleTransactionStateChange);
     super.dispose();
+  }
+
+  void _handleTransactionStateChange() {
+    final state = _transactionController.state;
+    switch (state.runtimeType) {
+      case TransactionStateLoading:
+        if (!mounted) return;
+        showDialog(
+          barrierDismissible: false,
+          context: context,
+          builder: (context) => const CustomCircularProgressIndicator(),
+        );
+        break;
+      case TransactionStateSuccess:
+        if (!mounted) return;
+        Navigator.of(context).pop();
+        break;
+      case TransactionStateError:
+        if (!mounted) return;
+        showCustomSnackBar(
+          context: context,
+          text: (state as TransactionStateError).message,
+          type: SnackBarType.error,
+        );
+        break;
+    }
   }
 
   @override
@@ -343,12 +344,19 @@ class _TransactionPageState extends State<TransactionPage>
                               if (widget.transaction != null) {
                                 await _transactionController
                                     .updateTransaction(newTransaction);
+                                await _balanceController.updateBalance(
+                                  oldTransaction: widget.transaction!,
+                                  newTransaction: newTransaction,
+                                );
                                 if (mounted) {
                                   Navigator.of(context).pop(true);
                                 }
                               } else {
                                 await _transactionController
                                     .addTransaction(newTransaction);
+                                await _balanceController.updateBalance(
+                                  newTransaction: newTransaction,
+                                );
                                 if (mounted) {
                                   Navigator.of(context).pop(true);
                                 }

@@ -1,5 +1,5 @@
-import '../common/data/data_result.dart';
-import '../common/models/user_model.dart';
+import '../../common/data/data.dart';
+import '../../common/models/models.dart';
 
 abstract class AuthService {
   Future<DataResult<UserModel>> signUp({
