@@ -5,6 +5,7 @@ import 'package:flutter/material.dart';
 
 import '../../common/constants/constants.dart';
 import '../../common/extensions/extensions.dart';
+import '../../common/features/balance/balance.dart';
 import '../../common/features/transaction/transaction.dart';
 import '../../common/models/models.dart';
 import '../../common/utils/utils.dart';
@@ -25,6 +26,7 @@ class TransactionPage extends StatefulWidget {
 class _TransactionPageState extends State<TransactionPage>
     with SingleTickerProviderStateMixin, CustomSnackBar {
   final _transactionController = locator.get<TransactionController>();
+  final _balanceController = locator.get<BalanceController>();
 
   final _formKey = GlobalKey<FormState>();
 
@@ -342,12 +344,19 @@ class _TransactionPageState extends State<TransactionPage>
                               if (widget.transaction != null) {
                                 await _transactionController
                                     .updateTransaction(newTransaction);
+                                await _balanceController.updateBalance(
+                                  oldTransaction: widget.transaction!,
+                                  newTransaction: newTransaction,
+                                );
                                 if (mounted) {
                                   Navigator.of(context).pop(true);
                                 }
                               } else {
                                 await _transactionController
                                     .addTransaction(newTransaction);
+                                await _balanceController.updateBalance(
+                                  newTransaction: newTransaction,
+                                );
                                 if (mounted) {
                                   Navigator.of(context).pop(true);
                                 }

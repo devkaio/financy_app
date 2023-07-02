@@ -4,6 +4,7 @@ import 'package:intl/intl.dart';
 import '../../locator.dart';
 import '../constants/constants.dart';
 import '../extensions/extensions.dart';
+import '../features/balance/balance.dart';
 import '../features/transaction/transaction_controller.dart';
 import '../features/transaction/transaction_state.dart';
 import '../models/models.dart';
@@ -39,6 +40,7 @@ class _TransactionListViewState extends State<TransactionListView>
     with CustomModalSheetMixin, CustomSnackBar, SingleTickerProviderStateMixin {
   final _scrollController = ScrollController();
   final _transactionController = locator.get<TransactionController>();
+  final _balanceController = locator.get<BalanceController>();
   bool? confirmDelete = false;
 
   late TabController _tabController;
@@ -64,7 +66,7 @@ class _TransactionListViewState extends State<TransactionListView>
   }
 
   void _handleTransactionStateChange() {
-    final state = _transactionController.state as TransactionStateError;
+    final state = _transactionController.state;
 
     switch (state.runtimeType) {
       case TransactionStateError:
@@ -72,7 +74,7 @@ class _TransactionListViewState extends State<TransactionListView>
         setState(() {
           showCustomSnackBar(
             context: context,
-            text: state.message,
+            text: (state as TransactionStateError).message,
             type: SnackBarType.error,
           );
         });
@@ -166,6 +168,10 @@ class _TransactionListViewState extends State<TransactionListView>
                 onDismissed: (direction) async {
                   if (confirmDelete!) {
                     await _transactionController.deleteTransaction(item);
+                    await _balanceController.updateBalance(
+                      oldTransaction: item,
+                      newTransaction: item.copyWith(value: 0),
+                    );
                     if (!mounted) return;
                     widget.onChange();
                   }

@@ -113,9 +113,8 @@ class _HomePageState extends State<HomePage> with CustomModalSheetMixin {
                           transactionList: _homeController.transactions,
                           itemCount: _homeController.transactions.length,
                           onChange: () {
-                            _homeController
-                                .getLatestTransactions()
-                                .then((_) => _balanceController.getBalances());
+                            _homeController.getLatestTransactions();
+                            _balanceController.getBalances();
                           },
                         );
                       }

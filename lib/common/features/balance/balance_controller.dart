@@ -41,4 +41,21 @@ class BalanceController extends ChangeNotifier {
       },
     );
   }
+
+  Future<void> updateBalance(
+      {TransactionModel? oldTransaction,
+      required TransactionModel newTransaction}) async {
+    final result = await transactionRepository.updateBalance(
+      oldTransaction: oldTransaction,
+      newTransaction: newTransaction,
+    );
+
+    result.fold(
+      (error) => _changeState(BalanceStateError()),
+      (data) {
+        _balances = data;
+        _changeState(BalanceStateSuccess());
+      },
+    );
+  }
 }

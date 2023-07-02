@@ -18,7 +18,7 @@ class WalletPage extends StatefulWidget {
 
 class _WalletPageState extends State<WalletPage>
     with SingleTickerProviderStateMixin, CustomModalSheetMixin {
-  final balanceController = locator.get<BalanceController>();
+  final _balanceController = locator.get<BalanceController>();
   final _walletController = locator.get<WalletController>();
   late final TabController _tabController;
 
@@ -31,7 +31,7 @@ class _WalletPageState extends State<WalletPage>
     );
 
     _walletController.getAllTransactions();
-    balanceController.getBalances();
+    _balanceController.getBalances();
 
     _walletController.addListener(_handleWalletStateChange);
   }
@@ -100,14 +100,14 @@ class _WalletPageState extends State<WalletPage>
                     ),
                     const SizedBox(height: 8.0),
                     AnimatedBuilder(
-                        animation: balanceController,
+                        animation: _balanceController,
                         builder: (context, _) {
-                          if (balanceController.state is BalanceStateLoading) {
+                          if (_balanceController.state is BalanceStateLoading) {
                             return const CustomCircularProgressIndicator();
                           }
 
                           return Text(
-                            '\$ ${balanceController.balances.totalBalance.toStringAsFixed(2)}',
+                            '\$ ${_balanceController.balances.totalBalance.toStringAsFixed(2)}',
                             style: AppTextStyles.mediumText30
                                 .apply(color: AppColors.blackGrey),
                           );
@@ -185,8 +185,8 @@ class _WalletPageState extends State<WalletPage>
                               transactionList: _walletController.transactions,
                               itemCount: _walletController.transactions.length,
                               onChange: () {
-                                _walletController.getAllTransactions().then(
-                                    (_) => balanceController.getBalances());
+                                _walletController.getAllTransactions();
+                                _balanceController.getBalances();
                               },
                             );
                           }
