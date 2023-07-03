@@ -1,7 +1,7 @@
 name: Code Coverage
 
 on:
-  push:
+  pull_request:
 
 env:
   JAVA_VERSION: 11
