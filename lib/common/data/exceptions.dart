@@ -115,6 +115,13 @@ class CacheException extends Failure {
   }
 }
 
+class UserDataException extends Failure {
+  const UserDataException();
+
+  @override
+  String get message => 'User data not found. Please login again.';
+}
+
 //System Exceptions
 class ConnectionException extends Failure {
   const ConnectionException({
