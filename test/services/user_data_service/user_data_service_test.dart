@@ -15,16 +15,16 @@ void main() {
   setUp(() {
     mockFirebaseAuth = MockFirebaseAuth();
     fakeUser = FakeUser();
-    sut = UserDataServiceImpl(mockFirebaseAuth);
+    sut = UserDataServiceImpl(firebaseAuth: mockFirebaseAuth);
   });
 
   group('Tests UserDataService', () {
     test(
         'When getUserData is called and user is not null, returns sucess with user model data',
-        () {
+        () async {
       when(() => mockFirebaseAuth.currentUser).thenReturn(fakeUser);
 
-      final result = sut.getUserData();
+      final result = await sut.getUserData();
 
       result.fold(
         (error) => null,
@@ -39,10 +39,10 @@ void main() {
 
     test(
         'When getUserData is called and user is null, returns failure with exception',
-        () {
+        () async {
       when(() => mockFirebaseAuth.currentUser).thenReturn(null);
 
-      final result = sut.getUserData();
+      final result = await sut.getUserData();
 
       result.fold(
         (error) {
@@ -56,10 +56,10 @@ void main() {
 
     test(
         'When getUserData is called and firebase throws exception, returns failure with exception',
-        () {
+        () async {
       when(() => mockFirebaseAuth.currentUser).thenThrow(Exception());
 
-      final result = sut.getUserData();
+      final result = await sut.getUserData();
 
       result.fold(
         (error) {
