@@ -1,8 +1,7 @@
-import 'package:financy_app/services/user_data_service/user_data_service.dart';
 import 'package:flutter/foundation.dart';
 
+import '../../services/services.dart';
 import 'profile_state.dart';
-//TODO: import states
 
 class ProfileController extends ChangeNotifier {
   ProfileController({required this.userDataService});

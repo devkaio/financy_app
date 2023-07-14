@@ -1,7 +1,6 @@
 import 'package:financy_app/common/models/user_model.dart';
 import 'package:financy_app/repositories/repositories.dart';
 import 'package:financy_app/services/services.dart';
-import 'package:financy_app/services/user_data_service/user_data_service.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:mocktail/mocktail.dart';
 
