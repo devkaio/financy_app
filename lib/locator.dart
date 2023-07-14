@@ -1,8 +1,10 @@
+import 'package:firebase_auth/firebase_auth.dart';
 import 'package:get_it/get_it.dart';
 
 import 'common/features/balance/balance.dart';
 import 'common/features/transaction/transaction.dart';
 import 'features/home/home_controller.dart';
+import 'features/profile/profile_controller.dart';
 import 'features/sign_in/sign_in_controller.dart';
 import 'features/sign_up/sign_up_controller.dart';
 import 'features/splash/splash_controller.dart';
@@ -36,6 +38,9 @@ void setupDependencies() {
       secureStorageService: const SecureStorageService(),
     ),
   );
+
+  locator.registerFactory<UserDataService>(
+      () => UserDataServiceImpl(firebaseAuth: FirebaseAuth.instance));
 
   //Register Repositories
 
@@ -98,4 +103,7 @@ void setupDependencies() {
       syncService: locator.get<SyncService>(),
     ),
   );
+
+  locator.registerFactory<ProfileController>(
+      () => ProfileController(userDataService: locator.get<UserDataService>()));
 }
