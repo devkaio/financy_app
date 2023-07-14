@@ -21,7 +21,7 @@ class _ProfilePageState extends State<ProfilePage> with CustomModalSheetMixin {
   void initState() {
     super.initState();
     _profileController.getUserData();
-    _profileController.addListener(_handleProfileState);
+    _profileController.addListener(_handleProfileStateChange);
   }
 
   @override
@@ -30,7 +30,7 @@ class _ProfilePageState extends State<ProfilePage> with CustomModalSheetMixin {
     super.dispose();
   }
 
-  void _handleProfileState() {
+  void _handleProfileStateChange() {
     final state = (_profileController.state);
 
     switch (state.runtimeType) {
