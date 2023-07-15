@@ -20,6 +20,11 @@ void setupDependencies() {
     () => FirebaseAuthService(),
   );
 
+  locator.registerFactory<SecureStorageService>(
+      () => const SecureStorageService());
+
+  locator.registerFactory<ConnectionService>(() => const ConnectionService());
+
   locator.registerSingletonAsync<GraphQLService>(
     () async => GraphQLService(
       authService: locator.get<AuthService>(),
@@ -32,10 +37,10 @@ void setupDependencies() {
 
   locator.registerFactory<SyncService>(
     () => SyncService(
-      connectionService: const ConnectionService(),
+      connectionService: locator.get<ConnectionService>(),
       databaseService: locator.get<DatabaseService>(),
       graphQLService: locator.get<GraphQLService>(),
-      secureStorageService: const SecureStorageService(),
+      secureStorageService: locator.get<SecureStorageService>(),
     ),
   );
 
@@ -55,21 +60,21 @@ void setupDependencies() {
 
   locator.registerFactory<SplashController>(
     () => SplashController(
-      secureStorageService: const SecureStorageService(),
+      secureStorageService: locator.get<SecureStorageService>(),
     ),
   );
 
   locator.registerFactory<SignInController>(
     () => SignInController(
       authService: locator.get<AuthService>(),
-      secureStorageService: const SecureStorageService(),
+      secureStorageService: locator.get<SecureStorageService>(),
     ),
   );
 
   locator.registerFactory<SignUpController>(
     () => SignUpController(
       authService: locator.get<AuthService>(),
-      secureStorageService: const SecureStorageService(),
+      secureStorageService: locator.get<SecureStorageService>(),
     ),
   );
 
@@ -94,7 +99,7 @@ void setupDependencies() {
   locator.registerLazySingleton<TransactionController>(
     () => TransactionController(
       transactionRepository: locator.get<TransactionRepository>(),
-      secureStorageService: const SecureStorageService(),
+      secureStorageService: locator.get<SecureStorageService>(),
     ),
   );
 
