@@ -127,6 +127,7 @@ class _TransactionPageState extends State<TransactionPage>
       body: Stack(
         children: [
           AppHeader(
+            preffixOption: true,
             title: widget.transaction != null
                 ? 'Edit Transaction'
                 : 'Add Transaction',
