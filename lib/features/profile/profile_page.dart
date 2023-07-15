@@ -110,58 +110,41 @@ class _ProfilePageState extends State<ProfilePage> with CustomModalSheetMixin {
             child: SingleChildScrollView(
               child: Column(
                 mainAxisSize: MainAxisSize.min,
-                crossAxisAlignment: CrossAxisAlignment.stretch,
                 children: [
-                  InkWell(
-                    onTap: () {},
-                    child: Padding(
-                      padding: const EdgeInsets.all(8.0),
-                      child: Row(
-                        children: [
-                          const Icon(
-                            Icons.person,
-                            color: AppColors.green,
-                          ),
-                          const SizedBox(width: 8.0),
-                          Flexible(
-                            child: Text(
-                              'Change name',
-                              style: AppTextStyles.mediumText16w500
-                                  .apply(color: AppColors.green),
-                              textAlign: TextAlign.start,
-                            ),
-                          ),
-                        ],
+                  TextButton.icon(
+                    onPressed: () {},
+                    icon: const Icon(
+                      Icons.person,
+                      color: AppColors.green,
+                    ),
+                    label: Align(
+                      alignment: Alignment.centerLeft,
+                      child: Text(
+                        'Change name',
+                        style: AppTextStyles.mediumText16w500
+                            .apply(color: AppColors.green),
+                        textAlign: TextAlign.start,
                       ),
                     ),
                   ),
-                  const SizedBox(height: 8.0),
-                  InkWell(
-                    onTap: () {},
-                    child: Padding(
-                      padding: const EdgeInsets.all(8.0),
-                      child: Row(
-                        children: [
-                          const Icon(
-                            Icons.lock_person_rounded,
-                            color: AppColors.green,
-                          ),
-                          const SizedBox(width: 8.0),
-                          Flexible(
-                            child: Text(
-                              'Change password',
-                              style: AppTextStyles.mediumText16w500
-                                  .apply(color: AppColors.green),
-                              textAlign: TextAlign.start,
-                            ),
-                          ),
-                        ],
+                  TextButton.icon(
+                    onPressed: () {},
+                    icon: const Icon(
+                      Icons.lock_person_rounded,
+                      color: AppColors.green,
+                    ),
+                    label: Align(
+                      alignment: Alignment.centerLeft,
+                      child: Text(
+                        'Change password',
+                        style: AppTextStyles.mediumText16w500
+                            .apply(color: AppColors.green),
+                        textAlign: TextAlign.start,
                       ),
                     ),
                   ),
-                  const SizedBox(height: 8.0),
-                  InkWell(
-                    onTap: () async {
+                  TextButton.icon(
+                    onPressed: () async {
                       await locator.get<AuthService>().signOut();
                       await locator.get<SecureStorageService>().deleteAll();
                       await locator.get<DatabaseService>().deleteDB;
@@ -172,24 +155,17 @@ class _ProfilePageState extends State<ProfilePage> with CustomModalSheetMixin {
                         ModalRoute.withName(NamedRoute.initial),
                       );
                     },
-                    child: Padding(
-                      padding: const EdgeInsets.all(8.0),
-                      child: Row(
-                        children: [
-                          const Icon(
-                            Icons.logout_outlined,
-                            color: AppColors.green,
-                          ),
-                          const SizedBox(width: 8.0),
-                          Flexible(
-                            child: Text(
-                              'Logout',
-                              style: AppTextStyles.mediumText16w500
-                                  .apply(color: AppColors.green),
-                              textAlign: TextAlign.start,
-                            ),
-                          ),
-                        ],
+                    icon: const Icon(
+                      Icons.logout_outlined,
+                      color: AppColors.green,
+                    ),
+                    label: Align(
+                      alignment: Alignment.centerLeft,
+                      child: Text(
+                        'Logout',
+                        style: AppTextStyles.mediumText16w500
+                            .apply(color: AppColors.green),
+                        textAlign: TextAlign.start,
                       ),
                     ),
                   ),
