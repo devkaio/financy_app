@@ -31,9 +31,9 @@ class _AppHeaderState extends State<AppHeader> {
             color: AppColors.white,
           ),
         )
-      : Row(
+      : const Row(
           mainAxisAlignment: MainAxisAlignment.spaceBetween,
-          children: const [
+          children: [
             GreetingsWidget(),
             NotificationWidget(),
           ],
