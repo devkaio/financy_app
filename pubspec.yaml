@@ -38,13 +38,13 @@ dependencies:
   get_it: ^7.2.0
   firebase_core: ^2.4.0
   firebase_auth: ^4.2.0
-  flutter_secure_storage: ^7.0.0
+  flutter_secure_storage: ^8.0.0
   mocktail: ^0.3.0
   cloud_functions: ^4.0.8
   graphql_flutter: ^5.1.1
-  intl: ^0.17.0
+  intl: ^0.18.1
   uuid: ^3.0.7
-  http: ^0.13.6
+  http: ^1.1.0
   sqflite: ^2.2.8+4
 
 dev_dependencies:
