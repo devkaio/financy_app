@@ -30,7 +30,7 @@ class ProfileController extends ChangeNotifier {
   bool get showNameUpdateMessage =>
       _showUpdatedNameMessage && state is ProfileStateSuccess;
 
-  final bool _showUpdatedPasswordMessage = false;
+  bool _showUpdatedPasswordMessage = false;
   bool get showPasswordUpdateMessage =>
       _showUpdatedPasswordMessage && state is ProfileStateSuccess;
 
@@ -87,7 +87,7 @@ class ProfileController extends ChangeNotifier {
         _changeState(ProfileStateError(message: error.message));
       },
       (_) {
-        _showUpdatedNameMessage = true;
+        _showUpdatedPasswordMessage = true;
         onChangePasswordTapped();
         toggleButtonTap(false);
         _changeState(ProfileStateSuccess());

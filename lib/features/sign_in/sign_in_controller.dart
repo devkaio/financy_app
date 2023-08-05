@@ -5,12 +5,13 @@ import 'sign_in_state.dart';
 
 class SignInController extends ChangeNotifier {
   SignInController({
-    required this.authService,
-    required this.secureStorageService,
-  });
+    required AuthService authService,
+    required SecureStorageService secureStorageService,
+  })  : _secureStorageService = secureStorageService,
+        _authService = authService;
 
-  final AuthService authService;
-  final SecureStorageService secureStorageService;
+  final AuthService _authService;
+  final SecureStorageService _secureStorageService;
 
   SignInState _state = SignInStateInitial();
 
@@ -27,7 +28,7 @@ class SignInController extends ChangeNotifier {
   }) async {
     _changeState(SignInStateLoading());
 
-    final result = await authService.signIn(
+    final result = await _authService.signIn(
       email: email,
       password: password,
     );
@@ -35,7 +36,7 @@ class SignInController extends ChangeNotifier {
     result.fold(
       (error) => _changeState(SignInStateError(error.message)),
       (data) async {
-        await secureStorageService.write(
+        await _secureStorageService.write(
           key: "CURRENT_USER",
           value: data.toJson(),
         );

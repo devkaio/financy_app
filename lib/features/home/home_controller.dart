@@ -7,18 +7,19 @@ import 'home_state.dart';
 
 class HomeController extends ChangeNotifier {
   HomeController({
-    required this.transactionRepository,
-    required this.userDataService,
-  });
+    required TransactionRepository transactionRepository,
+    required UserDataService userDataService,
+  })  : _userDataService = userDataService,
+        _transactionRepository = transactionRepository;
 
-  final TransactionRepository transactionRepository;
-  final UserDataService userDataService;
+  final TransactionRepository _transactionRepository;
+  final UserDataService _userDataService;
 
   HomeState _state = HomeStateInitial();
 
   HomeState get state => _state;
 
-  UserModel get userData => userDataService.userData;
+  UserModel get userData => _userDataService.userData;
 
   late PageController _pageController;
   PageController get pageController => _pageController;
@@ -38,7 +39,7 @@ class HomeController extends ChangeNotifier {
   Future<void> getLatestTransactions() async {
     _changeState(HomeStateLoading());
 
-    final result = await transactionRepository.getTransactions(
+    final result = await _transactionRepository.getTransactions(
       limit: 5,
       latest: true,
     );
@@ -54,7 +55,7 @@ class HomeController extends ChangeNotifier {
   }
 
   Future<void> getUserData() async {
-    final result = await userDataService.getUserData();
+    final result = await _userDataService.getUserData();
 
     result.fold(
       (error) => _changeState(HomeStateError(message: error.message)),
