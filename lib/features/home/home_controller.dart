@@ -1,3 +1,4 @@
+import 'package:financy_app/services/services.dart';
 import 'package:flutter/material.dart';
 
 import '../../common/models/models.dart';
@@ -7,13 +8,17 @@ import 'home_state.dart';
 class HomeController extends ChangeNotifier {
   HomeController({
     required this.transactionRepository,
+    required this.userDataService,
   });
 
   final TransactionRepository transactionRepository;
+  final UserDataService userDataService;
 
   HomeState _state = HomeStateInitial();
 
   HomeState get state => _state;
+
+  UserModel get userData => userDataService.userData;
 
   late PageController _pageController;
   PageController get pageController => _pageController;
@@ -45,6 +50,15 @@ class HomeController extends ChangeNotifier {
 
         _changeState(HomeStateSuccess());
       },
+    );
+  }
+
+  Future<void> getUserData() async {
+    final result = await userDataService.getUserData();
+
+    result.fold(
+      (error) => _changeState(HomeStateError(message: error.message)),
+      (_) => null,
     );
   }
 }
