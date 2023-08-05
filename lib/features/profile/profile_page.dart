@@ -149,11 +149,13 @@ class _ProfilePageState extends State<ProfilePage>
                     switchInCurve: Curves.easeIn,
                     switchOutCurve: Curves.easeOut,
                     child: _profileController.showChangeName
-                        ? ProfileChangeNameWidget(
+                        ? _ProfileChangeNameWidget(
+                            key: const ValueKey('change-name'),
                             profileController: _profileController,
                           )
                         : _profileController.showChangePassword
-                            ? ProfileChangePasswordWidget(
+                            ? _ProfileChangePasswordWidget(
+                                key: const ValueKey('change-password'),
                                 profileController: _profileController,
                               )
                             : Column(
