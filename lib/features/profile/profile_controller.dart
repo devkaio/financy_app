@@ -72,6 +72,7 @@ class ProfileController extends ChangeNotifier {
       (error) => _changeState(ProfileStateError(message: error.message)),
       (_) {
         _showUpdatedNameMessage = true;
+        _showUpdatedPasswordMessage = false;
         onChangeNameTapped();
         toggleButtonTap(false);
         _changeState(ProfileStateSuccess());
@@ -80,6 +81,7 @@ class ProfileController extends ChangeNotifier {
   }
 
   Future<void> updateUserPassword(String newPassword) async {
+    _changeState(ProfileStateLoading());
     final result = await _userDataService.updatePassword(newPassword);
     result.fold(
       (error) {
@@ -88,6 +90,7 @@ class ProfileController extends ChangeNotifier {
       },
       (_) {
         _showUpdatedPasswordMessage = true;
+        _showUpdatedNameMessage = false;
         onChangePasswordTapped();
         toggleButtonTap(false);
         _changeState(ProfileStateSuccess());
