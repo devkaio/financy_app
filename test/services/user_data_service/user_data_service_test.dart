@@ -10,12 +10,17 @@ import '../../mock/mock_classes.dart';
 void main() {
   late UserDataService sut;
   late MockFirebaseAuth mockFirebaseAuth;
+  late MockFirebaseFunctions mockFirebaseFunctions;
   late FakeUser fakeUser;
 
   setUp(() {
     mockFirebaseAuth = MockFirebaseAuth();
+    mockFirebaseFunctions = MockFirebaseFunctions();
     fakeUser = FakeUser();
-    sut = UserDataServiceImpl(firebaseAuth: mockFirebaseAuth);
+    sut = UserDataServiceImpl(
+      firebaseAuth: mockFirebaseAuth,
+      firebaseFunctions: mockFirebaseFunctions,
+    );
   });
 
   group('Tests UserDataService', () {
@@ -57,7 +62,8 @@ void main() {
     test(
         'When getUserData is called and firebase throws exception, returns failure with exception',
         () async {
-      when(() => mockFirebaseAuth.currentUser).thenThrow(Exception());
+      when(() => mockFirebaseAuth.currentUser)
+          .thenThrow(const UserDataException(code: 'not-found'));
 
       final result = await sut.getUserData();
 

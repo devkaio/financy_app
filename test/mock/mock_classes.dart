@@ -1,3 +1,4 @@
+import 'package:cloud_functions/cloud_functions.dart';
 import 'package:financy_app/common/models/user_model.dart';
 import 'package:financy_app/repositories/repositories.dart';
 import 'package:financy_app/services/services.dart';
@@ -39,3 +40,7 @@ class FakeUser extends Fake implements User {
   @override
   String get email => 'user@email.com';
 }
+
+// Mock FirebaseFunctions
+
+class MockFirebaseFunctions extends Mock implements FirebaseFunctions {}
