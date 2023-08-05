@@ -1,3 +1,4 @@
+import 'package:financy_app/common/extensions/extensions.dart';
 import 'package:flutter/material.dart';
 
 import '../../common/constants/constants.dart';
@@ -40,7 +41,10 @@ class _HomePageViewState extends State<HomePageView> {
 
   @override
   Widget build(BuildContext context) {
+    homeController.pageController.setBottomAppBarItemIndex = 0;
+
     return Scaffold(
+      resizeToAvoidBottomInset: false,
       body: PageView(
         physics: const NeverScrollableScrollPhysics(),
         controller: homeController.pageController,
