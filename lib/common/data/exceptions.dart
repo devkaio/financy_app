@@ -134,7 +134,7 @@ class UserDataException extends Failure {
       case 'requires-recent-login':
         return 'Due to security reasons, you need to login again to perform this action.';
       case 'unavailable':
-        return 'It was not possible to fetch user data at this time. Please try again later.';
+        return 'It was not possible to update user data at this time. Please try again later.';
       default:
         return 'An internal error has ocurred while update user data. Please try again later.';
     }
