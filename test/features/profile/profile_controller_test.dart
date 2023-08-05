@@ -37,16 +37,17 @@ void main() {
 
       expect(sut.state, isA<ProfileStateSuccess>());
       expect((sut.state as ProfileStateSuccess).user, isA<UserModel>());
-      expect((sut.state as ProfileStateSuccess).user.email, 'user@email.com');
-      expect((sut.state as ProfileStateSuccess).user.name, 'User');
-      expect((sut.state as ProfileStateSuccess).user.id, '123');
+      expect((sut.state as ProfileStateSuccess).user?.email, 'user@email.com');
+      expect((sut.state as ProfileStateSuccess).user?.name, 'User');
+      expect((sut.state as ProfileStateSuccess).user?.id, '123');
     });
 
     test(
         'When getUserData is called and return failure, state should be ProfileStateFailure',
         () async {
       when(() => userDataService.getUserData()).thenAnswer(
-        (_) async => DataResult.failure(const UserDataException()),
+        (_) async =>
+            DataResult.failure(const UserDataException(code: 'not-found')),
       );
 
       await sut.getUserData();
