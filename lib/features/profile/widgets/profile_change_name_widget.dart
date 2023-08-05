@@ -1,7 +1,7 @@
 part of '../profile_page.dart';
 
-class ProfileChangeNameWidget extends StatefulWidget {
-  const ProfileChangeNameWidget({
+class _ProfileChangeNameWidget extends StatefulWidget {
+  const _ProfileChangeNameWidget({
     super.key,
     required ProfileController profileController,
   }) : _profileController = profileController;
@@ -9,11 +9,11 @@ class ProfileChangeNameWidget extends StatefulWidget {
   final ProfileController _profileController;
 
   @override
-  State<ProfileChangeNameWidget> createState() =>
+  State<_ProfileChangeNameWidget> createState() =>
       _ProfileChangeNameWidgetState();
 }
 
-class _ProfileChangeNameWidgetState extends State<ProfileChangeNameWidget>
+class _ProfileChangeNameWidgetState extends State<_ProfileChangeNameWidget>
     with CustomSnackBar {
   final _textEditingController = TextEditingController();
   final _focusNode = FocusNode();

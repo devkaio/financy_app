@@ -1,7 +1,7 @@
 part of '../profile_page.dart';
 
-class ProfileChangePasswordWidget extends StatefulWidget {
-  const ProfileChangePasswordWidget({
+class _ProfileChangePasswordWidget extends StatefulWidget {
+  const _ProfileChangePasswordWidget({
     super.key,
     required ProfileController profileController,
   }) : _profileController = profileController;
@@ -9,12 +9,12 @@ class ProfileChangePasswordWidget extends StatefulWidget {
   final ProfileController _profileController;
 
   @override
-  State<ProfileChangePasswordWidget> createState() =>
+  State<_ProfileChangePasswordWidget> createState() =>
       _ProfileChangePasswordWidgetState();
 }
 
 class _ProfileChangePasswordWidgetState
-    extends State<ProfileChangePasswordWidget> with CustomSnackBar {
+    extends State<_ProfileChangePasswordWidget> with CustomSnackBar {
   final _textEditingController = TextEditingController();
   final _focusNode = FocusNode();
   final _formKey = GlobalKey<FormState>();
