@@ -6,6 +6,7 @@ import '../../common/constants/constants.dart';
 import '../../common/utils/utils.dart';
 import '../../common/widgets/widgets.dart';
 import '../../locator.dart';
+import '../../services/services.dart';
 import 'sign_up_controller.dart';
 import 'sign_up_state.dart';
 
@@ -22,6 +23,7 @@ class _SignUpPageState extends State<SignUpPage> with CustomModalSheetMixin {
   final _emailController = TextEditingController();
   final _passwordController = TextEditingController();
   final _signUpController = locator.get<SignUpController>();
+  final _syncController = locator.get<SyncController>();
 
   @override
   void dispose() {
@@ -29,6 +31,7 @@ class _SignUpPageState extends State<SignUpPage> with CustomModalSheetMixin {
     _emailController.dispose();
     _passwordController.dispose();
     _signUpController.dispose();
+    _syncController.dispose();
     super.dispose();
   }
 
@@ -36,6 +39,7 @@ class _SignUpPageState extends State<SignUpPage> with CustomModalSheetMixin {
   void initState() {
     super.initState();
     _signUpController.addListener(_handleSignUpstateChange);
+    _syncController.addListener(_handleSyncStateChange);
   }
 
   void _handleSignUpstateChange() {
@@ -48,12 +52,7 @@ class _SignUpPageState extends State<SignUpPage> with CustomModalSheetMixin {
         );
         break;
       case SignUpStateSuccess:
-        Navigator.pop(context);
-
-        Navigator.pushReplacementNamed(
-          context,
-          NamedRoute.home,
-        );
+        _syncController.syncFromServer();
         break;
       case SignUpStateError:
         Navigator.pop(context);
@@ -61,6 +60,35 @@ class _SignUpPageState extends State<SignUpPage> with CustomModalSheetMixin {
           context: context,
           content: (state as SignUpStateError).message,
           buttonText: "Try again",
+        );
+        break;
+    }
+  }
+
+  void _handleSyncStateChange() {
+    switch (_syncController.state.runtimeType) {
+      case DownloadedDataFromServer:
+        _syncController.syncToServer();
+        break;
+      case UploadedDataToServer:
+        Navigator.pushReplacementNamed(
+          context,
+          NamedRoute.home,
+        );
+        break;
+      case SyncStateError:
+      case UploadDataToServerError:
+      case DownloadDataFromServerError:
+        Navigator.pop(context);
+        showCustomModalBottomSheet(
+          context: context,
+          content: (_syncController.state as SyncStateError).message,
+          buttonText: "Try again",
+          onPressed: () => Navigator.pushNamedAndRemoveUntil(
+            context,
+            NamedRoute.signUp,
+            (route) => false,
+          ),
         );
         break;
     }
