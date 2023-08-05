@@ -116,10 +116,29 @@ class CacheException extends Failure {
 }
 
 class UserDataException extends Failure {
-  const UserDataException();
+  const UserDataException({required this.code});
+
+  final String code;
 
   @override
-  String get message => 'User data not found. Please login again.';
+  String get message {
+    switch (code) {
+      case 'error':
+        return 'An error has occurred while fetching user data.';
+      case 'update-username':
+        return 'An error has occurred while updating user name. Please try again later.';
+      case 'update-password':
+        return 'An error has occurred while updating user password. Please try again later.';
+      case 'not-found':
+        return 'User data not found. Please login again.';
+      case 'requires-recent-login':
+        return 'Due to security reasons, you need to login again to perform this action.';
+      case 'unavailable':
+        return 'It was not possible to fetch user data at this time. Please try again later.';
+      default:
+        return 'An internal error has ocurred while update user data. Please try again later.';
+    }
+  }
 }
 
 //System Exceptions
