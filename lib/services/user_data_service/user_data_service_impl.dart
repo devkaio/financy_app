@@ -77,7 +77,7 @@ class UserDataServiceImpl implements UserDataService {
       });
 
       if (result.data['error'] != null) {
-        throw const UserDataException(code: 'update-error');
+        throw const UserDataException(code: 'update-username');
       }
 
       await _auth.currentUser?.updateDisplayName(name);
