@@ -68,7 +68,10 @@ class _WalletPageState extends State<WalletPage>
   Widget build(BuildContext context) {
     return WillPopScope(
       onWillPop: () async {
-        locator.get<HomeController>().pageController.jumpToPage(0);
+        locator
+            .get<HomeController>()
+            .pageController
+            .navigateTo(BottomAppBarItem.home);
         return false;
       },
       child: Stack(
@@ -76,7 +79,10 @@ class _WalletPageState extends State<WalletPage>
           AppHeader(
             title: 'Wallet',
             onPressed: () {
-              locator.get<HomeController>().pageController.jumpToPage(0);
+              locator
+                  .get<HomeController>()
+                  .pageController
+                  .navigateTo(BottomAppBarItem.home);
             },
           ),
           Positioned(

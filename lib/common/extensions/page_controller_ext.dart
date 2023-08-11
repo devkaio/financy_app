@@ -1,5 +1,7 @@
 import 'package:flutter/material.dart';
 
+enum BottomAppBarItem { home, stats, wallet, profile }
+
 extension PageControllerExt on PageController {
   static int _selectedIndex = 0;
 
@@ -13,5 +15,22 @@ extension PageControllerExt on PageController {
 
   set setBottomAppBarItemIndex(int newIndex) {
     _selectedIndex = newIndex;
+  }
+
+  void navigateTo(BottomAppBarItem item) {
+    switch (item) {
+      case BottomAppBarItem.home:
+        jumpToPage(BottomAppBarItem.home.index);
+        break;
+      case BottomAppBarItem.stats:
+        jumpToPage(BottomAppBarItem.stats.index);
+        break;
+      case BottomAppBarItem.wallet:
+        jumpToPage(BottomAppBarItem.wallet.index);
+        break;
+      case BottomAppBarItem.profile:
+        jumpToPage(BottomAppBarItem.profile.index);
+        break;
+    }
   }
 }

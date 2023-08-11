@@ -82,7 +82,8 @@ class _HomePageState extends State<HomePage> with CustomModalSheetMixin {
                       ),
                       GestureDetector(
                         onTap: () {
-                          _homeController.pageController.jumpToPage(2);
+                          _homeController.pageController
+                              .navigateTo(BottomAppBarItem.wallet);
                         },
                         child: const Text(
                           'See all',
