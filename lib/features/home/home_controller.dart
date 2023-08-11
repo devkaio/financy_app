@@ -1,8 +1,8 @@
-import 'package:financy_app/services/services.dart';
 import 'package:flutter/material.dart';
 
 import '../../common/models/models.dart';
 import '../../repositories/repositories.dart';
+import '../../services/services.dart';
 import 'home_state.dart';
 
 class HomeController extends ChangeNotifier {
