@@ -1,5 +1,4 @@
 import 'package:financy_app/common/extensions/extensions.dart';
-import 'package:financy_app/common/utils/utils.dart';
 import 'package:flutter/material.dart';
 
 import '../../common/constants/constants.dart';
@@ -8,9 +7,8 @@ import '../../locator.dart';
 import '../../services/services.dart';
 import 'profile_controller.dart';
 import 'profile_state.dart';
-
-part 'widgets/profile_change_name_widget.dart';
-part 'widgets/profile_change_password_widget.dart';
+import 'widgets/profile_change_name_widget.dart';
+import 'widgets/profile_change_password_widget.dart';
 
 class ProfilePage extends StatefulWidget {
   const ProfilePage({super.key});
@@ -149,12 +147,12 @@ class _ProfilePageState extends State<ProfilePage>
                     switchInCurve: Curves.easeIn,
                     switchOutCurve: Curves.easeOut,
                     child: _profileController.showChangeName
-                        ? _ProfileChangeNameWidget(
+                        ? ProfileChangeNameWidget(
                             key: const ValueKey('change-name'),
                             profileController: _profileController,
                           )
                         : _profileController.showChangePassword
-                            ? _ProfileChangePasswordWidget(
+                            ? ProfileChangePasswordWidget(
                                 key: const ValueKey('change-password'),
                                 profileController: _profileController,
                               )

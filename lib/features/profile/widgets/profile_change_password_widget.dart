@@ -1,7 +1,12 @@
-part of '../profile_page.dart';
+import 'package:flutter/material.dart';
 
-class _ProfileChangePasswordWidget extends StatefulWidget {
-  const _ProfileChangePasswordWidget({
+import '../../../common/constants/constants.dart';
+import '../../../common/utils/utils.dart';
+import '../../../common/widgets/widgets.dart';
+import '../profile.dart';
+
+class ProfileChangePasswordWidget extends StatefulWidget {
+  const ProfileChangePasswordWidget({
     super.key,
     required ProfileController profileController,
   }) : _profileController = profileController;
@@ -9,12 +14,12 @@ class _ProfileChangePasswordWidget extends StatefulWidget {
   final ProfileController _profileController;
 
   @override
-  State<_ProfileChangePasswordWidget> createState() =>
+  State<ProfileChangePasswordWidget> createState() =>
       _ProfileChangePasswordWidgetState();
 }
 
 class _ProfileChangePasswordWidgetState
-    extends State<_ProfileChangePasswordWidget> with CustomSnackBar {
+    extends State<ProfileChangePasswordWidget> with CustomSnackBar {
   final _textEditingController = TextEditingController();
   final _focusNode = FocusNode();
   final _formKey = GlobalKey<FormState>();
