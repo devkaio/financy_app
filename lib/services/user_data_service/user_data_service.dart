@@ -1,5 +1,5 @@
-import 'package:financy_app/common/data/data_result.dart';
-import 'package:financy_app/common/models/models.dart';
+import '../../common/data/data_result.dart';
+import '../../common/models/models.dart';
 
 abstract class UserDataService {
   Future<DataResult<UserModel>> getUserData();

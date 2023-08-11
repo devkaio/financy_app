@@ -5,7 +5,7 @@ import '../../common/data/data.dart';
 import '../../common/models/models.dart';
 import 'user_data_service.dart';
 
-UserModel _userData = UserModel();
+final _userData = UserModel();
 
 class UserDataServiceImpl implements UserDataService {
   UserDataServiceImpl(
@@ -28,13 +28,13 @@ class UserDataServiceImpl implements UserDataService {
         throw const UserDataException(code: 'not-found');
       }
 
-      _userData = _userData.copyWith(
-        email: user.email!,
-        name: user.displayName!,
-        id: user.uid,
+      return DataResult.success(
+        _userData.copyWith(
+          email: user.email!,
+          name: user.displayName!,
+          id: user.uid,
+        ),
       );
-
-      return DataResult.success(_userData);
     } on FirebaseAuthException catch (e) {
       return DataResult.failure(UserDataException(code: e.code));
     } catch (e) {
@@ -91,13 +91,13 @@ class UserDataServiceImpl implements UserDataService {
         throw const UserDataException(code: 'not-found');
       }
 
-      _userData = _userData.copyWith(
-        email: user.email!,
-        name: user.displayName!,
-        id: user.uid,
+      return DataResult.success(
+        _userData.copyWith(
+          email: user.email!,
+          name: user.displayName!,
+          id: user.uid,
+        ),
       );
-
-      return DataResult.success(_userData);
     } on FirebaseAuthException catch (e) {
       return DataResult.failure(UserDataException(code: e.code));
     } on FirebaseFunctionsException catch (e) {
