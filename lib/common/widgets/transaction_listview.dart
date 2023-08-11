@@ -1,5 +1,4 @@
 import 'package:flutter/material.dart';
-import 'package:intl/intl.dart';
 
 import '../../locator.dart';
 import '../constants/constants.dart';
@@ -14,20 +13,12 @@ class TransactionListView extends StatefulWidget {
   const TransactionListView({
     super.key,
     required this.transactionList,
-    this.itemCount,
     required this.onChange,
-  }) : showDate = false;
-
-  const TransactionListView.withCalendar({
-    super.key,
-    required this.transactionList,
-    this.itemCount,
-    required this.onChange,
-  }) : showDate = true;
+    this.selectedDate,
+  });
 
   final List<TransactionModel> transactionList;
-  final int? itemCount;
-  final bool showDate;
+  final DateTime? selectedDate;
 
   ///Called when transaction is updated or deleted
   final VoidCallback onChange;
@@ -43,22 +34,14 @@ class _TransactionListViewState extends State<TransactionListView>
   final _balanceController = locator.get<BalanceController>();
   bool? confirmDelete = false;
 
-  late TabController _tabController;
-  late DateTime _currentMonth;
-
   @override
   void initState() {
     super.initState();
-
-    _currentMonth = DateTime.now();
-    _tabController = TabController(length: 1, vsync: this);
-
     _transactionController.addListener(_handleTransactionStateChange);
   }
 
   @override
   void dispose() {
-    _tabController.dispose();
     _scrollController.dispose();
     _transactionController.removeListener(_handleTransactionStateChange);
     locator.resetLazySingleton<TransactionController>();
@@ -82,75 +65,28 @@ class _TransactionListViewState extends State<TransactionListView>
     }
   }
 
-  void _goToPreviousMonth() {
-    setState(() {
-      _currentMonth = DateTime(_currentMonth.year, _currentMonth.month - 1);
-      _tabController.index = 0;
-    });
-  }
-
-  void _goToNextMonth() {
-    setState(() {
-      _currentMonth = DateTime(_currentMonth.year, _currentMonth.month + 1);
-      _tabController.index = 0;
-    });
-  }
-
   @override
   Widget build(BuildContext context) {
     return CustomScrollView(
       physics: const BouncingScrollPhysics(),
       controller: _scrollController,
       slivers: [
-        if (widget.showDate)
-          SliverPersistentHeader(
-            pinned: true,
-            delegate: _SliverAppBarDelegate(
-              child: Row(
-                mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                children: [
-                  IconButton(
-                    icon: const Icon(Icons.arrow_back_ios_new_rounded),
-                    color: AppColors.green,
-                    onPressed: _goToPreviousMonth,
-                  ),
-                  TabBar(
-                    labelColor: AppColors.green,
-                    labelStyle: AppTextStyles.mediumText16w600,
-                    controller: _tabController,
-                    isScrollable: true,
-                    tabs: [
-                      Tab(
-                        text: DateFormat('MMMM yyyy').format(_currentMonth),
-                      ),
-                    ],
-                  ),
-                  IconButton(
-                    icon: const Icon(Icons.arrow_forward_ios_outlined),
-                    color: AppColors.green,
-                    onPressed: _goToNextMonth,
-                  ),
-                ],
-              ),
+        if (widget.transactionList.isEmpty)
+          const SliverFillRemaining(
+            child: Center(
+              child: Text('There are no transactions in this period.'),
             ),
           ),
         SliverList(
           delegate: SliverChildBuilderDelegate(
-            childCount: widget.itemCount ?? widget.transactionList.length,
+            childCount: widget.transactionList.length,
             (context, index) {
               final item = widget.transactionList[index];
-              final itemDate = DateTime.fromMillisecondsSinceEpoch(item.date);
-              final isCurrentDate = itemDate.month == _currentMonth.month &&
-                  itemDate.year == _currentMonth.year;
 
               final color =
                   item.value.isNegative ? AppColors.outcome : AppColors.income;
 
               final value = "\$${item.value.toStringAsFixed(2)}";
-
-              if (widget.showDate && !isCurrentDate) {
-                return const SizedBox.shrink();
-              }
 
               return Dismissible(
                 key: UniqueKey(),
@@ -172,8 +108,7 @@ class _TransactionListViewState extends State<TransactionListView>
                       oldTransaction: item,
                       newTransaction: item.copyWith(value: 0),
                     );
-                    if (!mounted) return;
-                    widget.onChange();
+                    widget.onChange.call();
                   }
                 },
                 confirmDismiss: (direction) async {
@@ -191,11 +126,7 @@ class _TransactionListViewState extends State<TransactionListView>
                       Flexible(
                         child: PrimaryButton(
                           text: 'Confirm',
-                          onPressed: () {
-                            if (mounted) {
-                              Navigator.pop(context, true);
-                            }
-                          },
+                          onPressed: () => Navigator.pop(context, true),
                         ),
                       ),
                     ],
@@ -211,8 +142,7 @@ class _TransactionListViewState extends State<TransactionListView>
                       arguments: item,
                     );
                     if (result != null) {
-                      if (!mounted) return;
-                      widget.onChange();
+                      widget.onChange.call();
                     }
                   },
                   contentPadding: const EdgeInsets.symmetric(horizontal: 8.0),
@@ -256,34 +186,5 @@ class _TransactionListViewState extends State<TransactionListView>
         ),
       ],
     );
-  }
-}
-
-class _SliverAppBarDelegate extends SliverPersistentHeaderDelegate {
-  final Widget child;
-
-  _SliverAppBarDelegate({required this.child});
-
-  @override
-  Widget build(
-    BuildContext context,
-    double shrinkOffset,
-    bool overlapsContent,
-  ) {
-    return Container(
-      color: Colors.white,
-      child: child,
-    );
-  }
-
-  @override
-  double get maxExtent => 48.0;
-
-  @override
-  double get minExtent => 48.0;
-
-  @override
-  bool shouldRebuild(_SliverAppBarDelegate oldDelegate) {
-    return true;
   }
 }

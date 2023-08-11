@@ -108,14 +108,30 @@ class DatabaseService implements DataService<Map<String, dynamic>> {
         );
         return {'data': result};
       } else {
+        String whereClause = '';
+        List<dynamic> whereArgs = [];
+
+        if (params.containsKey('start_date') &&
+            params.containsKey('end_date')) {
+          whereClause = 'date BETWEEN ? AND ?';
+          whereArgs = [params['start_date'], params['end_date']];
+        }
+
+        if (params.containsKey('skip_status')) {
+          if (whereClause.isNotEmpty) {
+            whereClause += ' AND ';
+          }
+          whereClause += 'sync_status != ?';
+          whereArgs.add(params['skip_status']);
+        }
+
         final result = await db.query(
           path,
           limit: params['limit'],
           offset: params['offset'],
           orderBy: params['order_by'],
-          where: params.containsKey('skip_status') ? 'sync_status != ?' : null,
-          whereArgs:
-              params.containsKey('skip_status') ? [params['skip_status']] : [],
+          where: whereClause.isEmpty ? null : whereClause,
+          whereArgs: whereArgs.isEmpty ? null : whereArgs,
         );
         return {'data': result};
       }
