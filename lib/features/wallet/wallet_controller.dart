@@ -15,6 +15,9 @@ class WalletController extends ChangeNotifier {
 
   WalletState get state => _state;
 
+  DateTime _selectedDate = DateTime.now();
+  DateTime get selectedDate => _selectedDate;
+
   List<TransactionModel> _transactions = [];
   List<TransactionModel> get transactions => _transactions;
 
@@ -26,7 +29,31 @@ class WalletController extends ChangeNotifier {
   Future<void> getAllTransactions() async {
     _changeState(WalletStateLoading());
 
-    final result = await transactionRepository.getTransactions();
+    final result = await transactionRepository.getLatestTransactions();
+
+    result.fold(
+      (error) => _changeState(WalletStateError(message: error.message)),
+      (data) {
+        _transactions = data;
+
+        _changeState(WalletStateSuccess());
+      },
+    );
+  }
+
+  void changeSelectedDate(DateTime newDate) {
+    _selectedDate = newDate;
+  }
+
+  Future<void> getTransactionsByDateRange() async {
+    _changeState(WalletStateLoading());
+
+    final result = await transactionRepository.getTransactionsByDateRange(
+      startDate: _selectedDate.copyWith(day: 1),
+      endDate: _selectedDate.copyWith(
+        day: DateTime(_selectedDate.year, _selectedDate.month + 1, 0).day,
+      ),
+    );
 
     result.fold(
       (error) => _changeState(WalletStateError(message: error.message)),
