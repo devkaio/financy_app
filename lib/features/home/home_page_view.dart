@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 
 import '../../common/constants/constants.dart';
+import '../../common/extensions/extensions.dart';
 import '../../common/features/balance/balance.dart';
 import '../../common/features/transaction/transaction.dart';
 import '../../common/widgets/widgets.dart';
@@ -59,7 +60,7 @@ class _HomePageViewState extends State<HomePageView> {
               homeController.getLatestTransactions();
             }
             if (homeController.pageController.page == 2) {
-              walletController.getAllTransactions();
+              walletController.getTransactionsByDateRange();
             }
             balanceController.getBalances();
           }

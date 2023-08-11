@@ -50,10 +50,7 @@ Then: HomeState should be HomeStateSuccess
       expect(sut.state, isInstanceOf<HomeStateInitial>());
       expect(sut.transactions, isEmpty);
 
-      when(() => mockTransactionRepository.getTransactions(
-            limit: 5,
-            latest: true,
-          )).thenAnswer(
+      when(() => mockTransactionRepository.getLatestTransactions()).thenAnswer(
         (_) async => DataResult.success(transactions),
       );
 
@@ -72,10 +69,7 @@ Then: HomeState should be HomeStateError
       expect(sut.state, isInstanceOf<HomeStateInitial>());
       expect(sut.transactions, isEmpty);
 
-      when(() => mockTransactionRepository.getTransactions(
-            limit: 5,
-            latest: true,
-          )).thenAnswer(
+      when(() => mockTransactionRepository.getLatestTransactions()).thenAnswer(
         (_) async => DataResult.failure(const GeneralException()),
       );
 

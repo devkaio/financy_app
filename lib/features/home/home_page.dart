@@ -112,7 +112,6 @@ class _HomePageState extends State<HomePage> with CustomModalSheetMixin {
                           _homeController.transactions.isNotEmpty) {
                         return TransactionListView(
                           transactionList: _homeController.transactions,
-                          itemCount: _homeController.transactions.length,
                           onChange: () {
                             _homeController.getLatestTransactions();
                             _balanceController.getBalances();

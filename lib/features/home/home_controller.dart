@@ -33,10 +33,7 @@ class HomeController extends ChangeNotifier {
   Future<void> getLatestTransactions() async {
     _changeState(HomeStateLoading());
 
-    final result = await transactionRepository.getTransactions(
-      limit: 5,
-      latest: true,
-    );
+    final result = await transactionRepository.getLatestTransactions();
 
     result.fold(
       (error) => _changeState(HomeStateError(message: error.message)),
