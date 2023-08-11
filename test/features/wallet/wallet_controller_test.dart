@@ -37,17 +37,15 @@ void main() {
   });
 
   group('Tests Wallet Controller State', () {
-    test(
-        '''
+    test('''
 \nGiven: that the initial state is WalletStateInitial
 When: getAllTransactions is called and returns transactions
 Then: WalletState should be WalletStateSuccess
-''',
-        () async {
+''', () async {
       expect(sut.state, isInstanceOf<WalletStateInitial>());
       expect(sut.transactions, isEmpty);
 
-      when(() => mockTransactionRepository.getTransactions()).thenAnswer(
+      when(() => mockTransactionRepository.getLatestTransactions()).thenAnswer(
         (_) async => DataResult.success(transactions),
       );
 
@@ -58,17 +56,15 @@ Then: WalletState should be WalletStateSuccess
       expect(sut.state, isInstanceOf<WalletStateSuccess>());
     });
 
-    test(
-        '''
+    test('''
 \nGiven: that the initial state is WalletStateInitial
 When: getAllTransactions is called and returns failure
 Then: WalletState should be WalletStateError
-''',
-        () async {
+''', () async {
       expect(sut.state, isInstanceOf<WalletStateInitial>());
       expect(sut.transactions, isEmpty);
 
-      when(() => mockTransactionRepository.getTransactions()).thenAnswer(
+      when(() => mockTransactionRepository.getLatestTransactions()).thenAnswer(
         (_) async => DataResult.failure(const GeneralException()),
       );
 
