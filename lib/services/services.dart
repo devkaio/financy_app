@@ -6,3 +6,5 @@ export 'data_service/database_service.dart';
 export 'data_service/graphql_service.dart';
 export 'secure_storage.dart';
 export 'sync_service/sync_service.dart';
+export 'user_data_service/user_data_service.dart';
+export 'user_data_service/user_data_service_impl.dart';

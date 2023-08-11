@@ -1,11 +1,26 @@
+import 'package:financy_app/locator.dart';
+import 'package:financy_app/services/services.dart';
 import 'package:flutter/material.dart';
 
 import '../constants/constants.dart';
+import '../extensions/extensions.dart';
 
 class GreetingsWidget extends StatelessWidget {
   const GreetingsWidget({
     super.key,
   });
+
+  String get _greeting {
+    final hour = DateTime.now().hour;
+
+    if (hour < 12) {
+      return 'Good morning,';
+    } else if (hour < 18) {
+      return 'Good afternoon,';
+    } else {
+      return 'Good evening,';
+    }
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -16,12 +31,14 @@ class GreetingsWidget extends StatelessWidget {
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
         Text(
-          'Good afternoon,',
+          _greeting,
           textScaleFactor: textScaleFactor,
           style: AppTextStyles.smallText.apply(color: AppColors.white),
         ),
         Text(
-          'Enjelin Morgeana',
+          (locator.get<UserDataService>().userData.name ?? '')
+              .capitalize()
+              .firstWord,
           textScaleFactor: textScaleFactor,
           style: AppTextStyles.mediumText20.apply(color: AppColors.white),
         ),

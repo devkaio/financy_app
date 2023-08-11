@@ -10,6 +10,7 @@ import '../../mock/mock_classes.dart';
 void main() {
   late MockTransactionRepository mockTransactionRepository;
   late MockSyncService mockSyncService;
+  late MockUserDataService mockUserDataService;
 
   late HomeController sut;
   late List<TransactionModel> transactions;
@@ -17,9 +18,11 @@ void main() {
   setUp(() {
     mockSyncService = MockSyncService();
     mockTransactionRepository = MockTransactionRepository();
+    mockUserDataService = MockUserDataService();
 
     sut = HomeController(
       transactionRepository: mockTransactionRepository,
+      userDataService: mockUserDataService,
     );
 
     transactions = [
