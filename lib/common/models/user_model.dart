@@ -37,6 +37,20 @@ class UserModel {
   factory UserModel.fromJson(String source) =>
       UserModel.fromMap(json.decode(source) as Map<String, dynamic>);
 
+  UserModel copyWith({
+    String? id,
+    String? name,
+    String? email,
+    String? password,
+  }) {
+    return UserModel(
+      id: id ?? this.id,
+      name: name ?? this.name,
+      email: email ?? this.email,
+      password: password ?? this.password,
+    );
+  }
+
   @override
   bool operator ==(covariant UserModel other) {
     if (identical(this, other)) return true;

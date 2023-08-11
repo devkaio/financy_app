@@ -20,24 +20,25 @@ class UserDataServiceImpl implements UserDataService {
   @override
   Future<DataResult<UserModel>> getUserData() async {
     try {
+      await Future.delayed(Duration.zero);
+
       final user = _auth.currentUser;
 
       if (user == null) {
         throw const UserDataException(code: 'not-found');
       }
 
-      _userData = UserModel(
+      _userData = _userData.copyWith(
         email: user.email!,
         name: user.displayName!,
         id: user.uid,
       );
 
-      return Future.value(DataResult.success(_userData));
+      return DataResult.success(_userData);
     } on FirebaseAuthException catch (e) {
-      return Future.value(DataResult.failure(UserDataException(code: e.code)));
+      return DataResult.failure(UserDataException(code: e.code));
     } catch (e) {
-      return Future.value(
-          DataResult.failure(const UserDataException(code: 'not-found')));
+      return DataResult.failure(const UserDataException(code: 'not-found'));
     }
   }
 
@@ -90,7 +91,7 @@ class UserDataServiceImpl implements UserDataService {
         throw const UserDataException(code: 'not-found');
       }
 
-      _userData = UserModel(
+      _userData = _userData.copyWith(
         email: user.email!,
         name: user.displayName!,
         id: user.uid,
