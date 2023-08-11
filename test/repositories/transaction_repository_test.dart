@@ -152,7 +152,7 @@ void main() {
               params: any(named: 'params'),
             )).thenAnswer((_) async => {'data': transactionsList});
 
-        final result = await transactionRepositoryImpl.getTransactions();
+        final result = await transactionRepositoryImpl.getLatestTransactions();
 
         //THEN
         result.fold(
@@ -177,7 +177,7 @@ void main() {
               params: any(named: 'params'),
             )).thenAnswer((_) async => {'data': []});
 
-        final result = await transactionRepositoryImpl.getTransactions();
+        final result = await transactionRepositoryImpl.getLatestTransactions();
 
         //THEN
         result.fold(
@@ -199,7 +199,7 @@ void main() {
               params: any(named: 'params'),
             )).thenThrow(const CacheException(code: 'read'));
 
-        final result = await transactionRepositoryImpl.getTransactions();
+        final result = await transactionRepositoryImpl.getLatestTransactions();
 
         //THEN
         result.fold(
