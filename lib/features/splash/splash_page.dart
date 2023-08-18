@@ -56,9 +56,10 @@ class _SplashPageState extends State<SplashPage> with CustomModalSheetMixin {
         _syncController.syncToServer();
         break;
       case UploadedDataToServer:
-        Navigator.pushReplacementNamed(
+        Navigator.pushNamedAndRemoveUntil(
           context,
           NamedRoute.home,
+          (route) => false,
         );
         break;
       case SyncStateError:
@@ -71,8 +72,8 @@ class _SplashPageState extends State<SplashPage> with CustomModalSheetMixin {
           isDismissible: false,
           onPressed: () => Navigator.pushNamedAndRemoveUntil(
             context,
-            NamedRoute.signIn,
-            ModalRoute.withName(NamedRoute.initial),
+            NamedRoute.initial,
+            (route) => false,
           ),
         );
         break;

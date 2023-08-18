@@ -63,8 +63,8 @@ class _WalletPageState extends State<WalletPage>
           isDismissible: false,
           onPressed: () => Navigator.pushNamedAndRemoveUntil(
             context,
-            NamedRoute.signIn,
-            ModalRoute.withName(NamedRoute.initial),
+            NamedRoute.initial,
+            (route) => false,
           ),
         );
         break;

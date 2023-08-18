@@ -68,9 +68,10 @@ class _SignInPageState extends State<SignInPage> with CustomModalSheetMixin {
         _syncController.syncToServer();
         break;
       case UploadedDataToServer:
-        Navigator.pushReplacementNamed(
+        Navigator.pushNamedAndRemoveUntil(
           context,
           NamedRoute.home,
+          (route) => false,
         );
         break;
       case SyncStateError:
