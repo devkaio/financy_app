@@ -1,4 +1,5 @@
 import 'package:cloud_functions/cloud_functions.dart';
+import 'package:financy_app/features/stats/stats_controller.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:get_it/get_it.dart';
 
@@ -115,4 +116,7 @@ void setupDependencies() {
 
   locator.registerFactory<ProfileController>(
       () => ProfileController(userDataService: locator.get<UserDataService>()));
+
+  locator.registerLazySingleton<StatsController>(() => StatsController(
+      transactionRepository: locator.get<TransactionRepository>()));
 }
