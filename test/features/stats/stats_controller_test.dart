@@ -51,7 +51,6 @@ void main() {
 
       expect(sut.selectedPeriod, StatsPeriod.day);
       expect(sut.transactions, isNotEmpty);
-      expect(sut.periodSpots, isNotEmpty);
       expect(sut.valueSpots, isNotEmpty);
       expect(sut.minY, 0);
       expect(sut.minX, 0);
@@ -70,7 +69,6 @@ void main() {
 
       expect(sut.selectedPeriod, StatsPeriod.week);
       expect(sut.transactions, isNotEmpty);
-      expect(sut.periodSpots, isNotEmpty);
       expect(sut.valueSpots, isNotEmpty);
       expect(sut.minY, 0);
       expect(sut.minX, 0);
@@ -89,7 +87,6 @@ void main() {
 
       expect(sut.selectedPeriod, StatsPeriod.month);
       expect(sut.transactions, isNotEmpty);
-      expect(sut.periodSpots, isNotEmpty);
       expect(sut.valueSpots, isNotEmpty);
       expect(sut.minY, 0);
       expect(sut.minX, 0);
@@ -108,7 +105,6 @@ void main() {
 
       expect(sut.selectedPeriod, StatsPeriod.year);
       expect(sut.transactions, isNotEmpty);
-      expect(sut.periodSpots, isNotEmpty);
       expect(sut.valueSpots, isNotEmpty);
       expect(sut.minY, 0);
       expect(sut.minX, 0);

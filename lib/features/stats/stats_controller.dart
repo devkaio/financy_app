@@ -33,9 +33,6 @@ class StatsController extends ChangeNotifier {
   List<FlSpot> _valueSpots = [];
   List<FlSpot> get valueSpots => _valueSpots;
 
-  List<FlSpot> _periodSpots = [];
-  List<FlSpot> get periodSpots => _periodSpots;
-
   /// Used to set chart interval by [selectedPeriod]
   double get interval {
     switch (selectedPeriod) {
@@ -55,9 +52,9 @@ class StatsController extends ChangeNotifier {
   double get maxY =>
       _valueSpots.map((e) => e.y).reduce((a, b) => a > b ? a : b);
   double get minX =>
-      _periodSpots.map((e) => e.x).reduce((a, b) => a < b ? a : b);
+      _valueSpots.map((e) => e.x).reduce((a, b) => a < b ? a : b);
   double get maxX =>
-      _periodSpots.map((e) => e.x).reduce((a, b) => a > b ? a : b);
+      _valueSpots.map((e) => e.x).reduce((a, b) => a > b ? a : b);
 
   bool _sorted = false;
   bool get sorted => _sorted;
@@ -115,7 +112,6 @@ class StatsController extends ChangeNotifier {
         _transactions = data;
 
         _getValueSpots();
-        _getPeriodSpots();
 
         _changeState(StatsStateSuccess());
       },
@@ -198,32 +194,6 @@ class StatsController extends ChangeNotifier {
     }
 
     _generateTransactionsByGrouping(groupingCount, groupingFunction);
-  }
-
-  void _getPeriodSpots() {
-    switch (selectedPeriod) {
-      case StatsPeriod.day:
-        _generatePeriodSpots(hoursInDay);
-        break;
-      case StatsPeriod.week:
-        _generatePeriodSpots(daysInWeek);
-        break;
-      case StatsPeriod.month:
-        _generatePeriodSpots(weeksInMonth);
-        break;
-      case StatsPeriod.year:
-        _generatePeriodSpots(monthsInYear);
-        break;
-    }
-  }
-
-  void _generatePeriodSpots(int count) {
-    final periods = <FlSpot>[];
-    for (int i = 0; i < count; i++) {
-      periods.add(FlSpot(i.toDouble(), i.toDouble()));
-    }
-
-    _periodSpots = periods;
   }
 
   void _generateTransactionsByGrouping(
