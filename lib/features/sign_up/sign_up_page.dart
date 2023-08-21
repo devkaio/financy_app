@@ -95,6 +95,20 @@ class _SignUpPageState extends State<SignUpPage> with CustomModalSheetMixin {
     }
   }
 
+  void _onSignUpButtonPressed() {
+    final valid =
+        _formKey.currentState != null && _formKey.currentState!.validate();
+    if (valid) {
+      _signUpController.signUp(
+        name: _nameController.text,
+        email: _emailController.text,
+        password: _passwordController.text,
+      );
+    } else {
+      log("erro ao logar");
+    }
+  }
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -156,6 +170,7 @@ class _SignUpPageState extends State<SignUpPage> with CustomModalSheetMixin {
                     _passwordController.text,
                     value,
                   ),
+                  onEditingComplete: _onSignUpButtonPressed,
                 ),
               ],
             ),
@@ -170,19 +185,7 @@ class _SignUpPageState extends State<SignUpPage> with CustomModalSheetMixin {
             child: PrimaryButton(
               key: Keys.signUpButton,
               text: 'Sign Up',
-              onPressed: () {
-                final valid = _formKey.currentState != null &&
-                    _formKey.currentState!.validate();
-                if (valid) {
-                  _signUpController.signUp(
-                    name: _nameController.text,
-                    email: _emailController.text,
-                    password: _passwordController.text,
-                  );
-                } else {
-                  log("erro ao logar");
-                }
-              },
+              onPressed: _onSignUpButtonPressed,
             ),
           ),
           MultiTextButton(
