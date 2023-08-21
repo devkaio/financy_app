@@ -63,7 +63,16 @@ class _HomePageState extends State<HomePage> with CustomModalSheetMixin {
     return Scaffold(
       body: Stack(
         children: [
-          const AppHeader(),
+          AnimatedBuilder(
+            animation: _homeController,
+            builder: (context, child) {
+              if (_homeController.state is HomeStateSuccess) {
+                return const AppHeader();
+              }
+
+              return const SizedBox.shrink();
+            },
+          ),
           BalanceCardWidget(controller: _balanceController),
           Positioned(
             top: 397.h,

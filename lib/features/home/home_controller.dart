@@ -52,11 +52,12 @@ class HomeController extends ChangeNotifier {
   }
 
   Future<void> getUserData() async {
+    _changeState(HomeStateLoading());
     final result = await _userDataService.getUserData();
 
     result.fold(
       (error) => _changeState(HomeStateError(message: error.message)),
-      (_) => null,
+      (data) => _changeState(HomeStateSuccess()),
     );
   }
 }
