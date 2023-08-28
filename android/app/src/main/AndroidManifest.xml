@@ -1,7 +1,7 @@
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
     package="dev.kaio.financy.financy_app">
    <application
-        android:label="financy_app"
+        android:label="Financy"
         android:name="${applicationName}"
         android:icon="@mipmap/ic_launcher">
         <activity
