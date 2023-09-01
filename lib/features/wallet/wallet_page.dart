@@ -63,8 +63,8 @@ class _WalletPageState extends State<WalletPage>
           isDismissible: false,
           onPressed: () => Navigator.pushNamedAndRemoveUntil(
             context,
-            NamedRoute.signIn,
-            ModalRoute.withName(NamedRoute.initial),
+            NamedRoute.initial,
+            (route) => false,
           ),
         );
         break;
@@ -144,58 +144,60 @@ class _WalletPageState extends State<WalletPage>
                           );
                         }),
                     const SizedBox(height: 24.0),
-                    StatefulBuilder(
-                      builder: (context, setState) {
-                        return TabBar(
-                          labelPadding: EdgeInsets.zero,
-                          controller: _optionsTabController,
-                          onTap: (_) {
-                            if (_optionsTabController.indexIsChanging) {
-                              setState(() {});
-                            }
-                          },
-                          tabs: [
-                            Tab(
-                              child: Container(
-                                alignment: Alignment.center,
-                                decoration: BoxDecoration(
-                                  color: _optionsTabController.index == 0
-                                      ? AppColors.iceWhite
-                                      : AppColors.white,
-                                  borderRadius: const BorderRadius.all(
-                                    Radius.circular(24.0),
-                                  ),
-                                ),
-                                child: Text(
-                                  'Transactions',
-                                  style: AppTextStyles.mediumText16w500
-                                      .apply(color: AppColors.darkGrey),
-                                ),
-                              ),
-                            ),
-                            Tab(
-                              child: Container(
-                                alignment: Alignment.center,
-                                decoration: BoxDecoration(
-                                  color: _optionsTabController.index == 1
-                                      ? AppColors.iceWhite
-                                      : AppColors.white,
-                                  borderRadius: const BorderRadius.all(
-                                    Radius.circular(24.0),
-                                  ),
-                                ),
-                                child: Text(
-                                  'Upcoming Bills',
-                                  style: AppTextStyles.mediumText16w500
-                                      .apply(color: AppColors.darkGrey),
-                                ),
-                              ),
-                            ),
-                          ],
-                        );
-                      },
-                    ),
-                    const SizedBox(height: 32.0),
+                    //TODO: finish transaction / upcoming bills tabs
+
+                    // StatefulBuilder(
+                    //   builder: (context, setState) {
+                    //     return TabBar(
+                    //       labelPadding: EdgeInsets.zero,
+                    //       controller: _optionsTabController,
+                    //       onTap: (_) {
+                    //         if (_optionsTabController.indexIsChanging) {
+                    //           setState(() {});
+                    //         }
+                    //       },
+                    //       tabs: [
+                    //         Tab(
+                    //           child: Container(
+                    //             alignment: Alignment.center,
+                    //             decoration: BoxDecoration(
+                    //               color: _optionsTabController.index == 0
+                    //                   ? AppColors.iceWhite
+                    //                   : AppColors.white,
+                    //               borderRadius: const BorderRadius.all(
+                    //                 Radius.circular(24.0),
+                    //               ),
+                    //             ),
+                    //             child: Text(
+                    //               'Transactions',
+                    //               style: AppTextStyles.mediumText16w500
+                    //                   .apply(color: AppColors.darkGrey),
+                    //             ),
+                    //           ),
+                    //         ),
+                    //         Tab(
+                    //           child: Container(
+                    //             alignment: Alignment.center,
+                    //             decoration: BoxDecoration(
+                    //               color: _optionsTabController.index == 1
+                    //                   ? AppColors.iceWhite
+                    //                   : AppColors.white,
+                    //               borderRadius: const BorderRadius.all(
+                    //                 Radius.circular(24.0),
+                    //               ),
+                    //             ),
+                    //             child: Text(
+                    //               'Upcoming Bills',
+                    //               style: AppTextStyles.mediumText16w500
+                    //                   .apply(color: AppColors.darkGrey),
+                    //             ),
+                    //           ),
+                    //         ),
+                    //       ],
+                    //     );
+                    //   },
+                    // ),
+                    // const SizedBox(height: 32.0),
                     StatefulBuilder(
                       builder: (context, setState) {
                         return Row(

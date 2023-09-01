@@ -1,7 +1,6 @@
 import 'dart:async';
 
 import '../common/data/data.dart';
-import '../common/extensions/extensions.dart';
 import '../common/models/models.dart';
 import '../services/services.dart';
 import 'transaction_repository.dart';
@@ -186,8 +185,8 @@ class TransactionRepositoryImpl implements TransactionRepository {
         params: {
           'skip_status': SyncStatus.delete.name,
           'order_by': 'date asc',
-          'start_date': startDate.yMd,
-          'end_date': endDate.yMd,
+          'start_date': startDate.toIso8601String(),
+          'end_date': endDate.toIso8601String(),
         },
       );
 

@@ -5,7 +5,7 @@ on:
 
 env:
   JAVA_VERSION: 11
-  FLUTTER_VERSION: '3.10.6'
+  FLUTTER_VERSION: '3.13.1'
   FLUTTER_CHANNEL: 'stable'
 
 jobs:
@@ -25,25 +25,25 @@ jobs:
         run: flutter pub get
 
       - name: Generate test files
-        run: | 
+        run: |
           chmod +x ./coverage.sh
           ./coverage.sh
 
       - name: Unit Tests
         run: flutter test --coverage
-      
+
       - name: Install lcov
         run: sudo apt-get install -y lcov
-      
+
       - name: Remove generated files from code coverage report
         run: lcov --remove coverage/lcov.info 'lib/*/*.freezed.dart' 'lib/*/*.g.dart' 'lib/*/*.part.dart' 'lib/generated/*.dart' 'lib/generated/*/*.dart' o coverage/lcov.info
-      
+
       - name: Upload code coverage to Codecov
         uses: codecov/codecov-action@v3
         with:
           token: ${{ secrets.CODECOV_TOKEN }}
           file: coverage/lcov.info
           flags: unittests
-      
+
       - name: Delete helper test files
         run: rm -rf test/coverage_helper_test.dart

@@ -68,9 +68,10 @@ class _SignInPageState extends State<SignInPage> with CustomModalSheetMixin {
         _syncController.syncToServer();
         break;
       case UploadedDataToServer:
-        Navigator.pushReplacementNamed(
+        Navigator.pushNamedAndRemoveUntil(
           context,
           NamedRoute.home,
+          (route) => false,
         );
         break;
       case SyncStateError:
@@ -88,6 +89,19 @@ class _SignInPageState extends State<SignInPage> with CustomModalSheetMixin {
           ),
         );
         break;
+    }
+  }
+
+  void _onSignInButtonPressed() {
+    final valid =
+        _formKey.currentState != null && _formKey.currentState!.validate();
+    if (valid) {
+      _signInController.signIn(
+        email: _emailController.text,
+        password: _passwordController.text,
+      );
+    } else {
+      log("erro ao logar");
     }
   }
 
@@ -126,6 +140,7 @@ class _SignInPageState extends State<SignInPage> with CustomModalSheetMixin {
                   validator: Validator.validatePassword,
                   helperText:
                       "Must have at least 8 characters, 1 capital letter and 1 number.",
+                  onEditingComplete: _onSignInButtonPressed,
                 ),
               ],
             ),
@@ -140,18 +155,7 @@ class _SignInPageState extends State<SignInPage> with CustomModalSheetMixin {
             child: PrimaryButton(
               key: Keys.signInButton,
               text: 'Sign In',
-              onPressed: () {
-                final valid = _formKey.currentState != null &&
-                    _formKey.currentState!.validate();
-                if (valid) {
-                  _signInController.signIn(
-                    email: _emailController.text,
-                    password: _passwordController.text,
-                  );
-                } else {
-                  log("erro ao logar");
-                }
-              },
+              onPressed: _onSignInButtonPressed,
             ),
           ),
           MultiTextButton(

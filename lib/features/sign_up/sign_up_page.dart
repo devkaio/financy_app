@@ -71,9 +71,10 @@ class _SignUpPageState extends State<SignUpPage> with CustomModalSheetMixin {
         _syncController.syncToServer();
         break;
       case UploadedDataToServer:
-        Navigator.pushReplacementNamed(
+        Navigator.pushNamedAndRemoveUntil(
           context,
           NamedRoute.home,
+          (route) => false,
         );
         break;
       case SyncStateError:
@@ -91,6 +92,20 @@ class _SignUpPageState extends State<SignUpPage> with CustomModalSheetMixin {
           ),
         );
         break;
+    }
+  }
+
+  void _onSignUpButtonPressed() {
+    final valid =
+        _formKey.currentState != null && _formKey.currentState!.validate();
+    if (valid) {
+      _signUpController.signUp(
+        name: _nameController.text,
+        email: _emailController.text,
+        password: _passwordController.text,
+      );
+    } else {
+      log("erro ao logar");
     }
   }
 
@@ -155,6 +170,7 @@ class _SignUpPageState extends State<SignUpPage> with CustomModalSheetMixin {
                     _passwordController.text,
                     value,
                   ),
+                  onEditingComplete: _onSignUpButtonPressed,
                 ),
               ],
             ),
@@ -169,19 +185,7 @@ class _SignUpPageState extends State<SignUpPage> with CustomModalSheetMixin {
             child: PrimaryButton(
               key: Keys.signUpButton,
               text: 'Sign Up',
-              onPressed: () {
-                final valid = _formKey.currentState != null &&
-                    _formKey.currentState!.validate();
-                if (valid) {
-                  _signUpController.signUp(
-                    name: _nameController.text,
-                    email: _emailController.text,
-                    password: _passwordController.text,
-                  );
-                } else {
-                  log("erro ao logar");
-                }
-              },
+              onPressed: _onSignUpButtonPressed,
             ),
           ),
           MultiTextButton(

@@ -9,6 +9,7 @@ import 'features/profile/profile_controller.dart';
 import 'features/sign_in/sign_in_controller.dart';
 import 'features/sign_up/sign_up_controller.dart';
 import 'features/splash/splash_controller.dart';
+import 'features/stats/stats_controller.dart';
 import 'features/wallet/wallet_controller.dart';
 import 'repositories/repositories.dart';
 import 'services/services.dart';
@@ -115,4 +116,7 @@ void setupDependencies() {
 
   locator.registerFactory<ProfileController>(
       () => ProfileController(userDataService: locator.get<UserDataService>()));
+
+  locator.registerLazySingleton<StatsController>(() => StatsController(
+      transactionRepository: locator.get<TransactionRepository>()));
 }

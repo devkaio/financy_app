@@ -1,5 +1,5 @@
+import 'package:financy_app/features/home/home.dart';
 import 'package:financy_app/locator.dart';
-import 'package:financy_app/services/services.dart';
 import 'package:flutter/material.dart';
 
 import '../constants/constants.dart';
@@ -36,7 +36,7 @@ class GreetingsWidget extends StatelessWidget {
           style: AppTextStyles.smallText.apply(color: AppColors.white),
         ),
         Text(
-          (locator.get<UserDataService>().userData.name ?? '')
+          (locator.get<HomeController>().userData.name ?? '')
               .capitalize()
               .firstWord,
           textScaleFactor: textScaleFactor,
