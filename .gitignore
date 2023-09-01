@@ -9,6 +9,7 @@
 .history
 .svn/
 migrate_working_dir/
+*.env
 
 # IntelliJ related
 *.iml
@@ -46,3 +47,6 @@ app.*.map.json
 #Code Coverage
 /coverage
 test/coverage_helper_test.dart
+
+# Environment file
+config.json
