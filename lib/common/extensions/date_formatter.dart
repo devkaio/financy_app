@@ -2,15 +2,22 @@ import 'package:intl/intl.dart';
 
 extension DateTimeFormatter on DateTime {
   String get toText {
-    if (isAfter(DateTime.now().subtract(const Duration(days: 1)))) {
-      return 'Today';
-    }
-    if (isAfter(DateTime.now().subtract(const Duration(days: 2))) &&
-        isBefore(DateTime.now().subtract(const Duration(days: 1)))) {
-      return 'Yesterday';
-    }
+    final now = DateTime.now();
 
-    return DateFormat('EEE, MMM d, ' 'yy').format(this);
+    final startOfToday = DateTime(now.year, now.month, now.day);
+    final endOfToday = DateTime(now.year, now.month, now.day, 23, 59, 59);
+
+    if (isAfter(startOfToday.add(const Duration(days: 1))) &&
+        isBefore(endOfToday.add(const Duration(days: 1)))) {
+      return 'Tomorrow';
+    } else if (isAfter(startOfToday) && isBefore(endOfToday)) {
+      return 'Today';
+    } else if (isAfter(startOfToday.subtract(const Duration(days: 1))) &&
+        isBefore(endOfToday.subtract(const Duration(days: 1)))) {
+      return 'Yesterday';
+    } else {
+      return DateFormat('EEE, MMM d, ' 'yy').format(this);
+    }
   }
 
   String get formatISOTime {
