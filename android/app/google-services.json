@@ -9,7 +9,7 @@
       "client_info": {
         "mobilesdk_app_id": "1:539092104395:android:676a145bab4c03b626d74e",
         "android_client_info": {
-          "package_name": "dev.kaio.financy.financy_app"
+          "package_name": "dev.kaio.financy"
         }
       },
       "oauth_client": [
@@ -34,7 +34,7 @@
               "client_id": "539092104395-5rijk44jomtu8u2blt7fdd4ltk63d1o6.apps.googleusercontent.com",
               "client_type": 2,
               "ios_info": {
-                "bundle_id": "dev.kaio.financy.financyApp"
+                "bundle_id": "dev.kaio.financy"
               }
             }
           ]

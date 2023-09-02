@@ -1,4 +1,4 @@
-package dev.kaio.financy.financy_app
+package dev.kaio.financy
 
 import io.flutter.embedding.android.FlutterActivity
 

@@ -54,7 +54,7 @@ android {
 
     defaultConfig {
         // TODO: Specify your own unique Application ID (https://developer.android.com/studio/build/application-id.html).
-        applicationId "dev.kaio.financy.financy_app"
+        applicationId "dev.kaio.financy"
         // You can update the following values to match your application needs.
         // For more information, see: https://docs.flutter.dev/deployment/android#reviewing-the-build-configuration.
         minSdkVersion 21
@@ -77,7 +77,7 @@ android {
         }
     }
 
-    namespace 'dev.kaio.financy.financy_app'
+    namespace 'dev.kaio.financy'
 }
 
 flutter {
