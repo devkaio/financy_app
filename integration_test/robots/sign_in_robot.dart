@@ -5,25 +5,25 @@ import 'package:financy_app/features/sign_in/sign_in_page.dart';
 import 'package:financy_app/features/splash/splash_page.dart';
 import 'package:flutter_test/flutter_test.dart';
 
-import '../utils.dart';
+import 'robot_extension.dart';
 
 class SignInRobot {
-  const SignInRobot({
-    required this.email,
-    required this.password,
-  });
+  const SignInRobot(this.tester);
 
-  final String email;
-  final String password;
+  final WidgetTester tester;
 
   ///Remember to set [shouldFail] to `true` when login must fail.
-  Future<void> call(WidgetTester tester, {bool shouldFail = false}) async {
+  Future<void> signInWithEmailAndPassword({
+    required String email,
+    required String password,
+    bool shouldFail = false,
+  }) async {
     final splashPage = find.byType(SplashPage);
-    await tester.pump();
+    await tester.waitUntilFind(splashPage);
     expect(splashPage, findsOneWidget);
 
     final onboardingPage = find.byType(OnboardingPage);
-    await tester.pumpAndSettle();
+    await tester.waitUntilFind(onboardingPage);
     expect(onboardingPage, findsOneWidget);
 
     final alreadyHaveAccountButton =
@@ -31,14 +31,15 @@ class SignInRobot {
 
     expect(alreadyHaveAccountButton, findsOneWidget);
     await tester.tap(alreadyHaveAccountButton);
-    await tester.pumpAndSettle();
 
     final signInPage = find.byType(SignInPage);
+    await tester.waitUntilFind(signInPage);
     expect(signInPage, findsOneWidget);
 
     final signInListView = find.byKey(Keys.signInListView);
 
     final emailField = find.byKey(Keys.signInEmailField);
+    await tester.waitUntilFind(emailField);
     expect(emailField, findsOneWidget);
 
     if (shouldFail) {
@@ -49,8 +50,7 @@ class SignInRobot {
 
     final passwordField = find.byKey(Keys.signInPasswordField);
 
-    await const Utils().dragUntilVisible(
-      tester,
+    await tester.dragUntilFind(
       target: passwordField,
       scrollable: signInListView,
     );
@@ -65,8 +65,7 @@ class SignInRobot {
 
     final signInButton = find.byKey(Keys.signInButton);
 
-    await const Utils().dragUntilVisible(
-      tester,
+    await tester.dragUntilFind(
       target: signInButton,
       scrollable: signInListView,
     );
