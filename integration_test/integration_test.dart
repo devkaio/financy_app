@@ -2,7 +2,7 @@ import 'package:flutter/widgets.dart';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:integration_test/integration_test.dart';
 
-import 'robots/robots.dart';
+import 'robots/robot_extension.dart';
 import 'utils.dart';
 
 void main() {
@@ -21,33 +21,31 @@ void main() {
   testWidgets('Onboarding Test', (WidgetTester tester) async {
     await tester.pumpWidget(aut);
 
-    await const OnbordingRobot().call(tester);
+    await tester.onboarding.processOnboarding();
   });
 
   testWidgets('Failed Login Test', (WidgetTester tester) async {
     await tester.pumpWidget(aut);
 
-    await const SignInRobot(
+    await tester.signInRobot.signInWithEmailAndPassword(
       email: email,
       password: password,
-    ).call(tester, shouldFail: true);
+      shouldFail: true,
+    );
   });
 
   testWidgets('Successful Login Test', (WidgetTester tester) async {
     await tester.pumpWidget(aut);
 
-    await const SignInRobot(
+    await tester.signInRobot.signInWithEmailAndPassword(
       email: email,
       password: password,
-    ).call(tester);
+    );
   });
 
   testWidgets('Logout test', (WidgetTester tester) async {
     await tester.pumpWidget(aut);
 
-    await const LogoutRobot(
-      email: 'user@tester.com',
-      password: '123456Abc',
-    ).call(tester);
+    await tester.signOutRobot.signOut();
   });
 }

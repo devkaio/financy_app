@@ -3,14 +3,13 @@ name: Flutter E2E Tests
 on:
   pull_request:
     branches:
-      - master
       - release/**
 
 env:
   GCLOUD_PROJECT_ID: ${{ secrets.GCLOUD_PROJECT_ID }}
   GCLOUD_SERVICE_KEY: ${{ secrets.GCLOUD_SERVICE_KEY }}
   JAVA_VERSION: 11
-  FLUTTER_VERSION: '3.7.9'
+  FLUTTER_VERSION: '3.13.1'
   FLUTTER_CHANNEL: 'stable'
 
 jobs:
@@ -36,7 +35,7 @@ jobs:
         run: flutter pub get
 
       - name: Build Debug APK
-        run: flutter build apk --debug
+        run: flutter build apk --debug --dart-define=GRAPHQL_ENDPOINT=https://financy.hasura.app/v1/graphql
 
       - name: Unit Tests
         run: flutter test
