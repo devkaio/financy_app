@@ -23,17 +23,4 @@ class Utils {
 
     return const App();
   }
-
-  Future<void> dragUntilVisible(
-    WidgetTester tester, {
-    required Finder target,
-    required Finder scrollable,
-  }) async {
-    await tester.dragUntilVisible(
-      target,
-      scrollable,
-      const Offset(0, -50),
-    );
-    await tester.pumpAndSettle();
-  }
 }
