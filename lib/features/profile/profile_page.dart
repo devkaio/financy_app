@@ -245,6 +245,7 @@ class _ProfilePageState extends State<ProfilePage>
                                     ),
                                   ),
                                   TextButton.icon(
+                                    key: Keys.profilePagelogoutButton,
                                     onPressed: () {
                                       _syncController.syncFromServer();
                                     },
