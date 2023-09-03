@@ -63,7 +63,8 @@ class DefaultFirebaseOptions {
     messagingSenderId: '539092104395',
     projectId: 'financy-app-6650d',
     storageBucket: 'financy-app-6650d.appspot.com',
-    iosClientId: '539092104395-5rijk44jomtu8u2blt7fdd4ltk63d1o6.apps.googleusercontent.com',
-    iosBundleId: 'dev.kaio.financy.financyApp',
+    iosClientId:
+        '539092104395-5rijk44jomtu8u2blt7fdd4ltk63d1o6.apps.googleusercontent.com',
+    iosBundleId: 'dev.kaio.financy',
   );
 }

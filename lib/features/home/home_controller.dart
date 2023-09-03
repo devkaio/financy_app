@@ -45,6 +45,7 @@ class HomeController extends ChangeNotifier {
       (error) => _changeState(HomeStateError(message: error.message)),
       (data) {
         _transactions = data;
+        _transactions.sort((a, b) => b.createdAt.compareTo(a.createdAt));
 
         _changeState(HomeStateSuccess());
       },

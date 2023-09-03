@@ -146,7 +146,11 @@ class _ProfilePageState extends State<ProfilePage>
               children: [
                 CircleAvatar(
                   minRadius: 60.h,
-                  child: const Icon(Icons.person),
+                  backgroundColor: AppColors.greenTwo,
+                  child: const Icon(
+                    Icons.person,
+                    color: AppColors.antiFlashWhite,
+                  ),
                 ),
                 SizedBox(height: 20.h),
                 AnimatedBuilder(
