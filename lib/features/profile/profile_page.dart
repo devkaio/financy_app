@@ -1,4 +1,5 @@
 import 'package:financy_app/common/extensions/extensions.dart';
+import 'package:financy_docs/financy_docs.dart';
 import 'package:flutter/material.dart';
 
 import '../../common/constants/constants.dart';
@@ -238,6 +239,30 @@ class _ProfilePageState extends State<ProfilePage>
                                       alignment: Alignment.centerLeft,
                                       child: Text(
                                         'Change password',
+                                        style: AppTextStyles.mediumText16w500
+                                            .apply(color: AppColors.green),
+                                        textAlign: TextAlign.start,
+                                      ),
+                                    ),
+                                  ),
+                                  TextButton.icon(
+                                    onPressed: () {
+                                      Navigator.push(
+                                        context,
+                                        MaterialPageRoute(
+                                          builder: (context) =>
+                                              const Agreements(),
+                                        ),
+                                      );
+                                    },
+                                    icon: const Icon(
+                                      Icons.policy,
+                                      color: AppColors.green,
+                                    ),
+                                    label: Align(
+                                      alignment: Alignment.centerLeft,
+                                      child: Text(
+                                        'Agreements',
                                         style: AppTextStyles.mediumText16w500
                                             .apply(color: AppColors.green),
                                         textAlign: TextAlign.start,

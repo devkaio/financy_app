@@ -1,5 +1,7 @@
 import 'dart:developer';
 
+import 'package:financy_docs/financy_docs.dart';
+import 'package:flutter/gestures.dart';
 import 'package:flutter/material.dart';
 
 import '../../common/constants/constants.dart';
@@ -173,6 +175,34 @@ class _SignUpPageState extends State<SignUpPage> with CustomModalSheetMixin {
                   onEditingComplete: _onSignUpButtonPressed,
                 ),
               ],
+            ),
+          ),
+          Padding(
+            padding: const EdgeInsets.symmetric(horizontal: 32.0),
+            child: Text.rich(
+              TextSpan(children: [
+                const TextSpan(text: 'By signing up you comply with our '),
+                TextSpan(
+                  text: 'Agreements',
+                  style: AppTextStyles.smallText13.copyWith(
+                    color: AppColors.darkGrey,
+                  ),
+                  recognizer: TapGestureRecognizer()
+                    ..onTap = () {
+                      Feedback.forTap(context);
+                      Navigator.push(
+                        context,
+                        MaterialPageRoute(
+                          builder: (context) => const Agreements(),
+                        ),
+                      );
+                    },
+                ),
+              ]),
+              textAlign: TextAlign.center,
+              style: AppTextStyles.smallText13.copyWith(
+                color: AppColors.grey,
+              ),
             ),
           ),
           Padding(
