@@ -56,5 +56,31 @@ void main() {
       expect((sut.state as ProfileStateError).message,
           'User data not found. Please login again.');
     });
+
+    test(
+        'When deleteAccount is called and return success, state should be ProfileStateSuccess',
+        () async {
+      when(() => userDataService.deleteAccount())
+          .thenAnswer((_) async => DataResult.success(true));
+
+      await sut.deleteAccount();
+
+      expect(sut.state, isA<ProfileStateSuccess>());
+    });
+
+    test(
+        'When deleteAccount is called and return failure, state should be ProfileStateFailure',
+        () async {
+      when(() => userDataService.deleteAccount()).thenAnswer(
+        (_) async =>
+            DataResult.failure(const UserDataException(code: 'delete-account')),
+      );
+
+      await sut.deleteAccount();
+
+      expect(sut.state, isA<ProfileStateError>());
+      expect((sut.state as ProfileStateError).message,
+          'An error has occurred while deleting user account. Please try again later.');
+    });
   });
 }

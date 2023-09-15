@@ -1,4 +1,5 @@
 import 'package:financy_app/common/extensions/extensions.dart';
+import 'package:financy_docs/financy_docs.dart';
 import 'package:flutter/material.dart';
 
 import '../../common/constants/constants.dart';
@@ -246,6 +247,71 @@ class _ProfilePageState extends State<ProfilePage>
                                   ),
                                   TextButton.icon(
                                     key: Keys.profilePagelogoutButton,
+                                    onPressed: () {
+                                      Navigator.push(
+                                        context,
+                                        MaterialPageRoute(
+                                          builder: (context) =>
+                                              const Agreements(),
+                                        ),
+                                      );
+                                    },
+                                    icon: const Icon(
+                                      Icons.policy,
+                                      color: AppColors.green,
+                                    ),
+                                    label: Align(
+                                      alignment: Alignment.centerLeft,
+                                      child: Text(
+                                        'Agreements',
+                                        style: AppTextStyles.mediumText16w500
+                                            .apply(color: AppColors.green),
+                                        textAlign: TextAlign.start,
+                                      ),
+                                    ),
+                                  ),
+                                  TextButton.icon(
+                                    onPressed: () {
+                                      showCustomModalBottomSheet(
+                                        context: context,
+                                        content:
+                                            'Are you sure you want to delete your account? This action cannot be undone.',
+                                        buttonText: 'Delete',
+                                        onPressed: () async {
+                                          Navigator.of(context).pop();
+
+                                          await _profileController
+                                              .deleteAccount();
+                                          await locator
+                                              .get<SecureStorageService>()
+                                              .deleteAll();
+                                          await locator
+                                              .get<DatabaseService>()
+                                              .deleteDB;
+
+                                          if (!mounted) return;
+                                          Navigator.popAndPushNamed(
+                                            context,
+                                            NamedRoute.initial,
+                                          );
+                                        },
+                                      );
+                                    },
+                                    icon: const Icon(
+                                      Icons.delete_forever,
+                                      color: AppColors.green,
+                                    ),
+                                    label: Align(
+                                      alignment: Alignment.centerLeft,
+                                      child: Text(
+                                        'Delete account',
+                                        style: AppTextStyles.mediumText16w500
+                                            .apply(color: AppColors.green),
+                                        textAlign: TextAlign.start,
+                                      ),
+                                    ),
+                                  ),
+                                  TextButton.icon(
                                     onPressed: () {
                                       _syncController.syncFromServer();
                                     },

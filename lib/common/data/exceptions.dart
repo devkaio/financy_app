@@ -129,6 +129,8 @@ class UserDataException extends Failure {
         return 'An error has occurred while updating user name. Please try again later.';
       case 'update-password':
         return 'An error has occurred while updating user password. Please try again later.';
+      case 'delete-account':
+        return 'An error has occurred while deleting user account. Please try again later.';
       case 'not-found':
         return 'User data not found. Please login again.';
       case 'requires-recent-login':
