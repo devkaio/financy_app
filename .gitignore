@@ -44,6 +44,11 @@ app.*.map.json
 /android/app/profile
 /android/app/release
 
+#Firebase Admin
+functions
+.firebaserc
+firebase.json
+
 #Code Coverage
 /coverage
 test/coverage_helper_test.dart
