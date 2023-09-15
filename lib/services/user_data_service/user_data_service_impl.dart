@@ -109,4 +109,22 @@ class UserDataServiceImpl implements UserDataService {
           const UserDataException(code: 'update-username'));
     }
   }
+
+  @override
+  Future<DataResult<bool>> deleteAccount() async {
+    try {
+      await _auth.currentUser?.delete();
+
+      return DataResult.success(true);
+    } on FirebaseAuthException catch (e) {
+      return DataResult.failure(UserDataException(code: e.code));
+    } on FirebaseFunctionsException catch (e) {
+      return DataResult.failure(UserDataException(code: e.code));
+    } on UserDataException catch (e) {
+      return DataResult.failure(UserDataException(code: e.code));
+    } catch (e) {
+      return DataResult.failure(
+          const UserDataException(code: 'delete-account'));
+    }
+  }
 }

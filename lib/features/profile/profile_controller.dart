@@ -97,4 +97,13 @@ class ProfileController extends ChangeNotifier {
       },
     );
   }
+
+  Future<void> deleteAccount() async {
+    _changeState(ProfileStateLoading());
+    final result = await _userDataService.deleteAccount();
+    result.fold(
+      (error) => _changeState(ProfileStateError(message: error.message)),
+      (_) => _changeState(ProfileStateSuccess()),
+    );
+  }
 }

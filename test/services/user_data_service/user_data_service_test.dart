@@ -76,5 +76,43 @@ void main() {
         (data) => null,
       );
     });
+
+    test(
+        'When deleteAccount is called and the account is deleted, returns success with value true',
+        () async {
+      when(() => mockFirebaseAuth.currentUser).thenReturn(fakeUser);
+      when(() => mockFirebaseAuth.currentUser?.delete())
+          .thenAnswer((_) async {});
+
+      final result = await sut.deleteAccount();
+
+      result.fold(
+        (error) => null,
+        (data) {
+          expect(data, isA<bool>());
+          expect(data, true);
+        },
+      );
+    });
+
+    test(
+        'When deleteAccount is called and the account is not deleted, returns failure with exception',
+        () async {
+      when(() => mockFirebaseAuth.currentUser).thenReturn(fakeUser);
+      when(() => mockFirebaseAuth.currentUser?.delete())
+          .thenThrow(const UserDataException(code: 'delete-account'));
+
+      final result = await sut.deleteAccount();
+
+      result.fold(
+        (error) {
+          expect(error, isA<Failure>());
+          expect(error, isA<UserDataException>());
+          expect(error.message,
+              'An error has occurred while deleting user account. Please try again later.');
+        },
+        (data) => null,
+      );
+    });
   });
 }

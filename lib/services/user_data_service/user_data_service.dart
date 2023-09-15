@@ -8,5 +8,7 @@ abstract class UserDataService {
 
   Future<DataResult<bool>> updatePassword(String newPassword);
 
+  Future<DataResult<bool>> deleteAccount();
+
   UserModel get userData;
 }
