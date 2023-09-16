@@ -1,7 +1,8 @@
 import 'package:financy_app/common/data/data_result.dart';
 import 'package:financy_app/common/data/exceptions.dart';
 import 'package:financy_app/common/models/models.dart';
-import 'package:financy_app/features/profile/profile.dart';
+import 'package:financy_app/features/profile/profile_controller.dart';
+import 'package:financy_app/features/profile/profile_state.dart';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:mocktail/mocktail.dart';
 
@@ -64,7 +65,6 @@ void main() {
           .thenAnswer((_) async => DataResult.success(true));
 
       await sut.deleteAccount();
-      await Future.delayed(const Duration(seconds: 1));
 
       expect(sut.state, isA<ProfileStateSuccess>());
     });
@@ -78,7 +78,6 @@ void main() {
       );
 
       await sut.deleteAccount();
-      await Future.delayed(const Duration(seconds: 1));
 
       expect(sut.state, isA<ProfileStateError>());
       expect((sut.state as ProfileStateError).message,
