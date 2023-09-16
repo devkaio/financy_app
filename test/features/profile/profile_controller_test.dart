@@ -1,7 +1,8 @@
 import 'package:financy_app/common/data/data_result.dart';
 import 'package:financy_app/common/data/exceptions.dart';
 import 'package:financy_app/common/models/models.dart';
-import 'package:financy_app/features/profile/profile.dart';
+import 'package:financy_app/features/profile/profile_controller.dart';
+import 'package:financy_app/features/profile/profile_state.dart';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:mocktail/mocktail.dart';
 
