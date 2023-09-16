@@ -1,4 +1,4 @@
-package dev.kaio.financy.financy_app;
+package dev.kaio.financy;
 
 import androidx.test.rule.ActivityTestRule;
 import dev.flutter.plugins.integration_test.FlutterTestRunner;
