@@ -64,6 +64,7 @@ void main() {
           .thenAnswer((_) async => DataResult.success(true));
 
       await sut.deleteAccount();
+      await Future.delayed(const Duration(seconds: 1));
 
       expect(sut.state, isA<ProfileStateSuccess>());
     });
@@ -77,6 +78,7 @@ void main() {
       );
 
       await sut.deleteAccount();
+      await Future.delayed(const Duration(seconds: 1));
 
       expect(sut.state, isA<ProfileStateError>());
       expect((sut.state as ProfileStateError).message,
