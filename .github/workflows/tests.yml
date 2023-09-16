@@ -1,20 +1,60 @@
-name: Flutter E2E Tests
+name: Run Tests
 
 on:
   pull_request:
     branches:
-      - release/**
+      - '*'
 
 env:
   GCLOUD_PROJECT_ID: ${{ secrets.GCLOUD_PROJECT_ID }}
   GCLOUD_SERVICE_KEY: ${{ secrets.GCLOUD_SERVICE_KEY }}
   JAVA_VERSION: 11
-  FLUTTER_VERSION: '3.13.1'
+  FLUTTER_VERSION: '3.13.2'
   FLUTTER_CHANNEL: 'stable'
 
 jobs:
-  build_and_test:
+  unit_tests:
+    name: Unit Tests
     runs-on: ubuntu-latest
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v2
+
+      - name: Set up Flutter ${{ env.FLUTTER_VERSION }}
+        uses: subosito/flutter-action@v2
+        with:
+          flutter-version: ${{ env.FLUTTER_VERSION }}
+          channel: ${{ env.FLUTTER_CHANNEL }}
+
+      - name: Install dependencies
+        run: flutter pub get
+
+      - name: Generate test files
+        run: |
+          chmod +x ./coverage.sh
+          ./coverage.sh
+
+      - name: Unit Tests
+        run: flutter test --coverage
+
+      - name: Install lcov
+        run: sudo apt-get install -y lcov
+
+      - name: Remove generated files from code coverage report
+        run: lcov --remove coverage/lcov.info 'lib/*/*.freezed.dart' 'lib/*/*.g.dart' 'lib/*/*.part.dart' 'lib/generated/*.dart' 'lib/generated/*/*.dart' o coverage/lcov.info
+
+      - name: Upload code coverage to Codecov
+        uses: codecov/codecov-action@v3
+        with:
+          token: ${{ secrets.CODECOV_TOKEN }}
+          file: coverage/lcov.info
+          flags: unittests
+
+  integration_tests:
+    runs-on: ubuntu-latest
+    name: Integration Tests
+    if: github.event_name == 'pull_request' && github.event.pull_request.base.ref == 'master' && startsWith(github.event.pull_request.head.ref, 'release/')
+    
     steps:
       - name: Checkout code
         uses: actions/checkout@v2
@@ -35,10 +75,7 @@ jobs:
         run: flutter pub get
 
       - name: Build Debug APK
-        run: flutter build apk --debug --dart-define=GRAPHQL_ENDPOINT=https://financy.hasura.app/v1/graphql
-
-      - name: Unit Tests
-        run: flutter test
+        run: flutter build apk --debug --dart-define=GRAPHQL_ENDPOINT=https://api.financy.kaio.dev/v1/graphql
 
       - name: Build Instrumentation Test APK
         run: |
@@ -59,4 +96,4 @@ jobs:
             --app build/app/outputs/apk/debug/app-debug.apk \
             --test build/app/outputs/apk/androidTest/debug/app-debug-androidTest.apk \
             --timeout 5m \
-            
+  
