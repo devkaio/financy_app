@@ -46,6 +46,7 @@ class OnboardingRobot {
     await tester.pumpAndSettle();
 
     final signInPage = find.byType(SignInPage);
+    await tester.waitUntilFind(signInPage);
     expect(signInPage, findsOneWidget);
   }
 }
