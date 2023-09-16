@@ -80,6 +80,7 @@ class SignInRobot {
       await tester.tap(tryAgainText);
     } else {
       final homePage = find.byType(HomePageView);
+      await tester.waitUntilFind(homePage);
       expect(homePage, findsOneWidget);
     }
   }
