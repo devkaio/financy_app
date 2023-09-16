@@ -1,5 +1,5 @@
-import 'package:financy_app/common/data/data.dart';
-import 'package:financy_app/common/models/models.dart';
+import 'package:financy_app/common/data/exceptions.dart';
+import 'package:financy_app/common/models/transaction_model.dart';
 import 'package:financy_app/repositories/transaction_repository.dart';
 import 'package:financy_app/repositories/transaction_repository_impl.dart';
 import 'package:flutter_test/flutter_test.dart';
