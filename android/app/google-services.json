@@ -1,0 +1,46 @@
+{
+  "project_info": {
+    "project_number": "539092104395",
+    "project_id": "financy-app-6650d",
+    "storage_bucket": "financy-app-6650d.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:539092104395:android:676a145bab4c03b626d74e",
+        "android_client_info": {
+          "package_name": "dev.kaio.financy"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "539092104395-k1i8tab13cjpjcvebofv7gap065vs59e.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyCsMPPonxwD9ZstTs_5ha3wjBMpKSwmlvQ"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "539092104395-k1i8tab13cjpjcvebofv7gap065vs59e.apps.googleusercontent.com",
+              "client_type": 3
+            },
+            {
+              "client_id": "539092104395-5rijk44jomtu8u2blt7fdd4ltk63d1o6.apps.googleusercontent.com",
+              "client_type": 2,
+              "ios_info": {
+                "bundle_id": "dev.kaio.financy"
+              }
+            }
+          ]
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
