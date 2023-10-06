@@ -1,4 +1,5 @@
 import 'package:financy_app/common/data/data.dart';
+import 'package:financy_app/common/extensions/extensions.dart';
 import 'package:financy_app/common/models/models.dart';
 import 'package:financy_app/features/stats/stats_controller.dart';
 import 'package:flutter_test/flutter_test.dart';
@@ -91,7 +92,7 @@ void main() {
       expect(sut.minY, 0);
       expect(sut.minX, 0);
       expect(sut.maxY, 200);
-      expect(sut.maxX, 3);
+      expect(sut.maxX, DateTime.now().weeksInMonth - 1);
       expect(sut.interval, 1);
     });
 
