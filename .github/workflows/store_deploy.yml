@@ -1,0 +1,121 @@
+name: Deploy and Publish to Stores
+on:
+  workflow_dispatch:
+    inputs:
+      platform:
+        description: 'Platform to deploy to'
+        required: true
+        default: ''
+        options:
+          - 'android'
+          - 'ios'
+          - 'both'
+
+env:
+  JAVA_VERSION: 17
+  FLUTTER_VERSION: '3.13.1'
+  FLUTTER_CHANNEL: 'stable'
+
+jobs:
+
+  android_deploy:
+    runs-on: macos-latest
+    if: github.event.inputs.platform == 'android' || github.event.inputs.platform == 'both'
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v2
+
+      - name: Set up Java
+        uses: actions/setup-java@v2
+        with:
+          java-version: ${{ env.JAVA_VERSION }}
+          distribution: 'adopt'
+
+      - name: Set up Flutter ${{ env.FLUTTER_VERSION }}
+        uses: subosito/flutter-action@v2
+        with:
+          flutter-version: ${{ env.FLUTTER_VERSION }}
+          channel: ${{ env.FLUTTER_CHANNEL }}
+
+      - name: Create build signing files
+        run: |
+          base64 -d <<< "${{ secrets.KEYSTORE }}" > android/app/upload-keystore.jks
+          base64 -d <<< "${{ secrets.KEY_PROPERTIES }}" > android/key.properties
+
+      - name: Build Android APK
+        run: flutter build appbundle --dart-define=GRAPHQL_ENDPOINT=https://api.financy.kaio.dev/v1/graphql
+
+      - name: Deploy Android APK
+        uses: r0adkll/upload-google-play@v1
+        with:
+          serviceAccountJsonPlainText: ${{ secrets.PLAY_SERVICE_ACCOUNT }}
+          packageName: dev.kaio.financy
+          releaseFiles: build/app/outputs/bundle/release/*.aab
+          track: internal
+
+  ios_deploy:
+    runs-on: macos-latest
+    if: github.event.inputs.platform == 'ios' || github.event.inputs.platform == 'both'
+    env:
+      IOS_KEYS: ${{ secrets.IOS_KEYS }}
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v2
+
+      - name: Install gpg
+        run: brew install gnupg
+
+      - name: Set up Java
+        uses: actions/setup-java@v2
+        with:
+          java-version: ${{ env.JAVA_VERSION }}
+          distribution: 'adopt'
+
+      - name: Set up Flutter ${{ env.FLUTTER_VERSION }}
+        uses: subosito/flutter-action@v2
+        with:
+          flutter-version: ${{ env.FLUTTER_VERSION }}
+          channel: ${{ env.FLUTTER_CHANNEL }}
+
+      - name:  Install the Apple certificate and provisioning profile
+        run: |
+          # create variables
+          KEYCHAIN_PATH=$RUNNER_TEMP/app-signing.keychain-db
+          PP_PATH=$RUNNER_TEMP/financy_app.mobileprovision
+          CERTIFICATE_PATH=$RUNNER_TEMP/ios_distribution.p12
+          
+          #decrypt files
+          gpg --quiet --batch --yes --decrypt --passphrase="$IOS_KEYS" --output "$PP_PATH" ./.github/secrets/financy_app.mobileprovision.gpg
+          gpg --quiet --batch --yes --decrypt --passphrase="$IOS_KEYS" --output "$CERTIFICATE_PATH" ./.github/secrets/ios_distribution.p12.gpg
+
+          # create temporary keychain
+          security create-keychain -p "$IOS_KEYS" "$KEYCHAIN_PATH"
+          security set-keychain-settings -lut 21600 "$KEYCHAIN_PATH"
+          security unlock-keychain -p "$IOS_KEYS" "$KEYCHAIN_PATH"
+          
+          # import certificate to keychain
+          security import "$CERTIFICATE_PATH" -P "$IOS_KEYS" -A -t cert -f pkcs12 -k "$KEYCHAIN_PATH"
+
+          security list-keychain -d user -s "$KEYCHAIN_PATH"
+          security default-keychain -s "$KEYCHAIN_PATH"
+          security set-key-partition-list -S apple-tool:,apple: -s -k "$IOS_KEYS" "$KEYCHAIN_PATH"
+          
+          # apply provisioning profile
+          mkdir -p ~/Library/MobileDevice/Provisioning\ Profiles
+          cp "$PP_PATH" ~/Library/MobileDevice/Provisioning\ Profiles
+
+      - name: Build iOS app
+        run: |
+          flutter build ipa --export-options-plist=ios/Runner/ExportOptions.plist
+      - name: Upload to App Store Connect
+        env:
+          APPLEID_USERNAME: ${{ secrets.APPLEID_USERNAME }}
+          APPLEID_PASSWORD: ${{ secrets.APPLEID_PASSWORD }}
+        if: success()
+        run: |
+          xcrun altool --upload-app \
+            -t ios \
+            -f build/ios/ipa/*.ipa \
+            -u "$APPLEID_USERNAME" \
+            -p "$APPLEID_PASSWORD" \
+            --verbose
