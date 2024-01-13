@@ -24,22 +24,21 @@ class GreetingsWidget extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    double textScaleFactor =
-        MediaQuery.of(context).size.width < 360 ? 0.7 : 1.0;
+    double textScaleFactor = MediaQuery.sizeOf(context).width < 360 ? 0.7 : 1.0;
 
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
         Text(
           _greeting,
-          textScaleFactor: textScaleFactor,
+          textScaler: TextScaler.linear(textScaleFactor),
           style: AppTextStyles.smallText.apply(color: AppColors.white),
         ),
         Text(
           (locator.get<HomeController>().userData.name ?? '')
               .capitalize()
               .firstWord,
-          textScaleFactor: textScaleFactor,
+          textScaler: TextScaler.linear(textScaleFactor),
           style: AppTextStyles.mediumText20.apply(color: AppColors.white),
         ),
       ],
