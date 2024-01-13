@@ -18,6 +18,7 @@ class CustomTheme {
     );
 
     return ThemeData(
+      useMaterial3: false,
       colorScheme: const ColorScheme.light(
         primary: AppColors.darkGreen,
       ),

@@ -20,7 +20,7 @@ extension RobotExtension on WidgetTester {
       await pumpAndSettle();
       timeout -= interval;
       if (timeout.inSeconds == 0) {
-        throw TestFailure('Timeout waiting for ${finder.description}');
+        throw TestFailure('Timeout waiting for $finder');
       }
     }
   }

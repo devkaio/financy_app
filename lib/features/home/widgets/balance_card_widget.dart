@@ -37,7 +37,7 @@ class _BalanceCardWidgetState extends State<BalanceCardWidget> {
   @override
   Widget build(BuildContext context) {
     double textScaleFactor =
-        MediaQuery.of(context).size.width <= 360 ? 0.8 : 1.0;
+        MediaQuery.sizeOf(context).width <= 360 ? 0.8 : 1.0;
 
     return Positioned(
       left: 24.w,
@@ -66,7 +66,7 @@ class _BalanceCardWidgetState extends State<BalanceCardWidget> {
                   children: [
                     Text(
                       'Total Balance',
-                      textScaleFactor: textScaleFactor,
+                      textScaler: TextScaler.linear(textScaleFactor),
                       style: AppTextStyles.mediumText16w600
                           .apply(color: AppColors.white),
                     ),
@@ -86,7 +86,7 @@ class _BalanceCardWidgetState extends State<BalanceCardWidget> {
                                 BoxConstraints.tightFor(width: 250.0.w),
                             child: Text(
                               '\$${widget.controller.balances.totalBalance.toStringAsFixed(2)}',
-                              textScaleFactor: textScaleFactor,
+                              textScaler: TextScaler.linear(textScaleFactor),
                               style: AppTextStyles.mediumText30
                                   .apply(color: AppColors.white),
                               overflow: TextOverflow.ellipsis,
@@ -119,24 +119,28 @@ class _BalanceCardWidgetState extends State<BalanceCardWidget> {
             Row(
               mainAxisAlignment: MainAxisAlignment.spaceBetween,
               children: [
-                AnimatedBuilder(
-                  animation: widget.controller,
-                  builder: (context, _) {
-                    return TransactionValueWidget(
-                      amount: widget.controller.balances.totalIncome,
-                      controller: widget.controller,
-                    );
-                  },
+                Flexible(
+                  child: AnimatedBuilder(
+                    animation: widget.controller,
+                    builder: (context, _) {
+                      return TransactionValueWidget(
+                        amount: widget.controller.balances.totalIncome,
+                        controller: widget.controller,
+                      );
+                    },
+                  ),
                 ),
-                AnimatedBuilder(
-                  animation: widget.controller,
-                  builder: (context, _) {
-                    return TransactionValueWidget(
-                      amount: widget.controller.balances.totalOutcome,
-                      controller: widget.controller,
-                      type: TransactionType.outcome,
-                    );
-                  },
+                Flexible(
+                  child: AnimatedBuilder(
+                    animation: widget.controller,
+                    builder: (context, _) {
+                      return TransactionValueWidget(
+                        amount: widget.controller.balances.totalOutcome,
+                        controller: widget.controller,
+                        type: TransactionType.outcome,
+                      );
+                    },
+                  ),
                 ),
               ],
             ),
@@ -163,9 +167,9 @@ class TransactionValueWidget extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     double textScaleFactor =
-        MediaQuery.of(context).size.width <= 360 ? 0.8 : 1.0;
+        MediaQuery.sizeOf(context).width <= 360 ? 0.8 : 1.0;
 
-    double iconSize = MediaQuery.of(context).size.width <= 360 ? 16.0 : 24.0;
+    double iconSize = MediaQuery.sizeOf(context).width <= 360 ? 16.0 : 24.0;
 
     return Row(
       mainAxisSize: MainAxisSize.min,
@@ -187,38 +191,37 @@ class TransactionValueWidget extends StatelessWidget {
           ),
         ),
         const SizedBox(width: 4.0),
-        Column(
-          mainAxisSize: MainAxisSize.min,
-          crossAxisAlignment: CrossAxisAlignment.start,
-          children: [
-            Text(
-              type == TransactionType.income ? 'Income' : 'Expense',
-              textScaleFactor: textScaleFactor,
-              style:
-                  AppTextStyles.mediumText16w500.apply(color: AppColors.white),
-            ),
-            AnimatedBuilder(
-                animation: controller,
-                builder: (context, _) {
-                  if (controller.state is BalanceStateLoading) {
-                    return Container(
-                      color: AppColors.greenTwo,
-                      constraints: BoxConstraints.tightFor(width: 80.0.w),
-                      height: 36.0.h,
-                    );
-                  }
-                  return ConstrainedBox(
-                    constraints: BoxConstraints.tightFor(width: 120.0.w),
-                    child: Text(
+        Flexible(
+          child: Column(
+            mainAxisSize: MainAxisSize.min,
+            crossAxisAlignment: CrossAxisAlignment.start,
+            children: [
+              Text(
+                type == TransactionType.income ? 'Income' : 'Expense',
+                textScaler: TextScaler.linear(textScaleFactor),
+                style: AppTextStyles.mediumText16w500
+                    .apply(color: AppColors.white),
+              ),
+              AnimatedBuilder(
+                  animation: controller,
+                  builder: (context, _) {
+                    if (controller.state is BalanceStateLoading) {
+                      return Container(
+                        color: AppColors.greenTwo,
+                        constraints: BoxConstraints.tightFor(width: 80.0.w),
+                        height: 36.0.h,
+                      );
+                    }
+                    return Text(
                       '\$${amount.toStringAsFixed(2)}',
-                      textScaleFactor: textScaleFactor,
+                      textScaler: TextScaler.linear(textScaleFactor),
                       style: AppTextStyles.mediumText20
                           .apply(color: AppColors.white),
                       overflow: TextOverflow.ellipsis,
-                    ),
-                  );
-                }),
-          ],
+                    );
+                  }),
+            ],
+          ),
         )
       ],
     );
