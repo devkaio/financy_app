@@ -106,7 +106,7 @@ jobs:
 
       - name: Build iOS app
         run: |
-          flutter build ipa --export-options-plist=ios/Runner/ExportOptions.plist
+          flutter build ipa --export-options-plist=ios/Runner/ExportOptions-prod.plist --dart-define=GRAPHQL_ENDPOINT=https://api.financy.kaio.dev/v1/graphql
       - name: Upload to App Store Connect
         env:
           APPLEID_USERNAME: ${{ secrets.APPLEID_USERNAME }}

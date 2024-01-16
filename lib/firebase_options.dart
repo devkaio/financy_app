@@ -51,7 +51,7 @@ class DefaultFirebaseOptions {
 
   static const FirebaseOptions android = FirebaseOptions(
     apiKey: 'AIzaSyCsMPPonxwD9ZstTs_5ha3wjBMpKSwmlvQ',
-    appId: '1:539092104395:android:676a145bab4c03b626d74e',
+    appId: '1:539092104395:android:30ff304408f93f6e26d74e',
     messagingSenderId: '539092104395',
     projectId: 'financy-app-6650d',
     storageBucket: 'financy-app-6650d.appspot.com',
@@ -59,12 +59,10 @@ class DefaultFirebaseOptions {
 
   static const FirebaseOptions ios = FirebaseOptions(
     apiKey: 'AIzaSyDh3TdIA1yIJV1INRPwXhVQUlu44ctJSJ8',
-    appId: '1:539092104395:ios:f1326e9eb37f99f126d74e',
+    appId: '1:539092104395:ios:e4f659b3c17dc54126d74e',
     messagingSenderId: '539092104395',
     projectId: 'financy-app-6650d',
     storageBucket: 'financy-app-6650d.appspot.com',
-    iosClientId:
-        '539092104395-5rijk44jomtu8u2blt7fdd4ltk63d1o6.apps.googleusercontent.com',
     iosBundleId: 'dev.kaio.financy',
   );
 }
