@@ -2,8 +2,8 @@
     "dartImport.fixOnSave": true,
     "dart.showIgnoreQuickFixes": false,
     "editor.codeActionsOnSave": {
-        "source.fixAll": true,
-        "source.organizeImports": true,
+        "source.fixAll": "explicit",
+        "source.organizeImports": "explicit"
     },
     "dart.lineLength": 80
 }

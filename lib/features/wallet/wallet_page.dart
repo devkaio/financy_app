@@ -91,14 +91,12 @@ class _WalletPageState extends State<WalletPage>
 
   @override
   Widget build(BuildContext context) {
-    return WillPopScope(
-      onWillPop: () async {
-        locator
-            .get<HomeController>()
-            .pageController
-            .navigateTo(BottomAppBarItem.home);
-        return false;
-      },
+    return PopScope(
+      canPop: false,
+      onPopInvoked: (_) => locator
+          .get<HomeController>()
+          .pageController
+          .navigateTo(BottomAppBarItem.home),
       child: Stack(
         children: [
           AppHeader(

@@ -25,8 +25,8 @@ mixin CustomModalSheetMixin<T extends StatefulWidget> on State<T> {
         ),
       ),
       builder: (BuildContext context) {
-        return WillPopScope(
-          onWillPop: () => Future.value(isDismissible),
+        return PopScope(
+          canPop: isDismissible,
           child: Container(
             decoration: const BoxDecoration(
               color: AppColors.white,

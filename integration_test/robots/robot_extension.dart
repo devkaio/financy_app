@@ -1,5 +1,6 @@
 import 'package:flutter_test/flutter_test.dart';
 
+import 'forgot_password_robot.dart';
 import 'onboarding_robot.dart';
 import 'sign_in_robot.dart';
 import 'sign_out_robot.dart';
@@ -11,6 +12,8 @@ extension RobotExtension on WidgetTester {
 
   SignOutRobot get signOutRobot => SignOutRobot(this);
 
+  ForgotPasswordRobot get forgotPasswordRobot => ForgotPasswordRobot(this);
+
   Future<void> waitUntilFind(
     Finder finder, {
     Duration timeout = const Duration(seconds: 10),
@@ -20,7 +23,7 @@ extension RobotExtension on WidgetTester {
       await pumpAndSettle();
       timeout -= interval;
       if (timeout.inSeconds == 0) {
-        throw TestFailure('Timeout waiting for ${finder.description}');
+        throw TestFailure('Timeout waiting for $finder');
       }
     }
   }

@@ -94,9 +94,9 @@ class _ProfilePageState extends State<ProfilePage>
         showDialog(
           barrierDismissible: false,
           context: context,
-          builder: (context) => WillPopScope(
-            onWillPop: () async => Future.value(false),
-            child: const CustomCircularProgressIndicator(),
+          builder: (context) => const PopScope(
+            canPop: false,
+            child: CustomCircularProgressIndicator(),
           ),
         );
         break;

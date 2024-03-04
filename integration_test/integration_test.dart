@@ -48,4 +48,19 @@ void main() {
 
     await tester.signOutRobot.signOut();
   });
+
+  testWidgets('Successful Forgot Password Test', (WidgetTester tester) async {
+    await tester.pumpWidget(aut);
+
+    await tester.forgotPasswordRobot.forgotPassword(email: email);
+  });
+
+  testWidgets('Failed Forgot Password Test', (WidgetTester tester) async {
+    await tester.pumpWidget(aut);
+
+    await tester.forgotPasswordRobot.forgotPassword(
+      email: email,
+      shouldFail: true,
+    );
+  });
 }

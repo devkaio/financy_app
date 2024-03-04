@@ -1,4 +1,5 @@
 import 'package:cloud_functions/cloud_functions.dart';
+import 'package:financy_app/features/forgot_password/forgot_password_controller.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:get_it/get_it.dart';
 
@@ -80,6 +81,10 @@ void setupDependencies() {
       authService: locator.get<AuthService>(),
       secureStorageService: locator.get<SecureStorageService>(),
     ),
+  );
+
+  locator.registerFactory<ForgotPasswordController>(
+    () => ForgotPasswordController(authService: locator.get<AuthService>()),
   );
 
   locator.registerLazySingleton<HomeController>(
