@@ -3,6 +3,8 @@ import 'package:flutter/material.dart';
 import 'common/constants/constants.dart';
 import 'common/models/models.dart';
 import 'common/themes/default_theme.dart';
+import 'features/forgot_password/check_your_email_page.dart';
+import 'features/forgot_password/forgot_password_page.dart';
 import 'features/home/home.dart';
 import 'features/onboarding/onboarding.dart';
 import 'features/profile/profile.dart';
@@ -37,6 +39,8 @@ class App extends StatelessWidget {
             transaction: args != null ? args as TransactionModel : null,
           );
         },
+        NamedRoute.forgotPassword: (context) => const ForgotPasswordPage(),
+        NamedRoute.checkYourEmail: (context) => const CheckYourEmailPage(),
       },
     );
   }

@@ -16,4 +16,6 @@ abstract class AuthService {
   Future<void> signOut();
 
   Future<DataResult<String>> userToken();
+
+  Future<DataResult<bool>> forgotPassword(String email);
 }
