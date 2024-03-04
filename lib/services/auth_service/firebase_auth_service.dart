@@ -91,4 +91,17 @@ class FirebaseAuthService implements AuthService {
       id: user.uid,
     );
   }
+
+  @override
+  Future<DataResult<bool>> forgotPassword(String email) async {
+    try {
+      await _auth.sendPasswordResetEmail(email: email);
+
+      return DataResult.success(true);
+    } on FirebaseAuthException catch (e) {
+      return DataResult.failure(AuthException(code: e.code));
+    } catch (e) {
+      return DataResult.failure(const GeneralException());
+    }
+  }
 }
