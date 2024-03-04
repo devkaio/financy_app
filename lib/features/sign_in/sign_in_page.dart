@@ -138,12 +138,18 @@ class _SignInPageState extends State<SignInPage> with CustomModalSheetMixin {
                   labelText: "your password",
                   hintText: "*********",
                   validator: Validator.validatePassword,
-                  helperText:
-                      "Must have at least 8 characters, 1 capital letter and 1 number.",
                   onEditingComplete: _onSignInButtonPressed,
                 ),
               ],
             ),
+          ),
+          TextButton(
+            key: Keys.forgotPasswordButton,
+            onPressed: () => Navigator.popAndPushNamed(
+              context,
+              NamedRoute.forgotPassword,
+            ),
+            child: const Text('Forgot Password?'),
           ),
           Padding(
             padding: const EdgeInsets.only(

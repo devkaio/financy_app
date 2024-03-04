@@ -32,6 +32,12 @@ class Keys {
   static const signInDontHaveAccountButton =
       Key('sign_in_dont_have_account_button');
 
+  // Forgot password page
+  static const forgotPasswordButton = Key('forgot_password_button');
+  static const forgotPasswordEmailField = Key('forgot_password_email_field');
+  static const forgotPasswordSendLinkButton =
+      Key('forgot_password_send_link_button');
+
   // App bottom bar items
   static const homePageBottomAppBarItem = Key('home_page_bottom_app_bar_item');
   static const statsPageBottomAppBarItem =
