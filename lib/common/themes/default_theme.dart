@@ -33,7 +33,7 @@ class CustomTheme {
       ),
       tooltipTheme:
           const TooltipThemeData(textStyle: TextStyle(color: Colors.white)),
-      tabBarTheme: const TabBarTheme(
+      tabBarTheme: const TabBarThemeData(
         indicator: BoxDecoration(
           border: Border(),
         ),
