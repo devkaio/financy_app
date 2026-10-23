@@ -113,7 +113,7 @@ class _StatsPageState extends State<StatsPage>
                                   tooltipBorder: const BorderSide(
                                     color: AppColors.greenOne,
                                   ),
-                                  tooltipBgColor: AppColors.antiFlashWhite,
+                                  getTooltipColor: (spot) => AppColors.antiFlashWhite,
                                   getTooltipItems: (touchedSpots) {
                                     return touchedSpots.map((e) {
                                       return LineTooltipItem(
@@ -184,8 +184,8 @@ class _StatsPageState extends State<StatsPage>
                                     show: true,
                                     gradient: LinearGradient(
                                       colors: [
-                                        AppColors.green.withOpacity(0.20),
-                                        AppColors.greenOne.withOpacity(0),
+                                        AppColors.green.withValues(alpha: 0.20),
+                                        AppColors.greenOne.withValues(alpha: 0),
                                       ],
                                       begin: Alignment.topCenter,
                                       end: Alignment.bottomCenter,

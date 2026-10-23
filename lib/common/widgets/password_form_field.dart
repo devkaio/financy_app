@@ -18,7 +18,7 @@ class PasswordFormField extends StatefulWidget {
   final VoidCallback? onEditingComplete;
 
   const PasswordFormField({
-    Key? key,
+    super.key,
     this.controller,
     this.padding,
     this.hintText,
@@ -29,7 +29,7 @@ class PasswordFormField extends StatefulWidget {
     this.onTap,
     this.onTapOutside,
     this.onEditingComplete,
-  }) : super(key: key);
+  });
 
   @override
   State<PasswordFormField> createState() => _PasswordFormFieldState();

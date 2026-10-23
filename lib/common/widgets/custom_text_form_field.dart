@@ -28,7 +28,7 @@ class CustomTextFormField extends StatefulWidget {
   final VoidCallback? onEditingComplete;
 
   const CustomTextFormField({
-    Key? key,
+    super.key,
     this.padding,
     this.hintText,
     this.labelText,
@@ -47,7 +47,7 @@ class CustomTextFormField extends StatefulWidget {
     this.focusNode,
     this.onTapOutside,
     this.onEditingComplete,
-  }) : super(key: key);
+  });
 
   @override
   State<CustomTextFormField> createState() => _CustomTextFormFieldState();

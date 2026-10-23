@@ -349,7 +349,7 @@ class _TransactionPageState extends State<TransactionPage>
                                   oldTransaction: widget.transaction!,
                                   newTransaction: newTransaction,
                                 );
-                                if (mounted) {
+                                if (context.mounted) {
                                   Navigator.of(context).pop(true);
                                 }
                               } else {
@@ -358,7 +358,7 @@ class _TransactionPageState extends State<TransactionPage>
                                 await _balanceController.updateBalance(
                                   newTransaction: newTransaction,
                                 );
-                                if (mounted) {
+                                if (context.mounted) {
                                   Navigator.of(context).pop(true);
                                 }
                               }

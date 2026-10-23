@@ -93,7 +93,7 @@ class _WalletPageState extends State<WalletPage>
   Widget build(BuildContext context) {
     return PopScope(
       canPop: false,
-      onPopInvoked: (_) => locator
+      onPopInvokedWithResult:(didPop, result) => locator
           .get<HomeController>()
           .pageController
           .navigateTo(BottomAppBarItem.home),

@@ -6,9 +6,9 @@ import '../../../common/features/balance/balance.dart';
 
 class BalanceCardWidget extends StatefulWidget {
   const BalanceCardWidget({
-    Key? key,
+    super.key,
     required this.controller,
-  }) : super(key: key);
+  });
 
   final BalanceController controller;
 
@@ -177,7 +177,7 @@ class TransactionValueWidget extends StatelessWidget {
         Container(
           padding: const EdgeInsets.all(4.0),
           decoration: BoxDecoration(
-            color: AppColors.white.withOpacity(0.06),
+            color: AppColors.white.withValues(alpha: 0.06),
             borderRadius: const BorderRadius.all(
               Radius.circular(16.0),
             ),
