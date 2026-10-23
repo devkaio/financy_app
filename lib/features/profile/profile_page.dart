@@ -288,7 +288,7 @@ class _ProfilePageState extends State<ProfilePage>
                                               .get<DatabaseService>()
                                               .deleteDB;
 
-                                          if (!mounted) return;
+                                          if (!context.mounted) return;
                                           Navigator.popAndPushNamed(
                                             context,
                                             NamedRoute.initial,

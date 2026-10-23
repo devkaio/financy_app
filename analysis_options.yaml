@@ -27,3 +27,12 @@ linter:
 
 # Additional information about this file can be found at
 # https://dart.dev/guides/language/analysis-options
+
+formatter:
+  trailing_commas: preserve
+  page_width: 80
+analyzer:
+  exclude:
+    - build/**
+    - android/**
+    - ios/**
