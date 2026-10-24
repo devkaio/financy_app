@@ -53,7 +53,7 @@ jobs:
           serviceAccountJsonPlainText: ${{ secrets.PLAY_SERVICE_ACCOUNT }}
           packageName: dev.kaio.financy
           releaseFiles: build/app/outputs/bundle/release/*.aab
-          track: internal
+          tracks: internal
 
   ios_deploy:
     runs-on: macos-latest
