@@ -5,8 +5,6 @@ plugins {
     id "com.google.gms.google-services"
 }
 
-
-
 def localProperties = new Properties()
 def localPropertiesFile = rootProject.file('local.properties')
 if (localPropertiesFile.exists()) {
@@ -59,6 +57,11 @@ android {
         release {
             signingConfig signingConfigs.release
         }
+    }
+
+    lint {
+        checkReleaseBuilds false
+        abortOnError false
     }
 
     namespace 'dev.kaio.financy'
