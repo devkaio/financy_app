@@ -20,6 +20,12 @@ jobs:
       - name: Checkout code
         uses: actions/checkout@v2
 
+      - name: Set up Java ${{ env.JAVA_VERSION }}
+        uses: actions/setup-java@v5
+        with:
+          java-version: ${{ env.JAVA_VERSION }}
+          distribution: 'adopt'
+
       - name: Set up Flutter ${{ env.FLUTTER_VERSION }}
         uses: subosito/flutter-action@v2
         with:
